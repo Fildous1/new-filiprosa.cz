@@ -1,0 +1,57 @@
+[SECTION: ANALOG BODIES]
+- Pentacon Six TL (Medium Format, 6x6) — The centerpiece of my collection.
+- Canon EOS 650 (35mm SLR) — My daily driver for 35mm film, the first of the EOS line.
+- Minolta Riva Zoom 70W (Point & Shoot) — For quick, wide-angle street snapshots.
+
+[SECTION: DIGITAL BODIES]
+- Canon EOS 80D — Workhorse for digital photography and video.
+- Canon PowerShot G9 — A vintage digital compact with soul, used for BTS and "digicam" look.
+
+[SECTION: OPTICS & LIGHTING]
+- Canon EF 24-105mm f/4 USM L — Versatile professional "L" series glass.
+- Canon EF 50mm f/1.8 STM — The essential "nifty fifty" for portraits.
+- Canon Speedlite EX580 — Primary flash for controlled lighting.
+- Kingston SDXC 128GB Canvas Select Plus — Reliable storage for digital workflows.
+
+[SECTION: THE MEDIUM (FILMS)]
+- B&W: Fomapan 100/400 (Traditional Czech emulsions, great for history/genealogy feel).
+- Color: Kodak Color Plus 200 (Warm, nostalgic tones).
+
+[SECTION: THE DARKROOM (LAB)]
+- Developer: Adox Rodinal (Legendary sharp, high-contrast B&W developer).
+- Fixer: Fomafix (Classic rapid fixer).
+- Method: Self-developed B&W, lab-processed Color.
+- Scanning: DSLR Scanning (High-resolution digitization using the EOS 80D).
+
+[PRINTING (ENLARGING)]
+- Enlarger: Meopta Opemus 5a (Heritage Czech enlarger for 35mm and 6x6 negatives).
+- Paper: Fomapan Variant (Multigrade B&W papers).
+- Paper Developer: Fomatol LQN.
+
+[SECTION: DIGITAL DARKROOM (POST-PROCESSING)]
+- Purpose: Machine used for high-res 4K negative scanning, archival processing, and UI development.
+- CPU: AMD Ryzen 7 7700X
+- GPU: Nvidia GeForce RTX 2060 6GB
+- RAM: 64GB DDR5 (Critical for large archival scan batches).
+- Storage: WD_BLACK SN7100 NVMe SSD (High-speed scratch disk for photography).
+
+
+/*
+Canon EOS 80D (W)*
+Canon EOS 650*
+Pentacon Six TL*
+Minolta Riva Zoom 70W*
+Canon PowerShot G9
+Canon EF 24-105mm f/4 USM L
+Canon EF 50mm f/1.8 STM
+Canon Speedlite EX580
+Kingston SDXC 128GB Canvas Select Plus
+
+Films: Fomapan 100/400, Kodak Plus 200
+Film Developer: Adox Rodinal, in lab for color
+Fixer: Fomafix
+DSLR Snanning
+Enlarger: Meopta Opemus 5a
+Fomapan Variant papers
+Paper developer: Fomatol LQN
+*/

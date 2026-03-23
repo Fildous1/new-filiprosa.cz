@@ -22,9 +22,18 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
   const [isDragging, setIsDragging] = useState(false)
   const dragStart = useRef({ x: 0, y: 0, panX: 0, panY: 0 })
   const containerRef = useRef<HTMLDivElement>(null)
+  const imgRef = useRef<HTMLImageElement>(null)
   const lastTouchDist = useRef<number | null>(null)
 
   const isZoomed = zoom > 1
+
+  // Check if a point is inside the visible (zoomed) image area
+  const isInsideImage = useCallback((clientX: number, clientY: number): boolean => {
+    if (!imgRef.current) return false
+    const rect = imgRef.current.getBoundingClientRect()
+    // When zoomed, getBoundingClientRect reflects the transform, so it's the visual bounds
+    return clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom
+  }, [])
 
   const resetZoom = useCallback(() => {
     setZoom(1)
@@ -68,7 +77,7 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
     })
   }, [])
 
-  // Double-click to toggle zoom
+  // Double-click to toggle zoom (when not at 100%)
   const handleDoubleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
     if (isZoomed) {
@@ -83,6 +92,22 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
       }
     }
   }, [isZoomed, resetZoom])
+
+  // Single click on image: zoom in when at 100%, otherwise handled by container
+  const handleImageClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!isZoomed) {
+      // Single click at 100% → zoom to 3x centered on click point
+      setZoom(3)
+      const rect = containerRef.current?.getBoundingClientRect()
+      if (rect) {
+        const cx = rect.width / 2
+        const cy = rect.height / 2
+        setPan({ x: (cx - e.clientX) * 0.5, y: (cy - e.clientY) * 0.5 })
+      }
+    }
+    // When zoomed, single click does nothing (drag handles pan)
+  }, [isZoomed])
 
   // Mouse drag for panning
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -172,14 +197,14 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="fixed inset-0 z-[10000] flex items-center justify-center"
-          onClick={isZoomed ? undefined : handleClose}
+          className="fixed inset-0 z-[10000] flex items-center justify-center cursor-default"
+          onClick={handleClose}
         >
           {/* Backdrop */}
           <div className="absolute inset-0 bg-dark/95 backdrop-blur-[8px]" />
 
           {/* Top bar */}
-          <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-5 py-4">
+          <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-5 py-4" style={{ background: 'linear-gradient(to bottom, rgba(19,16,16,0.7) 0%, rgba(19,16,16,0.3) 60%, transparent 100%)' }}>
             {/* Left: counter + zoom % */}
             <div className="font-body text-[0.75rem] text-offwhite/40 tracking-[0.1em]">
               {currentIndex + 1} / {images.length}
@@ -190,16 +215,6 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
 
             {/* Right: zoom controls + close, all aligned */}
             <div className="flex items-center gap-0.5">
-              <button onClick={zoomOut} className={btnClass} aria-label="Zoom out" title="Zoom out (−)">
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM13.5 10.5h-6" />
-                </svg>
-              </button>
-              <button onClick={zoomIn} className={btnClass} aria-label="Zoom in" title="Zoom in (+)">
-                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" />
-                </svg>
-              </button>
               {isZoomed && (
                 <button
                   onClick={(e) => { e.stopPropagation(); resetZoom() }}
@@ -210,6 +225,16 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
                   Reset
                 </button>
               )}
+              <button onClick={zoomOut} className={btnClass} aria-label="Zoom out" title="Zoom out (−)">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM13.5 10.5h-6" />
+                </svg>
+              </button>
+              <button onClick={zoomIn} className={btnClass} aria-label="Zoom in" title="Zoom in (+)">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" />
+                </svg>
+              </button>
               <div className="w-px h-5 bg-white/[0.08] mx-1" />
               <button
                 onClick={(e) => { e.stopPropagation(); handleClose() }}
@@ -252,37 +277,50 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
           {/* Image container — zoom & pan applied directly via style, no framer-motion on image */}
           <div
             ref={containerRef}
-            className="relative z-1 flex items-center justify-center"
+            className="relative z-1 flex items-center justify-center select-none"
             style={{
               width: '90vw',
               height: '85vh',
               cursor: isZoomed ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
             }}
             onWheel={handleWheel}
-            onDoubleClick={handleDoubleClick}
-            onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
+            onMouseDown={(e) => {
+              // Only start drag/interact if click is on the image
+              if (isInsideImage(e.clientX, e.clientY)) {
+                handleMouseDown(e)
+              }
+            }}
+            onDoubleClick={(e) => {
+              if (isInsideImage(e.clientX, e.clientY)) {
+                handleDoubleClick(e)
+              }
+            }}
+            onClick={(e) => {
+              if (isInsideImage(e.clientX, e.clientY)) {
+                handleImageClick(e)
+              }
+              // If not on image, let it bubble to backdrop → close
+            }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-center w-full h-full select-none">
-              <img
-                key={images[currentIndex]}
-                src={images[currentIndex]}
-                alt=""
-                className="max-h-[85vh] max-w-[90vw] object-contain pointer-events-none"
-                style={{
-                  transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`,
-                  transformOrigin: 'center center',
-                  willChange: zoom > 1 ? 'transform' : 'auto',
-                }}
-                draggable={false}
-              />
-            </div>
+            <img
+              ref={imgRef}
+              key={images[currentIndex]}
+              src={images[currentIndex]}
+              alt=""
+              className="max-h-[85vh] max-w-[90vw] object-contain pointer-events-none"
+              style={{
+                transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`,
+                transformOrigin: 'center center',
+                willChange: zoom > 1 ? 'transform' : 'auto',
+              }}
+              draggable={false}
+            />
           </div>
         </motion.div>
       )}

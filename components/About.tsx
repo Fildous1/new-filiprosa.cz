@@ -71,7 +71,7 @@ export default function About() {
             >
               <span className="section-num">{t('about.num')}</span>
               <h2
-                className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mt-6 mb-6"
+                className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mt-8 mb-6"
                 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
               >
                 {t('about.heading')}

@@ -11,7 +11,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <ToastProvider>
-      <AdminAuth>{children}</AdminAuth>
+      <AdminAuth>
+        {/* Subtle red glow border to distinguish admin from public pages */}
+        <div className="fixed inset-0 pointer-events-none z-[9998]" style={{
+          boxShadow: 'inset 0 0 80px rgba(180,40,40,0.12), inset 0 0 20px rgba(180,40,40,0.06)',
+        }} />
+        {children}
+      </AdminAuth>
     </ToastProvider>
   )
 }

@@ -10,6 +10,8 @@ interface FeaturedItem {
   thumbSrc: string  // thumbnail
   alt: string
   albumTitle: string
+  albumSlug: string
+  filename: string
 }
 
 export default function FeaturedPhotos() {
@@ -33,9 +35,16 @@ export default function FeaturedPhotos() {
                 thumbSrc: galleryThumbUrl(album.slug, img.filename, v),
                 alt: img.caption[locale as 'cs' | 'en'] || img.filename,
                 albumTitle: album.title[locale as 'cs' | 'en'],
+                albumSlug: album.slug,
+                filename: img.filename,
               })
             }
           }
+        }
+        // Shuffle for random order each visit
+        for (let i = featured.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [featured[i], featured[j]] = [featured[j], featured[i]]
         }
         setItems(featured)
         setLoaded(true)
@@ -44,6 +53,10 @@ export default function FeaturedPhotos() {
         setLoaded(true)
       })
   }, [locale])
+
+  const openInGallery = (item: FeaturedItem) => {
+    window.location.href = `/galerie?photo=${encodeURIComponent(item.albumSlug + '/' + item.filename)}`
+  }
 
   if (loaded && items.length === 0) return null
 
@@ -89,7 +102,7 @@ export default function FeaturedPhotos() {
         ) : (
           <div className="columns-2 sm:columns-3 lg:columns-4 gap-3">
             {items.map((item, i) => (
-              <FeaturedItem key={item.src} item={item} index={i} hasError={!!imgErrors[item.src]} onError={() => setImgErrors(p => ({ ...p, [item.src]: true }))} />
+              <FeaturedItem key={item.src} item={item} index={i} hasError={!!imgErrors[item.src]} onError={() => setImgErrors(p => ({ ...p, [item.src]: true }))} onClick={() => openInGallery(item)} />
             ))}
           </div>
         )}
@@ -117,7 +130,7 @@ export default function FeaturedPhotos() {
   )
 }
 
-function FeaturedItem({ item, index, hasError, onError }: { item: FeaturedItem; index: number; hasError: boolean; onError: () => void; }) {
+function FeaturedItem({ item, index, hasError, onError, onClick }: { item: FeaturedItem; index: number; hasError: boolean; onError: () => void; onClick: () => void }) {
   const [thumbFailed, setThumbFailed] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '0px 0px -40px 0px' })
@@ -130,9 +143,9 @@ function FeaturedItem({ item, index, hasError, onError }: { item: FeaturedItem; 
       transition={{ duration: 0.9, delay: 0.08 * (index + 1), ease: [0.16, 1, 0.3, 1] }}
       className="break-inside-avoid mb-3"
     >
-      <a
-        href="/galerie"
-        className="relative block overflow-hidden rounded-[2px] border border-white/[0.05] bg-charcoal group"
+      <button
+        onClick={onClick}
+        className="relative block w-full overflow-hidden rounded-[2px] border border-white/[0.05] bg-charcoal group cursor-pointer"
       >
         {hasError ? (
           <div className="aspect-[4/3] flex items-center justify-center bg-charcoal">
@@ -168,7 +181,7 @@ function FeaturedItem({ item, index, hasError, onError }: { item: FeaturedItem; 
         <span className="absolute bottom-3 left-3 z-2 font-body text-[0.7rem] font-medium tracking-[0.1em] uppercase text-offwhite/60 bg-[rgba(19,16,16,0.5)] backdrop-blur-[8px] px-2 py-1 rounded-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           {item.albumTitle}
         </span>
-      </a>
+      </button>
     </motion.div>
   )
 }

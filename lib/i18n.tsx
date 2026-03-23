@@ -62,7 +62,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'hero.title.line1': 'Ruční práce',
     'hero.title.line2': 'v\u00A0každé fotografii',
     'hero.description': 'Portrétové focení, produktová fotografie, vyvolávání filmů a\u00A0darkroom tisky. Každý snímek vypráví příběh.',
-    'hero.cta.services': 'Prohlédnout služby',
+    'hero.cta.services': 'Prohlédnout fotky',
     'hero.cta.contact': 'Kontaktujte mě',
     'hero.scroll': 'Scroll',
 
@@ -99,7 +99,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'projects.magazine.desc': 'Vlastní časopis s\u00A0úvahami, články, básničkami a\u00A0křížovkami. PDF verze ke stažení a\u00A0prohlížení online.',
     'projects.magazine.cta': 'Číst časopis',
     'projects.meetup.title': 'Meetup',
-    'projects.meetup.desc': 'Platforma pro organizaci fotografických setkání, workshopů a\u00A0společného focení.',
+    'projects.meetup.desc': 'Platforma pro hledání ideálního termínu pro všechny účastníky eventu',
     'projects.meetup.cta': 'Zobrazit meetup',
     'projects.gear.title': 'Vybavení',
 
@@ -182,7 +182,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'hero.title.line1': 'Handcraft',
     'hero.title.line2': 'in\u00A0every photograph',
     'hero.description': 'Portrait photography, product shoots, film development and\u00A0darkroom prints. Every frame tells a story.',
-    'hero.cta.services': 'View services',
+    'hero.cta.services': 'View photos',
     'hero.cta.contact': 'Contact me',
     'hero.scroll': 'Scroll',
 

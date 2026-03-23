@@ -11,6 +11,7 @@ export default function Navigation() {
   const [aboutOpen, setAboutOpen] = useState(false)
   const projectsRef = useRef<HTMLDivElement>(null)
   const aboutRef = useRef<HTMLDivElement>(null)
+  const mobileMenuRef = useRef<HTMLDivElement>(null)
   const projectsTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const aboutTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { locale, setLocale, t } = useI18n()
@@ -25,6 +26,7 @@ export default function Navigation() {
   const projectLinks = [
     { label: t('projects.museum.title'), href: '/muzeum' },
     { label: t('projects.magazine.title'), href: '/rosnik' },
+    { label: t('projects.meetup.title'), href: 'https://meetup.filiprosa.cz', external: true },
   ]
 
   const aboutLinks = [
@@ -50,9 +52,11 @@ export default function Navigation() {
     }
   }
 
-  // Close dropdowns on outside click
+  // Close dropdowns on outside click (desktop only)
   useEffect(() => {
     function handleClick(e: MouseEvent) {
+      // Don't close if click is inside the mobile menu
+      if (mobileMenuRef.current?.contains(e.target as Node)) return
       if (projectsRef.current && !projectsRef.current.contains(e.target as Node)) {
         setProjectsOpen(false)
       }
@@ -120,6 +124,7 @@ export default function Navigation() {
                 <a
                   key={link.href}
                   href={link.href}
+                  {...('external' in link && link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   className="block px-4 py-2.5 text-[0.8rem] text-offwhite/50 hover:text-lime hover:bg-white/[0.03] transition-colors duration-200"
                   onClick={() => {
                     setProjectsOpen(false)
@@ -207,6 +212,7 @@ export default function Navigation() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            ref={mobileMenuRef}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -226,15 +232,16 @@ export default function Navigation() {
                         {label}
                       </a>
                       <button
-                        className="text-offwhite/50 hover:text-lime transition-colors duration-300 p-1"
-                        onClick={() => {
+                        className="text-offwhite/50 hover:text-lime transition-colors duration-300 p-2 -m-1"
+                        onClick={(e) => {
+                          e.stopPropagation()
                           if (dropdown === 'projects') setProjectsOpen(p => !p)
                           else setAboutOpen(p => !p)
                         }}
                       >
                         <svg
-                          width="10"
-                          height="10"
+                          width="12"
+                          height="12"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -261,6 +268,7 @@ export default function Navigation() {
                               <a
                                 key={link.href}
                                 href={link.href}
+                                {...('external' in link && link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                                 className="text-[0.85rem] text-offwhite/40 hover:text-lime transition-colors duration-300"
                                 onClick={() => setMobileOpen(false)}
                               >

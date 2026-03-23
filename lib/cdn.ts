@@ -23,7 +23,17 @@
  * Upload the contents of /public/cdn-upload/ to the CDN root.
  */
 
-export const CDN_URL = 'https://cdn.filiprosa.cz/'
+const DEFAULT_CDN_URL = 'https://cdn.filiprosa.cz/'
+
+function getCdnUrl(): string {
+  if (typeof window !== 'undefined') {
+    const custom = localStorage.getItem('__fr_cdn_url')
+    if (custom) return custom.endsWith('/') ? custom : custom + '/'
+  }
+  return DEFAULT_CDN_URL
+}
+
+export const CDN_URL = typeof window !== 'undefined' ? getCdnUrl() : DEFAULT_CDN_URL
 
 /**
  * Resolves an asset path: tries local brand_assets first, then CDN, then placeholder.

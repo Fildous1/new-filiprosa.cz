@@ -3,7 +3,12 @@
 import { useState, useEffect, type ReactNode } from 'react'
 
 const ADMIN_KEY = '__fr_admin_auth'
-const ADMIN_PASS = 'darkroom2026'
+const ADMIN_PASS_KEY = '__fr_admin_pass'
+const DEFAULT_PASS = 'darkroom2026'
+
+function getAdminPass(): string {
+  return localStorage.getItem(ADMIN_PASS_KEY) || DEFAULT_PASS
+}
 
 export default function AdminAuth({ children }: { children: ReactNode }) {
   const [authed, setAuthed] = useState(false)
@@ -13,14 +18,14 @@ export default function AdminAuth({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = sessionStorage.getItem(ADMIN_KEY)
-    if (stored === ADMIN_PASS) {
+    if (stored && stored === getAdminPass()) {
       setAuthed(true)
     }
     setChecking(false)
 
     // Console activation: window.__adminUnlock('password')
     ;(window as unknown as Record<string, unknown>).__adminUnlock = (pass: string) => {
-      if (pass === ADMIN_PASS) {
+      if (pass === getAdminPass()) {
         sessionStorage.setItem(ADMIN_KEY, pass)
         setAuthed(true)
         return 'Admin unlocked.'
@@ -31,7 +36,7 @@ export default function AdminAuth({ children }: { children: ReactNode }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (input === ADMIN_PASS) {
+    if (input === getAdminPass()) {
       sessionStorage.setItem(ADMIN_KEY, input)
       setAuthed(true)
       setError(false)

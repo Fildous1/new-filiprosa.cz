@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
 
@@ -18,16 +17,7 @@ const fadeUp = {
 }
 
 export default function Hero() {
-  const [scrolled, setScrolled] = useState(false)
   const { t } = useI18n()
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 80)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   return (
     <header className="relative min-h-dvh flex flex-col overflow-hidden pt-16">
@@ -66,12 +56,12 @@ export default function Hero() {
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              className="font-display font-bold text-offwhite leading-[1.08] tracking-[-0.03em] mb-6"
+              className="text-offwhite leading-[1.08] tracking-[-0.03em] mb-6"
               style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.5rem)' }}
             >
-              <em className="italic">{t('hero.title.line1')}</em>
+              <em className="font-display font-bold italic">{t('hero.title.line1')}</em>
               <br />
-              {t('hero.title.line2')}
+              <span className="font-body font-bold">{t('hero.title.line2')}</span>
             </motion.h1>
 
             <motion.p
@@ -105,23 +95,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        custom={3}
-        variants={fadeUp}
-        initial="hidden"
-        animate="visible"
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 transition-opacity duration-500"
-        style={{ opacity: scrolled ? 0 : 1, pointerEvents: scrolled ? 'none' : 'auto' }}
-      >
-        <span className="font-body text-[0.65rem] tracking-[0.2em] uppercase text-muted/45">
-          {t('hero.scroll')}
-        </span>
-        <div
-          className="scroll-line w-px h-10"
-          style={{ background: 'linear-gradient(to bottom, rgba(181,202,44,0.3), transparent)' }}
-        />
-      </motion.div>
     </header>
   )
 }

@@ -87,13 +87,8 @@ export default function Navigation() {
         <a
           href={href}
           className="relative text-[0.82rem] font-medium tracking-[0.03em] text-offwhite/50 hover:text-offwhite transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-4 group inline-flex items-center gap-1"
-          onClick={(e) => {
-            if (which === 'about') {
-              // About link navigates directly; dropdown shows on hover
-              return
-            }
-            e.preventDefault()
-            setProjectsOpen(p => !p)
+          onClick={() => {
+            // Both links navigate directly; dropdown shows on hover
           }}
         >
           {label}
@@ -146,7 +141,7 @@ export default function Navigation() {
       <div className="max-w-[1200px] mx-auto px-6 lg:px-10 flex items-center justify-between h-16 md:h-[4.5rem]">
         {/* Logo */}
         <a href="/" aria-label="Filip Rosa">
-          <Logo className="h-9 w-auto" />
+          <Logo className="text-[1.6rem]" />
         </a>
 
         {/* Desktop Links */}
@@ -213,11 +208,11 @@ export default function Navigation() {
         {mobileOpen && (
           <motion.div
             ref={mobileMenuRef}
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden overflow-hidden bg-[rgba(19,16,16,0.95)] border-t border-white/[0.04]"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="md:hidden bg-[rgba(19,16,16,0.95)] border-t border-white/[0.04]"
           >
             <div className="p-6 flex flex-col gap-5">
               {links.map(({ label, href, dropdown }) =>

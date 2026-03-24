@@ -99,7 +99,7 @@ export default function RosnikPage() {
             {/* Logo only — no heading text */}
             <div className="mb-6">
               <img
-                src={rosnikAssetUrl('logo.png')}
+                src="/images/rosnik.png"
                 alt="Nerovn\u00fd Rosn\u00edk"
                 className="h-20 sm:h-24 w-auto"
                 style={{ filter: 'drop-shadow(0 0 20px rgba(185,208,38,0.1))' }}

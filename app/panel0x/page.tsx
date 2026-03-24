@@ -68,8 +68,9 @@ export default function AdminDashboard() {
     } else {
       localStorage.removeItem('__fr_cdn_url')
     }
-    // Save password
+    // Save password (persist to localStorage for future logins, update session token)
     if (newPass && newPass === confirmPass) {
+      localStorage.setItem('__fr_admin_pass', newPass)
       sessionStorage.setItem(ADMIN_KEY, newPass)
     }
     setConfigSaved(true)
@@ -161,9 +162,19 @@ export default function AdminDashboard() {
 
         {/* Config modal */}
         {configOpen && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-dark/80 backdrop-blur-sm" onClick={() => setConfigOpen(false)}>
-            <div className="bg-charcoal border border-white/[0.08] rounded-[3px] p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
-              <h3 className="text-[0.9rem] font-medium text-offwhite mb-5">Settings</h3>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-dark/80 backdrop-blur-sm">
+            <div className="flex flex-col items-end gap-2 w-full max-w-md">
+              <button
+                onClick={() => setConfigOpen(false)}
+                className="w-8 h-8 flex items-center justify-center text-muted hover:text-offwhite transition-colors duration-200"
+                aria-label="Close"
+              >
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <div className="bg-charcoal border border-white/[0.08] rounded-[3px] p-6 w-full">
+                <h3 className="text-[0.9rem] font-medium text-offwhite mb-5">Settings</h3>
 
               <div className="space-y-4">
                 {/* CDN URL */}
@@ -236,6 +247,7 @@ export default function AdminDashboard() {
                 >
                   Cancel
                 </button>
+              </div>
               </div>
             </div>
           </div>

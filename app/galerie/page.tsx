@@ -76,9 +76,10 @@ export default function GaleriePage() {
   }, [])
 
   const albumsWithImages = albums.filter(a => a.images.length > 0)
+  const visibleAlbums = albumsWithImages.filter(a => !a.hidden)
   const displayAlbums = activeAlbum
     ? albumsWithImages.filter(a => a.slug === activeAlbum)
-    : albumsWithImages
+    : visibleAlbums
 
   const displayImages: DisplayImage[] = useShuffle(
     displayAlbums.flatMap(a =>
@@ -200,7 +201,7 @@ export default function GaleriePage() {
                 >
                   {t('gallery.all')}
                 </button>
-                {albumsWithImages.map(album => (
+                {visibleAlbums.map(album => (
                   <button
                     key={album.slug}
                     onClick={() => handleAlbumChange(album.slug)}

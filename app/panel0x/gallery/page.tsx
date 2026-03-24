@@ -29,10 +29,10 @@ export default function GalleryAdmin() {
 
   // Add album form
   const [showAddAlbum, setShowAddAlbum] = useState(false)
-  const [newAlbum, setNewAlbum] = useState({ slug: '', titleCs: '', titleEn: '', descCs: '', descEn: '' })
+  const [newAlbum, setNewAlbum] = useState({ slug: '', titleCs: '', titleEn: '', descCs: '', descEn: '', hidden: false })
 
   // Edit album
-  const [editingAlbum, setEditingAlbum] = useState<{ slug: string; titleCs: string; titleEn: string; descCs: string; descEn: string } | null>(null)
+  const [editingAlbum, setEditingAlbum] = useState<{ slug: string; titleCs: string; titleEn: string; descCs: string; descEn: string; hidden: boolean } | null>(null)
 
   // Edit image
   const [editingImage, setEditingImage] = useState<EditingImage | null>(null)
@@ -85,13 +85,14 @@ export default function GalleryAdmin() {
       slug: newAlbum.slug.toLowerCase().replace(/[^a-z0-9-]/g, ''),
       title: { cs: newAlbum.titleCs, en: newAlbum.titleEn || newAlbum.titleCs },
       description: { cs: newAlbum.descCs, en: newAlbum.descEn || newAlbum.descCs },
+      hidden: newAlbum.hidden,
       images: [],
     }
     const updated = { albums: [...manifest.albums, album] }
     await handleSave(updated)
     setActiveSlug(album.slug)
     setShowAddAlbum(false)
-    setNewAlbum({ slug: '', titleCs: '', titleEn: '', descCs: '', descEn: '' })
+    setNewAlbum({ slug: '', titleCs: '', titleEn: '', descCs: '', descEn: '', hidden: false })
   }
 
   function startEditAlbum(album: GalleryAlbum) {
@@ -101,6 +102,7 @@ export default function GalleryAdmin() {
       titleEn: album.title.en,
       descCs: album.description.cs,
       descEn: album.description.en,
+      hidden: album.hidden ?? false,
     })
   }
 
@@ -113,6 +115,7 @@ export default function GalleryAdmin() {
               ...a,
               title: { cs: editingAlbum.titleCs, en: editingAlbum.titleEn },
               description: { cs: editingAlbum.descCs, en: editingAlbum.descEn },
+              hidden: editingAlbum.hidden,
             }
           : a
       ),
@@ -386,6 +389,20 @@ export default function GalleryAdmin() {
                 className="px-3 py-2 bg-dark border border-white/[0.08] rounded-[2px] text-[0.8rem] text-offwhite placeholder:text-muted/30 focus:outline-none focus:border-lime/40"
               />
             </div>
+            <label className="flex items-center gap-2.5 cursor-pointer select-none mt-2">
+              <button
+                type="button"
+                onClick={() => setNewAlbum(p => ({ ...p, hidden: !p.hidden }))}
+                className={`w-9 h-5 rounded-full border transition-colors duration-200 relative ${
+                  newAlbum.hidden ? 'bg-lime/20 border-lime/40' : 'bg-dark border-white/[0.1]'
+                }`}
+              >
+                <span className={`absolute top-0.5 left-0.5 w-3.5 h-3.5 rounded-full transition-transform duration-200 ${
+                  newAlbum.hidden ? 'translate-x-4 bg-lime' : 'translate-x-0 bg-muted/40'
+                }`} />
+              </button>
+              <span className="text-[0.75rem] text-muted">Hidden (URL-only access)</span>
+            </label>
             <div className="flex gap-2 mt-4">
               <button
                 onClick={handleAddAlbum}
@@ -406,6 +423,17 @@ export default function GalleryAdmin() {
 
         {/* Album tabs */}
         <div className="flex flex-wrap gap-2 mb-6">
+          <button
+            onClick={() => { setActiveSlug('__all__'); setSelected(new Set()) }}
+            className={`px-4 py-1.5 text-[0.78rem] rounded-[2px] border transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 active:scale-[0.97] ${
+              activeSlug === '__all__'
+                ? 'bg-lime/10 text-lime border-lime/30'
+                : 'bg-charcoal text-muted border-white/[0.07] hover:border-white/20 hover:text-offwhite'
+            }`}
+          >
+            All
+            <span className="ml-1.5 text-[0.68rem] opacity-50">({totalImages})</span>
+          </button>
           {manifest?.albums.map(album => (
             <button
               key={album.slug}
@@ -416,14 +444,52 @@ export default function GalleryAdmin() {
                   : 'bg-charcoal text-muted border-white/[0.07] hover:border-white/20 hover:text-offwhite'
               }`}
             >
+              {album.hidden && <span className="mr-1 text-[0.68rem] opacity-40" title="Hidden album">🔒</span>}
               {album.title.en}
               <span className="ml-1.5 text-[0.68rem] opacity-50">({album.images.length})</span>
             </button>
           ))}
         </div>
 
+        {/* All images view */}
+        {activeSlug === '__all__' && manifest && (
+          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+            {manifest.albums.filter(a => !a.hidden).flatMap(album =>
+              album.images.map((img, i) => (
+                <div
+                  key={`${album.slug}/${img.filename}`}
+                  className="group relative aspect-square bg-charcoal border border-white/[0.05] rounded-[2px] overflow-hidden cursor-pointer"
+                  onClick={() => { setActiveSlug(album.slug); setSelected(new Set()); setEditingImage({ ...img, _albumSlug: album.slug, _index: i }) }}
+                >
+                  <img
+                    src={galleryImageUrl(album.slug, img.filename, cacheKey)}
+                    alt={img.filename}
+                    className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-200"
+                    loading="lazy"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 flex items-center gap-0.5 p-1">
+                    {img.featured && (
+                      <div className="w-4 h-4 bg-lime/80 rounded-full flex items-center justify-center" title="Featured">
+                        <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor" className="text-dark">
+                          <path d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                        </svg>
+                      </div>
+                    )}
+                    {img.analog && (
+                      <span className="px-1 py-0.5 text-[0.5rem] font-semibold bg-lime/10 text-lime/70 rounded-[2px]" title="Analog">A</span>
+                    )}
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                    <p className="w-full px-1 py-0.5 text-[0.55rem] text-white/80 bg-black/70 font-mono truncate">{album.title.en} / {img.filename}</p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
         {/* Active album info */}
-        {activeAlbum && (
+        {activeAlbum && activeSlug !== '__all__' && (
           <div className="mb-6 px-5 py-3.5 bg-charcoal border border-white/[0.05] rounded-[3px] flex items-center justify-between">
             <div>
               <p className="text-[0.78rem] text-offwhite font-medium">{activeAlbum.title.en} <span className="text-muted font-normal">/ {activeAlbum.title.cs}</span></p>
@@ -467,7 +533,7 @@ export default function GalleryAdmin() {
         )}
 
         {/* Selection toolbar */}
-        {activeAlbum && activeAlbum.images.length > 0 && (
+        {activeAlbum && activeSlug !== '__all__' && activeAlbum.images.length > 0 && (
           <div className="mb-3 flex items-center gap-3">
             <button
               onClick={selectAll}
@@ -511,7 +577,7 @@ export default function GalleryAdmin() {
         )}
 
         {/* Image grid */}
-        {activeAlbum && activeAlbum.images.length > 0 ? (
+        {activeAlbum && activeSlug !== '__all__' && activeAlbum.images.length > 0 ? (
           <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
             {activeAlbum.images.map((img, i) => {
               const isSelected = selected.has(i)
@@ -579,7 +645,7 @@ export default function GalleryAdmin() {
               )
             })}
           </div>
-        ) : activeAlbum ? (
+        ) : activeAlbum && activeSlug !== '__all__' ? (
           <div className="px-5 py-8 bg-charcoal border border-white/[0.05] rounded-[3px] text-center">
             <p className="text-[0.8rem] text-muted">No images in this album.</p>
             <button
@@ -593,9 +659,19 @@ export default function GalleryAdmin() {
 
         {/* Edit image modal */}
         {editingImage && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-dark/80 backdrop-blur-sm" onClick={() => setEditingImage(null)}>
-            <div className="bg-charcoal border border-white/[0.08] rounded-[3px] p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
-              <h3 className="text-[0.9rem] font-medium text-offwhite mb-4">Edit Photo</h3>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-dark/80 backdrop-blur-sm">
+            <div className="flex flex-col items-end gap-2 w-full max-w-md">
+              <button
+                onClick={() => setEditingImage(null)}
+                className="w-8 h-8 flex items-center justify-center text-muted hover:text-offwhite transition-colors duration-200"
+                aria-label="Close"
+              >
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <div className="bg-charcoal border border-white/[0.08] rounded-[3px] p-6 w-full">
+                <h3 className="text-[0.9rem] font-medium text-offwhite mb-4">Edit Photo</h3>
               <p className="text-[0.72rem] text-muted/60 font-mono mb-4">{editingImage.filename}</p>
 
               <div className="space-y-3">
@@ -660,15 +736,26 @@ export default function GalleryAdmin() {
                   Cancel
                 </button>
               </div>
+              </div>
             </div>
           </div>
         )}
 
         {/* Edit album modal */}
         {editingAlbum && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-dark/80 backdrop-blur-sm" onClick={() => setEditingAlbum(null)}>
-            <div className="bg-charcoal border border-white/[0.08] rounded-[3px] p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
-              <h3 className="text-[0.9rem] font-medium text-offwhite mb-4">Edit Album</h3>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-dark/80 backdrop-blur-sm">
+            <div className="flex flex-col items-end gap-2 w-full max-w-md">
+              <button
+                onClick={() => setEditingAlbum(null)}
+                className="w-8 h-8 flex items-center justify-center text-muted hover:text-offwhite transition-colors duration-200"
+                aria-label="Close"
+              >
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <div className="bg-charcoal border border-white/[0.08] rounded-[3px] p-6 w-full">
+                <h3 className="text-[0.9rem] font-medium text-offwhite mb-4">Edit Album</h3>
               <p className="text-[0.72rem] text-muted/60 font-mono mb-4">{editingAlbum.slug}</p>
 
               <div className="space-y-3">
@@ -706,6 +793,20 @@ export default function GalleryAdmin() {
                     className="w-full px-3 py-2 bg-dark border border-white/[0.08] rounded-[2px] text-[0.8rem] text-offwhite placeholder:text-muted/30 focus:outline-none focus:border-lime/40 resize-y"
                   />
                 </div>
+                <label className="flex items-center gap-2.5 cursor-pointer select-none pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setEditingAlbum(p => p ? { ...p, hidden: !p.hidden } : null)}
+                    className={`w-9 h-5 rounded-full border transition-colors duration-200 relative ${
+                      editingAlbum.hidden ? 'bg-lime/20 border-lime/40' : 'bg-dark border-white/[0.1]'
+                    }`}
+                  >
+                    <span className={`absolute top-0.5 left-0.5 w-3.5 h-3.5 rounded-full transition-transform duration-200 ${
+                      editingAlbum.hidden ? 'translate-x-4 bg-lime' : 'translate-x-0 bg-muted/40'
+                    }`} />
+                  </button>
+                  <span className="text-[0.75rem] text-muted">Hidden (URL-only access)</span>
+                </label>
               </div>
 
               <div className="flex gap-2 mt-5">
@@ -722,6 +823,7 @@ export default function GalleryAdmin() {
                 >
                   Cancel
                 </button>
+              </div>
               </div>
             </div>
           </div>

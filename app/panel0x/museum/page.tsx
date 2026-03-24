@@ -262,8 +262,18 @@ export default function MuseumAdmin() {
 
         {/* Camera Form Modal */}
         {editing && (
-          <div className="fixed inset-0 z-[9999] flex items-start justify-center pt-12 pb-12 overflow-y-auto bg-dark/80 backdrop-blur-sm" onClick={() => { setEditing(null); setIsNew(false) }}>
-            <div className="bg-charcoal border border-white/[0.08] rounded-[3px] p-6 w-full max-w-2xl my-auto" onClick={e => e.stopPropagation()}>
+          <div className="fixed inset-0 z-[9999] flex items-start justify-center pt-12 pb-12 overflow-y-auto bg-dark/80 backdrop-blur-sm">
+            <div className="flex flex-col items-end gap-2 w-full max-w-2xl my-auto">
+              <button
+                onClick={() => { setEditing(null); setIsNew(false) }}
+                className="w-8 h-8 flex items-center justify-center text-muted hover:text-offwhite transition-colors duration-200 flex-shrink-0"
+                aria-label="Close"
+              >
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <div className="bg-charcoal border border-white/[0.08] rounded-[3px] p-6 w-full">
               <h3 className="text-[0.95rem] font-display font-medium text-offwhite mb-5">
                 {isNew ? 'Add Camera' : `Edit: ${editing.brand} ${editing.model}`}
               </h3>
@@ -373,6 +383,7 @@ export default function MuseumAdmin() {
                 >
                   Cancel
                 </button>
+              </div>
               </div>
             </div>
           </div>

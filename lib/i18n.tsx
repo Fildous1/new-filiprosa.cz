@@ -219,7 +219,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'projects.magazine.desc': 'My own magazine with essays, articles, poems and crosswords. PDF versions to download and browse online.',
     'projects.magazine.cta': 'Read magazine',
     'projects.meetup.title': 'Meetup',
-    'projects.meetup.desc': 'A platform for organizing photography meetups, workshops and group shoots.',
+    'projects.meetup.desc': 'A platform for finding the ideal time for all event participants.',
     'projects.meetup.cta': 'View meetup',
     'projects.gear.title': 'Gear',
 
@@ -265,8 +265,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'gear.digital': 'Digital Bodies',
     'gear.optics': 'Optics & Accessories',
     'gear.film': 'Films',
-    'gear.darkroom': 'Darkroom',
-    'gear.printing': 'Printing',
+    'gear.darkroom': 'Film Development',
+    'gear.printing': 'Enlarging',
     'gear.digitalDarkroom': 'Digital Darkroom',
     'gear.back': 'Back',
 

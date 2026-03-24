@@ -35,6 +35,7 @@ export interface GalleryAlbum {
   slug: string
   title: { cs: string; en: string }
   description: { cs: string; en: string }
+  hidden?: boolean
   images: GalleryImage[]
 }
 

@@ -14,11 +14,15 @@ import {
   type GalleryImage,
 } from '@/lib/cdn-api'
 import { useToast } from '@/components/admin/Toast'
+import { hasPermission } from '@/lib/auth'
 
 type EditingImage = GalleryImage & { _albumSlug: string; _index: number }
 
 
 export default function GalleryAdmin() {
+  const canUpload = hasPermission('gallery', 'upload')
+  const canDelete = hasPermission('gallery', 'delete')
+  const canEdit = hasPermission('gallery', 'edit')
   const [manifest, setManifest] = useState<GalleryManifest | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)

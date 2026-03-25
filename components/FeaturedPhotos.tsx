@@ -1,9 +1,10 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
 import { fetchGallery, galleryImageUrl, galleryThumbUrl, type GalleryAlbum, type GalleryImage } from '@/lib/cdn-api'
+import Lightbox from '@/components/Lightbox'
 
 interface FeaturedItem {
   src: string       // full-size
@@ -21,6 +22,8 @@ export default function FeaturedPhotos() {
   const [items, setItems] = useState<FeaturedItem[]>([])
   const [loaded, setLoaded] = useState(false)
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({})
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
 
   useEffect(() => {
     fetchGallery()
@@ -54,9 +57,16 @@ export default function FeaturedPhotos() {
       })
   }, [locale])
 
-  const openInGallery = (item: FeaturedItem) => {
-    window.location.href = `/galerie?photo=${encodeURIComponent(item.albumSlug + '/' + item.filename)}`
-  }
+  const openLightbox = useCallback((index: number) => {
+    setLightboxIndex(index)
+    setLightboxOpen(true)
+  }, [])
+
+  const closeLightbox = useCallback(() => {
+    setLightboxOpen(false)
+  }, [])
+
+  const allImageUrls = items.map(item => item.src)
 
   if (loaded && items.length === 0) return null
 
@@ -102,7 +112,7 @@ export default function FeaturedPhotos() {
         ) : (
           <div className="columns-2 sm:columns-3 lg:columns-4 gap-3">
             {items.map((item, i) => (
-              <FeaturedItem key={item.src} item={item} index={i} hasError={!!imgErrors[item.src]} onError={() => setImgErrors(p => ({ ...p, [item.src]: true }))} onClick={() => openInGallery(item)} />
+              <FeaturedItem key={item.src} item={item} index={i} hasError={!!imgErrors[item.src]} onError={() => setImgErrors(p => ({ ...p, [item.src]: true }))} onClick={() => openLightbox(i)} />
             ))}
           </div>
         )}
@@ -126,6 +136,15 @@ export default function FeaturedPhotos() {
           </motion.div>
         )}
       </div>
+
+      <Lightbox
+        images={allImageUrls}
+        currentIndex={lightboxIndex}
+        isOpen={lightboxOpen}
+        onClose={closeLightbox}
+        onPrev={() => setLightboxIndex(i => (i - 1 + allImageUrls.length) % allImageUrls.length)}
+        onNext={() => setLightboxIndex(i => (i + 1) % allImageUrls.length)}
+      />
     </section>
   )
 }

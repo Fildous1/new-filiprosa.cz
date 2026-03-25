@@ -84,7 +84,7 @@ export interface RosnikManifest {
 }
 
 /** Fetch a manifest JSON from the CDN. */
-export async function fetchManifest<T>(type: 'gallery' | 'museum' | 'rosnik' | 'gear'): Promise<T> {
+export async function fetchManifest<T>(type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'users'): Promise<T> {
   const res = await fetch(`${CDN_URL}${type}.json`, { cache: 'no-store' })
   if (!res.ok) throw new Error(`Failed to fetch ${type} manifest: ${res.status}`)
   return res.json()
@@ -100,6 +100,14 @@ export async function fetchMuseum(): Promise<MuseumManifest> {
 
 export async function fetchRosnik(): Promise<RosnikManifest> {
   return fetchManifest<RosnikManifest>('rosnik')
+}
+
+export async function fetchUsers(): Promise<import('./auth').UsersManifest> {
+  try {
+    return await fetchManifest<import('./auth').UsersManifest>('users')
+  } catch {
+    return { users: [] }
+  }
 }
 
 export interface GearManifest {
@@ -124,24 +132,26 @@ export function gearImageUrl(filename: string): string {
 
 /** Build full CDN URL for a gallery image (full-size). */
 export function galleryImageUrl(albumSlug: string, filename: string, version?: number): string {
-  const base = `${CDN_URL}gallery/${albumSlug}/${filename}`
+  const base = `${CDN_URL}gallery/${encodeURIComponent(albumSlug)}/${encodeURIComponent(filename)}`
   return version ? `${base}?v=${version}` : base
 }
 
 /** Build full CDN URL for a gallery thumbnail (720px). */
 export function galleryThumbUrl(albumSlug: string, filename: string, version?: number): string {
-  const base = `${CDN_URL}gallery/${albumSlug}/thumbs/${filename}`
+  const base = `${CDN_URL}gallery/${encodeURIComponent(albumSlug)}/thumbs/${encodeURIComponent(filename)}`
   return version ? `${base}?v=${version}` : base
 }
 
 /** Build full CDN URL for a museum camera image. */
 export function museumImageUrl(cameraId: number, filename: string): string {
-  return `${CDN_URL}museum/${cameraId}/${filename}`
+  return `${CDN_URL}museum/${encodeURIComponent(cameraId)}/${encodeURIComponent(filename)}`
 }
 
 /** Build full CDN URL for a rosnik asset (pdf or thumbnail). */
 export function rosnikAssetUrl(path: string): string {
-  return `${CDN_URL}rosnik/${path}`
+  // Encode each segment but preserve path separators
+  const safePath = path.split('/').map(s => encodeURIComponent(s)).join('/')
+  return `${CDN_URL}rosnik/${safePath}`
 }
 
 /* ------------------------------------------------------------------ */
@@ -166,8 +176,7 @@ export async function uploadFiles(
   })
 
   if (!res.ok) {
-    const text = await res.text()
-    throw new Error(`Upload failed: ${res.status} ${text}`)
+    throw new Error(`Upload failed (${res.status})`)
   }
 
   return res.json()
@@ -175,8 +184,8 @@ export async function uploadFiles(
 
 /** Save a manifest to the CDN. Automatically adds `updatedAt` timestamp. */
 export async function saveManifest(
-  type: 'gallery' | 'museum' | 'rosnik' | 'gear',
-  data: GalleryManifest | MuseumManifest | RosnikManifest | GearManifest,
+  type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'users',
+  data: GalleryManifest | MuseumManifest | RosnikManifest | GearManifest | import('./auth').UsersManifest,
 ): Promise<void> {
   // Stamp with current time for cache-busting
   const stamped = { ...data, updatedAt: Date.now() }
@@ -190,8 +199,7 @@ export async function saveManifest(
   })
 
   if (!res.ok) {
-    const text = await res.text()
-    throw new Error(`Manifest save failed: ${res.status} ${text}`)
+    throw new Error(`Manifest save failed (${res.status})`)
   }
 }
 
@@ -418,7 +426,6 @@ export async function deleteFile(path: string): Promise<void> {
   })
 
   if (!res.ok) {
-    const text = await res.text()
-    throw new Error(`Delete failed: ${res.status} ${text}`)
+    throw new Error(`Delete failed (${res.status})`)
   }
 }

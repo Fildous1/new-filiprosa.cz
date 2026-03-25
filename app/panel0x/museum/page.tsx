@@ -12,10 +12,15 @@ import {
   type MuseumManifest,
   type Camera,
 } from '@/lib/cdn-api'
+import { hasPermission } from '@/lib/auth'
 
-/** Match PHP: preg_replace('/[^a-zA-Z0-9._-]/', '_', $name) */
+/** Sanitize filename: only allow alphanumeric, dots, hyphens, underscores. Limit length. */
 function sanitizeFilename(name: string): string {
-  return name.replace(/[^a-zA-Z0-9._-]/g, '_')
+  const sanitized = name.replace(/[^a-zA-Z0-9._-]/g, '_')
+  // Remove leading dots (prevent hidden files)
+  const noDots = sanitized.replace(/^\.+/, '')
+  // Limit to 200 chars
+  return noDots.slice(0, 200) || 'file'
 }
 
 const EMPTY_CAMERA: Omit<Camera, 'id'> = {

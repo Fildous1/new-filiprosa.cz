@@ -10,6 +10,7 @@ import {
   type RosnikManifest,
   type MagazineIssue,
 } from '@/lib/cdn-api'
+import { hasPermission } from '@/lib/auth'
 
 const EMPTY_ISSUE: Omit<MagazineIssue, 'id'> = {
   title: { cs: '', en: '' },

@@ -14,6 +14,7 @@ export default function Contact() {
   const [sent, setSent] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [lastSubmit, setLastSubmit] = useState(0)
 
   async function handleCopyEmail() {
     try {
@@ -40,14 +41,46 @@ export default function Contact() {
     setSending(true)
     setFormError(null)
 
+    // Rate limit: minimum 30 seconds between submissions
+    const now = Date.now()
+    if (now - lastSubmit < 30000) {
+      setFormError(
+        locale === 'cs'
+          ? 'Počkejte prosím chvíli před dalším odesláním.'
+          : 'Please wait a moment before sending again.'
+      )
+      setSending(false)
+      return
+    }
+
+    // Input length validation
+    const name = formData.name.trim()
+    const email = formData.email.trim()
+    const message = formData.message.trim()
+
+    if (name.length > 100 || email.length > 254 || message.length > 5000) {
+      setFormError(
+        locale === 'cs'
+          ? 'Vstupní pole jsou příliš dlouhá.'
+          : 'Input fields are too long.'
+      )
+      setSending(false)
+      return
+    }
+
+    if (!name || !email || !message) {
+      setSending(false)
+      return
+    }
+
     try {
       const res = await fetch(`${CDN_URL}api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
+          name,
+          email,
+          message,
           locale,
         }),
       })
@@ -58,6 +91,7 @@ export default function Contact() {
       }
 
       setSent(true)
+      setLastSubmit(Date.now())
       setFormData({ name: '', email: '', message: '' })
       setTimeout(() => setSent(false), 5000)
     } catch (err) {
@@ -155,6 +189,7 @@ export default function Contact() {
                 <input
                   type="text"
                   required
+                  maxLength={100}
                   value={formData.name}
                   onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
                   className="w-full px-4 py-3 bg-charcoal border border-white/[0.06] rounded-[2px] text-[0.88rem] text-offwhite placeholder:text-muted/25 focus:outline-none focus:border-lime/30 transition-colors duration-200"
@@ -168,6 +203,7 @@ export default function Contact() {
                 <input
                   type="email"
                   required
+                  maxLength={254}
                   value={formData.email}
                   onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
                   className="w-full px-4 py-3 bg-charcoal border border-white/[0.06] rounded-[2px] text-[0.88rem] text-offwhite placeholder:text-muted/25 focus:outline-none focus:border-lime/30 transition-colors duration-200"
@@ -181,6 +217,7 @@ export default function Contact() {
                 <textarea
                   required
                   rows={4}
+                  maxLength={5000}
                   value={formData.message}
                   onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
                   className="w-full px-4 py-3 bg-charcoal border border-white/[0.06] rounded-[2px] text-[0.88rem] text-offwhite placeholder:text-muted/25 focus:outline-none focus:border-lime/30 transition-colors duration-200 resize-y"

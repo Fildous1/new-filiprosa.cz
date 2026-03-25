@@ -76,11 +76,38 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
   useEffect(() => {
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown)
+      // Lock scrolling on both html and body for cross-browser support (including iOS Safari)
+      const scrollY = window.scrollY
+      document.documentElement.style.overflow = 'hidden'
       document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${scrollY}px`
+      document.body.style.left = '0'
+      document.body.style.right = '0'
+      document.body.style.overscrollBehavior = 'none'
+
+      // Prevent touch scrolling on the background
+      const preventTouch = (e: TouchEvent) => {
+        if (e.target && (e.target as HTMLElement).closest?.('.lightbox-container')) return
+        e.preventDefault()
+      }
+      document.addEventListener('touchmove', preventTouch, { passive: false })
+
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown)
+        document.removeEventListener('touchmove', preventTouch)
+        document.documentElement.style.overflow = ''
+        document.body.style.overflow = ''
+        document.body.style.position = ''
+        document.body.style.top = ''
+        document.body.style.left = ''
+        document.body.style.right = ''
+        document.body.style.overscrollBehavior = ''
+        window.scrollTo(0, scrollY)
+      }
     }
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
-      document.body.style.overflow = ''
     }
   }, [isOpen, handleKeyDown])
 
@@ -331,7 +358,7 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
           {/* Image container — zoom & pan applied directly via style */}
           <div
             ref={containerRef}
-            className="relative z-1 flex items-center justify-center select-none"
+            className="lightbox-container relative z-1 flex items-center justify-center select-none"
             style={{
               width: '90vw',
               height: '85vh',

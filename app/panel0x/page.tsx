@@ -1,10 +1,20 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-
-const ADMIN_KEY = '__fr_admin_auth'
+import {
+  getSession,
+  clearSession,
+  isAdmin,
+  hashPassword,
+  generateSalt,
+  verifyPassword,
+  type SessionInfo,
+  type User,
+  type UsersManifest,
+} from '@/lib/auth'
+import { fetchUsers, saveManifest } from '@/lib/cdn-api'
 
 const sections = [
   {
@@ -48,39 +58,108 @@ function getPasswordStrength(pw: string): { score: number; label: string; color:
 
 export default function AdminDashboard() {
   const router = useRouter()
+  const [session, setSessionState] = useState<SessionInfo | null>(null)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [configOpen, setConfigOpen] = useState(false)
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false)
   const [cdnUrl, setCdnUrl] = useState(() =>
     (typeof window !== 'undefined' && localStorage.getItem('__fr_cdn_url')) || 'https://cdn.filiprosa.cz/'
   )
-  const [newPass, setNewPass] = useState('')
-  const [confirmPass, setConfirmPass] = useState('')
   const [configSaved, setConfigSaved] = useState(false)
 
+  // Password change state
+  const [currentPass, setCurrentPass] = useState('')
+  const [newPass, setNewPass] = useState('')
+  const [confirmPass, setConfirmPass] = useState('')
+  const [passError, setPassError] = useState('')
+  const [passSaving, setPassSaving] = useState(false)
+  const [passSaved, setPassSaved] = useState(false)
+
+  const userMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setSessionState(getSession())
+  }, [])
+
+  // Close user menu on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    if (userMenuOpen) {
+      document.addEventListener('mousedown', handleClick)
+      return () => document.removeEventListener('mousedown', handleClick)
+    }
+  }, [userMenuOpen])
+
   function handleLogout() {
-    sessionStorage.removeItem(ADMIN_KEY)
+    clearSession()
     router.push('/')
   }
 
   function handleSaveConfig() {
-    // Save CDN URL
     if (cdnUrl && cdnUrl !== 'https://cdn.filiprosa.cz/') {
       localStorage.setItem('__fr_cdn_url', cdnUrl)
     } else {
       localStorage.removeItem('__fr_cdn_url')
     }
-    // Save password (persist to localStorage for future logins, update session token)
-    if (newPass && newPass === confirmPass) {
-      localStorage.setItem('__fr_admin_pass', newPass)
-      sessionStorage.setItem(ADMIN_KEY, newPass)
-    }
     setConfigSaved(true)
     setTimeout(() => {
       setConfigSaved(false)
       setConfigOpen(false)
-      // Reload to apply CDN URL change
       window.location.reload()
     }, 800)
   }
+
+  async function handleChangePassword() {
+    if (!currentPass || !newPass || newPass !== confirmPass) return
+    setPassSaving(true)
+    setPassError('')
+
+    try {
+      const manifest = await fetchUsers()
+      const user = manifest.users.find(
+        u => u.username.toLowerCase() === session?.username.toLowerCase()
+      )
+      if (!user) {
+        setPassError('User not found')
+        setPassSaving(false)
+        return
+      }
+
+      const valid = await verifyPassword(currentPass, user)
+      if (!valid) {
+        setPassError('Current password is incorrect')
+        setPassSaving(false)
+        return
+      }
+
+      // Hash new password
+      const salt = generateSalt()
+      const passwordHash = await hashPassword(newPass, salt)
+      user.passwordHash = passwordHash
+      user.salt = salt
+
+      await saveManifest('users', manifest)
+
+      setPassSaved(true)
+      setTimeout(() => {
+        setPassSaved(false)
+        setPasswordModalOpen(false)
+        setCurrentPass('')
+        setNewPass('')
+        setConfirmPass('')
+      }, 1000)
+    } catch {
+      setPassError('Failed to save. Check connection.')
+    }
+
+    setPassSaving(false)
+  }
+
+  const adminUser = session?.role === 'admin'
 
   return (
     <div className="min-h-dvh bg-dark text-offwhite font-body px-6 py-12">
@@ -104,12 +183,52 @@ export default function AdminDashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
               </svg>
             </button>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-1.5 text-[0.75rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:border-white/20 hover:text-offwhite focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 active:scale-[0.97] transition-colors duration-200"
-            >
-              Logout
-            </button>
+
+            {/* User icon with dropdown */}
+            <div className="relative" ref={userMenuRef}>
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="w-9 h-9 flex items-center justify-center text-muted border border-white/[0.07] rounded-[2px] hover:border-white/20 hover:text-offwhite focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 active:scale-[0.97] transition-colors duration-200"
+                aria-label="User menu"
+                title={session?.username || 'User'}
+              >
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+              </button>
+
+              {userMenuOpen && (
+                <div className="absolute right-0 top-full mt-1 w-48 bg-charcoal border border-white/[0.1] rounded-[3px] shadow-lg z-50 overflow-hidden">
+                  {/* User info */}
+                  <div className="px-4 py-3 border-b border-white/[0.06]">
+                    <p className="text-[0.8rem] font-medium text-offwhite truncate">{session?.username}</p>
+                    <p className="text-[0.65rem] text-muted/50 uppercase tracking-wide">{session?.role}</p>
+                  </div>
+
+                  {/* Menu items */}
+                  <div className="py-1">
+                    <button
+                      onClick={() => { setUserMenuOpen(false); setPasswordModalOpen(true) }}
+                      className="w-full px-4 py-2.5 text-left text-[0.78rem] text-muted hover:text-offwhite hover:bg-white/[0.04] transition-colors duration-150 flex items-center gap-2.5"
+                    >
+                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                      </svg>
+                      Change password
+                    </button>
+                    <button
+                      onClick={() => { setUserMenuOpen(false); handleLogout() }}
+                      className="w-full px-4 py-2.5 text-left text-[0.78rem] text-muted hover:text-red-400 hover:bg-white/[0.04] transition-colors duration-150 flex items-center gap-2.5"
+                    >
+                      <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                      </svg>
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -129,6 +248,24 @@ export default function AdminDashboard() {
               <span className="text-muted/40 group-hover:text-lime/50 transition-colors duration-200 ml-6 text-lg leading-none">&rarr;</span>
             </Link>
           ))}
+
+          {/* Users section — admin only */}
+          {adminUser && (
+            <Link
+              href="/panel0x/users"
+              className="group flex items-center justify-between px-5 py-4 bg-charcoal border border-white/[0.05] rounded-[3px] hover:border-white/[0.13] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 active:scale-[0.99] transition-colors duration-200"
+            >
+              <div>
+                <p className="text-[0.95rem] font-medium text-offwhite group-hover:text-lime transition-colors duration-200 flex items-center gap-2">
+                  Users
+                  <span className="text-[0.6rem] text-lime/40 border border-lime/20 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider font-medium">Admin</span>
+                </p>
+                <p className="text-[0.78rem] text-muted mt-0.5">Manage users and permissions</p>
+                <p className="text-[0.7rem] text-muted/40 mt-1">Add/remove users, set access rights</p>
+              </div>
+              <span className="text-muted/40 group-hover:text-lime/50 transition-colors duration-200 ml-6 text-lg leading-none">&rarr;</span>
+            </Link>
+          )}
         </div>
 
         {/* Links */}
@@ -160,7 +297,7 @@ export default function AdminDashboard() {
           </p>
         </div>
 
-        {/* Config modal */}
+        {/* Config modal (CDN URL only — password change moved to user dropdown) */}
         {configOpen && (
           <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-dark/80 backdrop-blur-sm">
             <div className="flex flex-col items-end gap-2 w-full max-w-md">
@@ -175,79 +312,126 @@ export default function AdminDashboard() {
               </button>
               <div className="bg-charcoal border border-white/[0.08] rounded-[3px] p-6 w-full">
                 <h3 className="text-[0.9rem] font-medium text-offwhite mb-5">Settings</h3>
-
-              <div className="space-y-4">
-                {/* CDN URL */}
-                <div>
-                  <label className="block text-[0.68rem] text-muted/50 uppercase tracking-wide mb-1">CDN Server URL</label>
-                  <input
-                    value={cdnUrl}
-                    onChange={e => setCdnUrl(e.target.value)}
-                    placeholder="https://cdn.filiprosa.cz/"
-                    className="w-full px-3 py-2 bg-dark border border-white/[0.08] rounded-[2px] text-[0.8rem] text-offwhite font-mono placeholder:text-muted/30 focus:outline-none focus:border-lime/40"
-                  />
-                  <p className="text-[0.65rem] text-muted/40 mt-1">Changes require page reload</p>
-                </div>
-
-                {/* Password */}
-                <div>
-                  <label className="block text-[0.68rem] text-muted/50 uppercase tracking-wide mb-1">New Password</label>
-                  <input
-                    type="password"
-                    value={newPass}
-                    onChange={e => setNewPass(e.target.value)}
-                    placeholder="Leave empty to keep current"
-                    className="w-full px-3 py-2 bg-dark border border-white/[0.08] rounded-[2px] text-[0.8rem] text-offwhite placeholder:text-muted/30 focus:outline-none focus:border-lime/40"
-                  />
-                  {newPass && (
-                    <div className="mt-2">
-                      <div className="flex gap-1 mb-1">
-                        {[1, 2, 3, 4, 5].map(i => (
-                          <div
-                            key={i}
-                            className={`h-1 flex-1 rounded-full ${i <= getPasswordStrength(newPass).score ? getPasswordStrength(newPass).color : 'bg-white/[0.06]'}`}
-                          />
-                        ))}
-                      </div>
-                      <p className="text-[0.65rem] text-muted/50">{getPasswordStrength(newPass).label}</p>
-                    </div>
-                  )}
-                </div>
-
-                {newPass && (
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-[0.68rem] text-muted/50 uppercase tracking-wide mb-1">Confirm Password</label>
+                    <label className="block text-[0.68rem] text-muted/50 uppercase tracking-wide mb-1">CDN Server URL</label>
+                    <input
+                      value={cdnUrl}
+                      onChange={e => setCdnUrl(e.target.value)}
+                      placeholder="https://cdn.filiprosa.cz/"
+                      className="w-full px-3 py-2 bg-dark border border-white/[0.08] rounded-[2px] text-[0.8rem] text-offwhite font-mono placeholder:text-muted/30 focus:outline-none focus:border-lime/40"
+                    />
+                    <p className="text-[0.65rem] text-muted/40 mt-1">Changes require page reload</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-5">
+                  <button
+                    onClick={handleSaveConfig}
+                    disabled={configSaved}
+                    className="px-4 py-1.5 text-[0.75rem] font-medium bg-lime/10 text-lime border border-lime/20 rounded-[2px] hover:bg-lime/20 disabled:opacity-40 transition-colors duration-200"
+                  >
+                    {configSaved ? 'Saved!' : 'Save'}
+                  </button>
+                  <button
+                    onClick={() => setConfigOpen(false)}
+                    className="px-4 py-1.5 text-[0.75rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-offwhite transition-colors duration-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Change Password modal */}
+        {passwordModalOpen && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-dark/80 backdrop-blur-sm">
+            <div className="flex flex-col items-end gap-2 w-full max-w-md">
+              <button
+                onClick={() => { setPasswordModalOpen(false); setCurrentPass(''); setNewPass(''); setConfirmPass(''); setPassError('') }}
+                className="w-8 h-8 flex items-center justify-center text-muted hover:text-offwhite transition-colors duration-200"
+                aria-label="Close"
+              >
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <div className="bg-charcoal border border-white/[0.08] rounded-[3px] p-6 w-full">
+                <h3 className="text-[0.9rem] font-medium text-offwhite mb-5">Change Password</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-[0.68rem] text-muted/50 uppercase tracking-wide mb-1">Current Password</label>
                     <input
                       type="password"
-                      value={confirmPass}
-                      onChange={e => setConfirmPass(e.target.value)}
-                      placeholder="Confirm new password"
-                      className={`w-full px-3 py-2 bg-dark border rounded-[2px] text-[0.8rem] text-offwhite placeholder:text-muted/30 focus:outline-none focus:border-lime/40 ${
-                        confirmPass && confirmPass !== newPass ? 'border-red-500/50' : 'border-white/[0.08]'
-                      }`}
+                      value={currentPass}
+                      onChange={e => { setCurrentPass(e.target.value); setPassError('') }}
+                      placeholder="Enter current password"
+                      autoComplete="current-password"
+                      className="w-full px-3 py-2 bg-dark border border-white/[0.08] rounded-[2px] text-[0.8rem] text-offwhite placeholder:text-muted/30 focus:outline-none focus:border-lime/40"
                     />
-                    {confirmPass && confirmPass !== newPass && (
-                      <p className="text-[0.65rem] text-red-400/70 mt-1">Passwords do not match</p>
+                  </div>
+                  <div>
+                    <label className="block text-[0.68rem] text-muted/50 uppercase tracking-wide mb-1">New Password</label>
+                    <input
+                      type="password"
+                      value={newPass}
+                      onChange={e => { setNewPass(e.target.value); setPassError('') }}
+                      placeholder="Enter new password"
+                      autoComplete="new-password"
+                      className="w-full px-3 py-2 bg-dark border border-white/[0.08] rounded-[2px] text-[0.8rem] text-offwhite placeholder:text-muted/30 focus:outline-none focus:border-lime/40"
+                    />
+                    {newPass && (
+                      <div className="mt-2">
+                        <div className="flex gap-1 mb-1">
+                          {[1, 2, 3, 4, 5].map(i => (
+                            <div
+                              key={i}
+                              className={`h-1 flex-1 rounded-full ${i <= getPasswordStrength(newPass).score ? getPasswordStrength(newPass).color : 'bg-white/[0.06]'}`}
+                            />
+                          ))}
+                        </div>
+                        <p className="text-[0.65rem] text-muted/50">{getPasswordStrength(newPass).label}</p>
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
-
-              <div className="flex gap-2 mt-5">
-                <button
-                  onClick={handleSaveConfig}
-                  disabled={configSaved || (!!newPass && newPass !== confirmPass)}
-                  className="px-4 py-1.5 text-[0.75rem] font-medium bg-lime/10 text-lime border border-lime/20 rounded-[2px] hover:bg-lime/20 disabled:opacity-40 transition-colors duration-200"
-                >
-                  {configSaved ? 'Saved!' : 'Save'}
-                </button>
-                <button
-                  onClick={() => setConfigOpen(false)}
-                  className="px-4 py-1.5 text-[0.75rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-offwhite transition-colors duration-200"
-                >
-                  Cancel
-                </button>
-              </div>
+                  {newPass && (
+                    <div>
+                      <label className="block text-[0.68rem] text-muted/50 uppercase tracking-wide mb-1">Confirm New Password</label>
+                      <input
+                        type="password"
+                        value={confirmPass}
+                        onChange={e => { setConfirmPass(e.target.value); setPassError('') }}
+                        placeholder="Confirm new password"
+                        autoComplete="new-password"
+                        className={`w-full px-3 py-2 bg-dark border rounded-[2px] text-[0.8rem] text-offwhite placeholder:text-muted/30 focus:outline-none focus:border-lime/40 ${
+                          confirmPass && confirmPass !== newPass ? 'border-red-500/50' : 'border-white/[0.08]'
+                        }`}
+                      />
+                      {confirmPass && confirmPass !== newPass && (
+                        <p className="text-[0.65rem] text-red-400/70 mt-1">Passwords do not match</p>
+                      )}
+                    </div>
+                  )}
+                  {passError && (
+                    <p className="text-[0.72rem] text-red-400/80">{passError}</p>
+                  )}
+                </div>
+                <div className="flex gap-2 mt-5">
+                  <button
+                    onClick={handleChangePassword}
+                    disabled={passSaving || passSaved || !currentPass || !newPass || newPass !== confirmPass}
+                    className="px-4 py-1.5 text-[0.75rem] font-medium bg-lime/10 text-lime border border-lime/20 rounded-[2px] hover:bg-lime/20 disabled:opacity-40 transition-colors duration-200"
+                  >
+                    {passSaved ? 'Saved!' : passSaving ? 'Saving...' : 'Change Password'}
+                  </button>
+                  <button
+                    onClick={() => { setPasswordModalOpen(false); setCurrentPass(''); setNewPass(''); setConfirmPass(''); setPassError('') }}
+                    className="px-4 py-1.5 text-[0.75rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-offwhite transition-colors duration-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           </div>

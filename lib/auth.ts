@@ -34,6 +34,7 @@ const SESSION_AUTH_KEY = '__fr_admin_auth'        // sessionStorage: CDN auth to
 const SESSION_ROLE_KEY = '__fr_admin_role'        // sessionStorage: user role
 const SESSION_PERMS_KEY = '__fr_admin_perms'      // sessionStorage: JSON permissions
 const CDN_TOKEN_KEY = '__fr_admin_pass'           // localStorage: CDN API token
+const USERS_KEY = '__fr_users'                    // localStorage: users manifest
 const RATE_LIMIT_KEY = '__fr_login_attempts'      // sessionStorage: login rate limiting
 
 const ALL_PERMISSIONS: Permission[] = ['upload', 'delete', 'edit']
@@ -161,6 +162,25 @@ export function hasPermission(section: Section, permission: Permission): boolean
 /** Check if current user is admin. */
 export function isAdmin(): boolean {
   return sessionStorage.getItem(SESSION_ROLE_KEY) === 'admin'
+}
+
+// ─── User Storage (localStorage) ─────────────────────────────────────────────
+
+/** Load users from localStorage. */
+export function loadUsers(): UsersManifest {
+  try {
+    const raw = localStorage.getItem(USERS_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (parsed && Array.isArray(parsed.users)) return parsed
+    }
+  } catch { /* ignore */ }
+  return { users: [] }
+}
+
+/** Save users to localStorage. */
+export function saveUsersLocal(manifest: UsersManifest): void {
+  localStorage.setItem(USERS_KEY, JSON.stringify({ ...manifest, updatedAt: Date.now() }))
 }
 
 // ─── User Management ────────────────────────────────────────────────────────

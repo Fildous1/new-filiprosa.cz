@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { fetchUsers, saveManifest } from '@/lib/cdn-api'
 import {
   isAdmin,
   getSession,
   generateSalt,
   hashPassword,
+  loadUsers,
+  saveUsersLocal,
   type User,
-  type UsersManifest,
   type Permission,
   type Section,
   type UserPermissions,
@@ -49,16 +49,10 @@ export default function UsersPage() {
 
   // Load users
   useEffect(() => {
-    fetchUsers()
-      .then(manifest => {
-        setUsers(manifest.users)
-        setLoading(false)
-      })
-      .catch(() => {
-        toast('Failed to load users', 'error')
-        setLoading(false)
-      })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    const manifest = loadUsers()
+    setUsers(manifest.users)
+    setLoading(false)
+  }, [])
 
   async function handleSaveUser() {
     if (!editUser) return
@@ -83,55 +77,44 @@ export default function UsersPage() {
 
     setSaving(true)
 
-    try {
-      let userToSave = { ...editUser, username: editUser.username.trim() }
+    let userToSave = { ...editUser, username: editUser.username.trim() }
 
-      // Hash password if provided
-      if (newPassword) {
-        const salt = generateSalt()
-        const passwordHash = await hashPassword(newPassword, salt)
-        userToSave = { ...userToSave, passwordHash, salt }
-      }
-
-      let updatedUsers: User[]
-      if (isNewUser) {
-        updatedUsers = [...users, userToSave]
-      } else {
-        updatedUsers = users.map(u =>
-          u.username.toLowerCase() === editUser.username.toLowerCase() ? userToSave : u
-        )
-      }
-
-      await saveManifest('users', { users: updatedUsers })
-      setUsers(updatedUsers)
-      setEditUser(null)
-      setIsNewUser(false)
-      setNewPassword('')
-      toast(isNewUser ? 'User created' : 'User updated')
-    } catch {
-      toast('Failed to save user', 'error')
+    // Hash password if provided
+    if (newPassword) {
+      const salt = generateSalt()
+      const passwordHash = await hashPassword(newPassword, salt)
+      userToSave = { ...userToSave, passwordHash, salt }
     }
 
+    let updatedUsers: User[]
+    if (isNewUser) {
+      updatedUsers = [...users, userToSave]
+    } else {
+      updatedUsers = users.map(u =>
+        u.username.toLowerCase() === editUser.username.toLowerCase() ? userToSave : u
+      )
+    }
+
+    saveUsersLocal({ users: updatedUsers })
+    setUsers(updatedUsers)
+    setEditUser(null)
+    setIsNewUser(false)
+    setNewPassword('')
+    toast(isNewUser ? 'User created' : 'User updated')
     setSaving(false)
   }
 
-  async function handleDeleteUser(username: string) {
+  function handleDeleteUser(username: string) {
     if (username.toLowerCase() === getSession()?.username.toLowerCase()) {
       toast("Can't delete your own account", 'error')
       return
     }
 
-    setSaving(true)
-    try {
-      const updatedUsers = users.filter(u => u.username !== username)
-      await saveManifest('users', { users: updatedUsers })
-      setUsers(updatedUsers)
-      setDeleteConfirm(null)
-      toast('User deleted')
-    } catch {
-      toast('Failed to delete user', 'error')
-    }
-    setSaving(false)
+    const updatedUsers = users.filter(u => u.username !== username)
+    saveUsersLocal({ users: updatedUsers })
+    setUsers(updatedUsers)
+    setDeleteConfirm(null)
+    toast('User deleted')
   }
 
   function startNewUser() {

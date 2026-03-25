@@ -1,18 +1,16 @@
 'use client'
 
 import { useState, useEffect, type ReactNode } from 'react'
-import { fetchUsers } from '@/lib/cdn-api'
-import { saveManifest } from '@/lib/cdn-api'
 import {
   getSession,
   setSession,
+  loadUsers,
+  saveUsersLocal,
   verifyPassword,
   createDefaultAdmin,
   checkRateLimit,
   recordFailedAttempt,
   resetRateLimit,
-  type User,
-  type UsersManifest,
 } from '@/lib/auth'
 
 const CDN_TOKEN_KEY = '__fr_admin_pass'
@@ -74,8 +72,8 @@ export default function AdminAuth({ children }: { children: ReactNode }) {
     setError('')
 
     try {
-      // Fetch users manifest from CDN
-      let manifest = await fetchUsers()
+      // Load users from localStorage
+      let manifest = loadUsers()
 
       // Migration: if no users exist, create admin from existing password
       if (manifest.users.length === 0) {
@@ -93,17 +91,15 @@ export default function AdminAuth({ children }: { children: ReactNode }) {
           return
         }
 
-        // Create admin user and save to CDN
+        // Create admin user and save locally
         const adminUser = await createDefaultAdmin(password)
-        // Use provided username or default to 'admin'
         adminUser.username = username.trim() || 'admin'
         manifest = { users: [adminUser] }
 
-        // Store CDN token and save manifest
         localStorage.setItem(CDN_TOKEN_KEY, password)
-        sessionStorage.setItem('__fr_admin_auth', password)
-        await saveManifest('users', manifest)
+        saveUsersLocal(manifest)
 
+        sessionStorage.setItem('__fr_admin_auth', password)
         setSession(adminUser)
         resetRateLimit()
         setAuthed(true)
@@ -141,14 +137,14 @@ export default function AdminAuth({ children }: { children: ReactNode }) {
         return
       }
 
-      // Success — store CDN token in session for API calls
+      // Success
       const cdnToken = getCdnToken()
       sessionStorage.setItem('__fr_admin_auth', cdnToken)
       setSession(user)
       resetRateLimit()
       setAuthed(true)
-    } catch (err) {
-      setError('Login failed. Check your connection.')
+    } catch {
+      setError('Login failed.')
     }
 
     setSubmitting(false)

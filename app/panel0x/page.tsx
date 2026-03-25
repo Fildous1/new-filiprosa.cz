@@ -10,11 +10,10 @@ import {
   hashPassword,
   generateSalt,
   verifyPassword,
+  loadUsers,
+  saveUsersLocal,
   type SessionInfo,
-  type User,
-  type UsersManifest,
 } from '@/lib/auth'
-import { fetchUsers, saveManifest } from '@/lib/cdn-api'
 
 const sections = [
   {
@@ -119,7 +118,7 @@ export default function AdminDashboard() {
     setPassError('')
 
     try {
-      const manifest = await fetchUsers()
+      const manifest = loadUsers()
       const user = manifest.users.find(
         u => u.username.toLowerCase() === session?.username.toLowerCase()
       )
@@ -142,7 +141,7 @@ export default function AdminDashboard() {
       user.passwordHash = passwordHash
       user.salt = salt
 
-      await saveManifest('users', manifest)
+      saveUsersLocal(manifest)
 
       setPassSaved(true)
       setTimeout(() => {

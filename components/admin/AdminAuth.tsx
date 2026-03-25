@@ -5,7 +5,7 @@ import {
   getSession,
   setSession,
   loadUsers,
-  saveUsersLocal,
+  saveUsersToCdn,
   verifyPassword,
   createDefaultAdmin,
   checkRateLimit,
@@ -60,7 +60,6 @@ export default function AdminAuth({ children }: { children: ReactNode }) {
     e.preventDefault()
     if (submitting || lockSeconds > 0) return
 
-    // Check rate limit
     const remaining = checkRateLimit()
     if (remaining > 0) {
       setLockSeconds(remaining)
@@ -72,13 +71,12 @@ export default function AdminAuth({ children }: { children: ReactNode }) {
     setError('')
 
     try {
-      // Load users from localStorage
-      let manifest = loadUsers()
+      // Fetch users from CDN
+      const manifest = await loadUsers()
 
       // Migration: if no users exist, create admin from existing password
       if (manifest.users.length === 0) {
         const cdnToken = getCdnToken()
-        // Only allow login with existing password during migration
         if (password !== cdnToken) {
           const lockDuration = recordFailedAttempt()
           if (lockDuration > 0) {
@@ -91,15 +89,16 @@ export default function AdminAuth({ children }: { children: ReactNode }) {
           return
         }
 
-        // Create admin user and save locally
+        // Create admin user and save to CDN
         const adminUser = await createDefaultAdmin(password)
         adminUser.username = username.trim() || 'admin'
-        manifest = { users: [adminUser] }
 
         localStorage.setItem(CDN_TOKEN_KEY, password)
-        saveUsersLocal(manifest)
-
         sessionStorage.setItem('__fr_admin_auth', password)
+
+        // Save the new users manifest to CDN
+        await saveUsersToCdn({ users: [adminUser] })
+
         setSession(adminUser)
         resetRateLimit()
         setAuthed(true)
@@ -144,7 +143,7 @@ export default function AdminAuth({ children }: { children: ReactNode }) {
       resetRateLimit()
       setAuthed(true)
     } catch {
-      setError('Login failed.')
+      setError('Login failed. Check your connection.')
     }
 
     setSubmitting(false)

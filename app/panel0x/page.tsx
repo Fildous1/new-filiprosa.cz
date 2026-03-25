@@ -11,7 +11,7 @@ import {
   generateSalt,
   verifyPassword,
   loadUsers,
-  saveUsersLocal,
+  saveUsersToCdn,
   type SessionInfo,
 } from '@/lib/auth'
 
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
     setPassError('')
 
     try {
-      const manifest = loadUsers()
+      const manifest = await loadUsers()
       const user = manifest.users.find(
         u => u.username.toLowerCase() === session?.username.toLowerCase()
       )
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
       user.passwordHash = passwordHash
       user.salt = salt
 
-      saveUsersLocal(manifest)
+      await saveUsersToCdn(manifest)
 
       setPassSaved(true)
       setTimeout(() => {

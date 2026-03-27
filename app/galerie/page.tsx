@@ -157,13 +157,25 @@ export default function GaleriePage() {
           >
             <a
               href="/"
-              className="inline-flex items-center gap-2 text-[0.8rem] text-muted hover:text-lime transition-colors duration-300"
+              className="inline-flex items-center gap-2 text-[0.8rem] text-muted hover:text-lime transition-colors duration-300 mb-8"
             >
               <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
               </svg>
               {t('gallery.back')}
             </a>
+            <h1
+              className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mb-4"
+              style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
+            >
+              {t('gallery.heading')}
+            </h1>
+            <p
+              className="font-body text-muted max-w-[36rem]"
+              style={{ fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)' }}
+            >
+              {t('gallery.description')}
+            </p>
           </motion.div>
 
           {/* Loading state — skeleton */}
@@ -189,8 +201,8 @@ export default function GaleriePage() {
 
           {!loading && !error && (
             <>
-              {/* Album filter tabs */}
-              <div className="flex flex-wrap gap-2 md:gap-3 mb-8 md:mb-12">
+              {/* Album filter tabs — sticky below header */}
+              <div className="flex flex-wrap gap-2 md:gap-3 mb-8 md:mb-12 sticky top-0 z-30 bg-dark py-3 -mx-6 px-6 lg:-mx-10 lg:px-10">
                 <button
                   onClick={() => handleAlbumChange(null)}
                   className={`px-4 py-2 text-[0.8rem] font-medium tracking-[0.03em] rounded-[2px] border transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime ${

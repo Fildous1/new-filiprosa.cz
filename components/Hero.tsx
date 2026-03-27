@@ -61,7 +61,7 @@ export default function Hero() {
             >
               <em className="font-display font-bold italic">{t('hero.title.line1')}</em>
               <br />
-              <span className="font-body font-bold">{t('hero.title.line2')}</span>
+              <span className="font-display font-bold">{t('hero.title.line2')}</span>
             </motion.h1>
 
             <motion.p

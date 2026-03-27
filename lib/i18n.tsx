@@ -61,7 +61,7 @@ const translations: Record<Locale, Record<string, string>> = {
     // Hero
     'hero.title.line1': 'Ruční práce',
     'hero.title.line2': 'v\u00A0každé fotografii',
-    'hero.description': 'Portrétové focení, produktová fotografie, vyvolávání filmů a\u00A0darkroom tisky.',
+    'hero.description': 'Focení, vyvolávání, skenování, tisknutí a mnohem více dělám s pečlivostí a zájmem.',
     'hero.cta.services': 'Prohlédnout fotky',
     'hero.cta.contact': 'Kontaktujte mě',
     'hero.scroll': 'Scroll',
@@ -69,19 +69,19 @@ const translations: Record<Locale, Record<string, string>> = {
     // Services
     'services.num': '01',
     'services.heading': 'Co pro vás mohu udělat',
-    'services.description': 'Od portrétů po darkroom tisk — každá služba je řemeslná práce, kterou dělám s\u00A0láskou a\u00A0precizností.',
+    'services.description': 'Tato sekce je momentálně WIP...',
     'services.portrait.title': 'Portrétní focení',
-    'services.portrait.desc': 'Portrétová, svatební a\u00A0eventová fotografie. Přirozené světlo, autentické momenty.',
+    'services.portrait.desc': '...',
     'services.product.title': 'Produktová fotografie',
-    'services.product.desc': 'Profesionální produktové snímky pro e-shopy, katalogy a\u00A0sociální sítě.',
+    'services.product.desc': '...',
     'services.darkroom.title': 'Darkroom tisky',
-    'services.darkroom.desc': 'Černobílé tisky z\u00A0negativu na zvětšovacím přístroji. Každý tisk je originál z\u00A0temné komory.',
+    'services.darkroom.desc': '...',
     'services.bw.title': 'Vyvolávání ČB filmů',
-    'services.bw.desc': 'Ruční vyvolávání černobílých filmů. Precizní kontrola kontrastu, zrna a\u00A0tonality.',
+    'services.bw.desc': '...',
     'services.scan.title': 'Skenování filmů',
-    'services.scan.desc': '35mm, 120 i\u00A0velký formát. Vysoké rozlišení, věrné barvy, pečlivá post-produkce.',
+    'services.scan.desc': '...',
     'services.restore.title': 'Restaurování fotek',
-    'services.restore.desc': 'Obnova starých a\u00A0poškozených fotografií. Nový život vašim vzpomínkám.',
+    'services.restore.desc': '...',
 
     // Work
     'work.num': '02',
@@ -91,7 +91,7 @@ const translations: Record<Locale, Record<string, string>> = {
     // Projects
     'projects.num': '03',
     'projects.heading': 'Projekty',
-    'projects.description': 'Projekty, na který pracuji, nebo jsem dříve pracoval a jsem na ně pyšný.',
+    'projects.description': 'Moje minulé a aktuální projekty, na které jsem pyšný.',
     'projects.museum.title': 'Muzeum foťáků',
     'projects.museum.desc': 'Analogové (i digitální) fotoaparáty v mojí sbírce. S fotkami a ukázkovými snímky',
     'projects.museum.cta': 'Navštívit muzeum',
@@ -106,13 +106,13 @@ const translations: Record<Locale, Record<string, string>> = {
     // About
     'about.num': '04',
     'about.heading': 'Filip Rosa',
-    'about.p1': 'O focení jsem se začal zajímat, když moje maminka našla ve skříni první zrcadlovku, kterou jsem kdy držel v ruce - Canon EOS 650. Uchvátila mně hned jsem si koupil barevný film, na který jsem nafotil 36 fotek, které bych se dnes styděl ukázat. Ale od té doby jsem se začal věnovat všemu spojenému s fotografií. Historii, analogu, příběhům i technice.',
-    'about.p2': 'Dnes se focením zabývám většinu svého volného času a je mým velkým koníčkem. Rád bych se začal focením živit a věnoval se mu profesionálně. Proto jsem rád za každou zkušenost, a to i tu negativní.',
-    'about.stat1.value': '3+',
-    'about.stat1.label': 'Roky za objektivem',
-    'about.stat2.value': '50+',
+    'about.p1': 'Poprvé jsem se o focení začal zajímat, když moje maminka našla ve skříni první zrcadlovku, kterou jsem kdy držel v ruce - Canon EOS 650. Uchvátila mně hned jsem si koupil barevný film, na který jsem nafotil 36 fotek, které bych se dnes styděl ukázat. Ale od té doby jsem se začal věnovat všemu spojenému s fotografií. Historii, analogu, příběhům i technice.',
+    'about.p2': 'Dnes se focením zabývám většinu svého volného času a je to mým velkým koníčkem. Rád bych se ve focení zdokonalil a začal se mu věnovat profesionálně. Proto jsem rád za každou zkušenost, a to jak pozitivní, tak i negativní.',
+    'about.stat1.value': 'Od 2022',
+    'about.stat1.label': 'za objektivem',
+    'about.stat2.value': 'Desítky',
     'about.stat2.label': 'nafocených eventů',
-    'about.stat3.value': '1000+',
+    'about.stat3.value': 'Tisíce',
     'about.stat3.label': 'hodin v Lightroomu',
 
     // Contact
@@ -126,7 +126,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Gallery
     'gallery.heading': 'Galerie',
-    'gallery.description': 'Výběr těch nejlepších digitálníxch i analogových fotek, které jsem za svůj život vyfotil. Můžete je filtrovat podle portrétů, krajin, skupin atd.',
+    'gallery.description': 'Výběr těch nejlepších digitálních i analogových fotek, které jsem za svůj život vyfotil. Můžete je filtrovat podle portrétů, krajin, skupin atd.',
     'gallery.back': 'Zpět',
     'gallery.download': 'Stáhnout',
     'gallery.all': 'Vše',
@@ -181,7 +181,7 @@ const translations: Record<Locale, Record<string, string>> = {
     // Hero
     'hero.title.line1': 'Handcraft',
     'hero.title.line2': 'in\u00A0every photograph',
-    'hero.description': 'Portrait photography, product shoots, film development and\u00A0darkroom prints.',
+    'hero.description': 'Photography, development, scanning, printing and much more \u2014 done with care and passion.',
     'hero.cta.services': 'View photos',
     'hero.cta.contact': 'Contact me',
     'hero.scroll': 'Scroll',
@@ -189,19 +189,19 @@ const translations: Record<Locale, Record<string, string>> = {
     // Services
     'services.num': '01',
     'services.heading': 'What I\u00A0can do for you',
-    'services.description': 'From portraits to darkroom prints \u2014 every service is handcrafted work, done with love and\u00A0precision.',
+    'services.description': 'This section is currently WIP...',
     'services.portrait.title': 'Portrait photography',
-    'services.portrait.desc': 'Portrait, wedding and\u00A0event photography. Natural light, authentic moments.',
+    'services.portrait.desc': '...',
     'services.product.title': 'Product photography',
-    'services.product.desc': 'Professional product shots for e-shops, catalogs and\u00A0social media.',
+    'services.product.desc': '...',
     'services.darkroom.title': 'Darkroom prints',
-    'services.darkroom.desc': 'B&W prints from negatives on an enlarger. Every print is an original from the darkroom.',
+    'services.darkroom.desc': '...',
     'services.bw.title': 'B&W film development',
-    'services.bw.desc': 'Hand-developing black and white film. Precise control of contrast, grain and\u00A0tonality.',
+    'services.bw.desc': '...',
     'services.scan.title': 'Film scanning',
-    'services.scan.desc': '35mm, 120 and\u00A0large format. High resolution, true colors, careful post-production.',
+    'services.scan.desc': '...',
     'services.restore.title': 'Photo restoration',
-    'services.restore.desc': 'Restoring old and\u00A0damaged photographs. New life for your memories.',
+    'services.restore.desc': '...',
 
     // Work
     'work.num': '02',
@@ -211,7 +211,7 @@ const translations: Record<Locale, Record<string, string>> = {
     // Projects
     'projects.num': '03',
     'projects.heading': 'Projects',
-    'projects.description': 'Projects I am working on or have worked on in the past and am proud of.',
+    'projects.description': 'My past and current projects that I am proud of.',
     'projects.museum.title': 'Camera Museum',
     'projects.museum.desc': 'Analog (and digital) cameras in my collection. With photos and sample shots.',
     'projects.museum.cta': 'Visit museum',
@@ -226,14 +226,14 @@ const translations: Record<Locale, Record<string, string>> = {
     // About
     'about.num': '04',
     'about.heading': 'Filip Rosa',
-    'about.p1': 'I got interested in photography when my mom found the first SLR I ever held in my hands \u2014 a Canon EOS 650 \u2014 in a closet. I was captivated immediately, bought a color film and shot 36 photos I would be ashamed to show today. But since then I started dedicating myself to everything related to photography. History, analog, stories and technique.',
-    'about.p2': 'Today I spend most of my free time on photography and it is my great hobby. I would like to start making a living from photography and pursue it professionally. That is why I appreciate every experience, even the negative ones.',
-    'about.stat1.value': '3+',
-    'about.stat1.label': 'Years behind the lens',
-    'about.stat2.value': '50+',
-    'about.stat2.label': 'events photographed',
-    'about.stat3.value': '1000+',
-    'about.stat3.label': 'hours in Lightroom',
+    'about.p1': 'I first got interested in photography when my mom found the first SLR I ever held in my hands \u2014 a Canon EOS 650 \u2014 in a closet. I was captivated immediately, bought a color film and shot 36 photos I would be ashamed to show today. But since then I started dedicating myself to everything related to photography. History, analog, stories and technique.',
+    'about.p2': 'Today I spend most of my free time on photography and it is my great hobby. I would like to improve my photography and start pursuing it professionally. That is why I appreciate every experience, both positive and negative.',
+    'about.stat1.value': 'Since 2022',
+    'about.stat1.label': 'behind the lens',
+    'about.stat2.value': 'Dozens',
+    'about.stat2.label': 'of events photographed',
+    'about.stat3.value': 'Thousands',
+    'about.stat3.label': 'of hours in Lightroom',
 
     // Contact
     'contact.num': '05',
@@ -246,7 +246,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Gallery
     'gallery.heading': 'Gallery',
-    'gallery.description': 'A selection of the best digital and analog photos I have taken in my life. You can filter them by portraits, landscapes, groups, etc.',
+    'gallery.description': 'A selection of the best digital and analog photos I\u00A0have taken in my life. You can filter them by portraits, landscapes, groups, etc.',
     'gallery.back': 'Back',
     'gallery.download': 'Download',
     'gallery.all': 'All',

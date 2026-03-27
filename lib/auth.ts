@@ -179,23 +179,20 @@ export async function loadUsers(): Promise<UsersManifest> {
 }
 
 /**
- * Save users manifest to CDN via the upload API (path='.').
+ * Save users manifest to CDN via the dedicated save-users endpoint.
  */
 export async function saveUsersToCdn(manifest: UsersManifest): Promise<void> {
   const { CDN_URL } = await import('./cdn')
   const stamped = { ...manifest, updatedAt: Date.now() }
   const token = sessionStorage.getItem('__fr_admin_auth') || ''
 
-  const blob = new Blob([JSON.stringify(stamped, null, 2)], { type: 'application/json' })
-  const file = new File([blob], 'users.json', { type: 'application/json' })
-  const formData = new FormData()
-  formData.append('path', '.')
-  formData.append('files', file)
-
-  const res = await fetch(`${CDN_URL}api/upload`, {
+  const res = await fetch(`${CDN_URL}api/save-users.php`, {
     method: 'POST',
-    headers: { 'Authorization': `Bearer ${token}` },
-    body: formData,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(stamped),
   })
 
   if (!res.ok) {

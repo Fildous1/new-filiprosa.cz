@@ -319,7 +319,7 @@ export default function GalleryAdmin() {
 
         // Watermark text
         const text = '@fildous1'
-        const fontSize = 50
+        const fontSize = 45
         // Load Montserrat SemiBold via FontFace API
         try {
           const font = new FontFace('Montserrat', 'url(https://fonts.gstatic.com/s/montserrat/v26/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCuM70w-Y3tcoqK5.woff2)', { weight: '600' })
@@ -327,7 +327,7 @@ export default function GalleryAdmin() {
           document.fonts.add(font)
         } catch { /* font may already be loaded or fallback to system */ }
 
-        ctx.font = `600 ${fontSize}px Montserrat, "Segoe UI", Arial, sans-serif`
+        ctx.font = `600 italic ${fontSize}px Montserrat, "Segoe UI", Arial, sans-serif`
         ctx.textAlign = 'right'
         ctx.textBaseline = 'bottom'
 
@@ -338,9 +338,9 @@ export default function GalleryAdmin() {
         ctx.shadowOffsetY = 2
 
         // Position: bottom-right with extra bottom padding for taskbar
-        const rightPad = 40
-        const bottomPad = 70 // extra space for Windows taskbar
-        ctx.fillStyle = 'rgba(255, 255, 255, 1)'
+        const rightPad = 48
+        const bottomPad = 78 // extra space for Windows taskbar
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
         ctx.fillText(text, W - rightPad, H - bottomPad)
 
         // Download
@@ -923,20 +923,16 @@ export default function GalleryAdmin() {
 function UploadProgressBar({ loaded, total }: { loaded: number; total: number }) {
   const pct = total > 0 ? Math.round((loaded / total) * 100) : 0
 
-  function toMB(bytes: number): string {
-    return (bytes / (1024 * 1024)).toFixed(1)
-  }
-
   return (
-    <div className="flex items-center gap-3 min-w-[200px]">
+    <div className="flex items-center gap-3 ml-2 min-w-[160px]">
       <div className="flex-1 h-1.5 bg-dark border border-white/[0.06] rounded-full overflow-hidden">
         <div
           className="h-full bg-lime/60 rounded-full transition-[width] duration-150"
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="text-[0.65rem] text-muted font-mono whitespace-nowrap w-[10rem] text-right tabular-nums">
-        {String(pct).padStart(3, '\u2007')}&thinsp;% &middot; {toMB(loaded)}&thinsp;/&thinsp;{toMB(total)}&thinsp;MB
+      <span className="text-[0.65rem] text-muted font-mono whitespace-nowrap tabular-nums">
+        {pct}%
       </span>
     </div>
   )

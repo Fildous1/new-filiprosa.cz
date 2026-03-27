@@ -92,7 +92,7 @@ export default function FeaturedPhotos() {
         >
           <span className="section-num">{t('work.num')}</span>
           <h2
-            className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mb-5"
+            className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mt-6 mb-5"
             style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
           >
             {t('work.heading')}

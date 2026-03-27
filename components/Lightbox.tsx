@@ -102,6 +102,7 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
 
       return () => {
         document.removeEventListener('touchmove', preventTouch)
+        const y = savedScrollY.current
         document.documentElement.style.overflow = ''
         document.body.style.overflow = ''
         document.body.style.position = ''
@@ -110,7 +111,8 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
         document.body.style.right = ''
         document.body.style.width = ''
         document.body.style.overscrollBehavior = ''
-        window.scrollTo(0, savedScrollY.current)
+        // Restore instantly — no visible scroll animation
+        window.scrollTo({ top: y, behavior: 'instant' as ScrollBehavior })
       }
     }
   }, [isOpen])

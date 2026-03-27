@@ -179,63 +179,29 @@ export async function loadUsers(): Promise<UsersManifest> {
 }
 
 /**
- * Save users manifest to CDN.
- * Tries multiple strategies:
- * 1. Manifest API with type 'users'
- * 2. Upload API with path ''
- * 3. Upload API with path '.'
- * 4. Upload API with path '/'
- * Logs the winning strategy to console so we know which works.
+ * Save users manifest to CDN via the upload API (path='.').
  */
 export async function saveUsersToCdn(manifest: UsersManifest): Promise<void> {
   const { CDN_URL } = await import('./cdn')
   const stamped = { ...manifest, updatedAt: Date.now() }
   const token = sessionStorage.getItem('__fr_admin_auth') || ''
-  const authHeader = { 'Authorization': `Bearer ${token}` }
 
-  // Strategy 1: manifest API
-  try {
-    const res = await fetch(`${CDN_URL}api/manifest`, {
-      method: 'POST',
-      headers: { ...authHeader, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'users', data: stamped }),
-    })
-    if (res.ok) {
-      console.log('[auth] saved users via manifest API')
-      return
-    }
-    console.warn('[auth] manifest API failed:', res.status)
-  } catch (e) {
-    console.warn('[auth] manifest API error:', e)
+  const blob = new Blob([JSON.stringify(stamped, null, 2)], { type: 'application/json' })
+  const file = new File([blob], 'users.json', { type: 'application/json' })
+  const formData = new FormData()
+  formData.append('path', '.')
+  formData.append('files', file)
+
+  const res = await fetch(`${CDN_URL}api/upload`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}` },
+    body: formData,
+  })
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new Error(`Failed to save users (${res.status}): ${text}`)
   }
-
-  // Strategy 2-4: upload API with different path values
-  const pathsToTry = ['', '.', '/']
-  for (const path of pathsToTry) {
-    try {
-      const blob = new Blob([JSON.stringify(stamped, null, 2)], { type: 'application/json' })
-      const file = new File([blob], 'users.json', { type: 'application/json' })
-      const formData = new FormData()
-      formData.append('path', path)
-      formData.append('files', file)
-
-      const res = await fetch(`${CDN_URL}api/upload`, {
-        method: 'POST',
-        headers: authHeader,
-        body: formData,
-      })
-      if (res.ok) {
-        console.log(`[auth] saved users via upload API (path='${path}')`)
-        return
-      }
-      const text = await res.text().catch(() => '')
-      console.warn(`[auth] upload API (path='${path}') failed: ${res.status}`, text)
-    } catch (e) {
-      console.warn(`[auth] upload API (path='${path}') error:`, e)
-    }
-  }
-
-  throw new Error('Failed to save users — all strategies failed. Check browser console for details.')
 }
 
 // ─── User Management ────────────────────────────────────────────────────────

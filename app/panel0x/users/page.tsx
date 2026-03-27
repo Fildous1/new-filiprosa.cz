@@ -76,18 +76,15 @@ export default function UsersPage() {
       return
     }
 
-    if (isNewUser && !newPassword) {
-      toast('Password is required for new users', 'error')
-      return
-    }
+    // Empty password is allowed — user can login with empty password field
 
     setSaving(true)
 
     try {
       let userToSave = { ...editUser, username: editUser.username.trim() }
 
-      // Hash password if provided
-      if (newPassword) {
+      // Hash password if provided (or always for new users)
+      if (newPassword || isNewUser) {
         const salt = generateSalt()
         const passwordHash = await hashPassword(newPassword, salt)
         userToSave = { ...userToSave, passwordHash, salt }

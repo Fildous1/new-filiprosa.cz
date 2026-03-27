@@ -290,6 +290,81 @@ export default function GalleryAdmin() {
     }
   }
 
+  async function handleDownloadWallpaper() {
+    if (!activeAlbum || selected.size === 0) return
+    const indices = Array.from(selected).sort((a, b) => a - b)
+    for (const idx of indices) {
+      const img = activeAlbum.images[idx]
+      const url = galleryImageUrl(activeSlug, img.filename)
+
+      try {
+        const response = await fetch(url)
+        const blob = await response.blob()
+        const bitmap = await createImageBitmap(blob)
+
+        const W = 1920
+        const H = 1080
+        const canvas = document.createElement('canvas')
+        canvas.width = W
+        canvas.height = H
+        const ctx = canvas.getContext('2d')!
+
+        // Draw image as cover/fill
+        const scale = Math.max(W / bitmap.width, H / bitmap.height)
+        const sw = W / scale
+        const sh = H / scale
+        const sx = (bitmap.width - sw) / 2
+        const sy = (bitmap.height - sh) / 2
+        ctx.drawImage(bitmap, sx, sy, sw, sh, 0, 0, W, H)
+
+        // Watermark text
+        const text = '@fildous1'
+        const fontSize = 50
+        // Load Montserrat SemiBold via FontFace API
+        try {
+          const font = new FontFace('Montserrat', 'url(https://fonts.gstatic.com/s/montserrat/v26/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCuM70w-Y3tcoqK5.woff2)', { weight: '600' })
+          await font.load()
+          document.fonts.add(font)
+        } catch { /* font may already be loaded or fallback to system */ }
+
+        ctx.font = `600 ${fontSize}px Montserrat, "Segoe UI", Arial, sans-serif`
+        ctx.textAlign = 'right'
+        ctx.textBaseline = 'bottom'
+
+        // Soft black shadow
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.6)'
+        ctx.shadowBlur = 12
+        ctx.shadowOffsetX = 2
+        ctx.shadowOffsetY = 2
+
+        // Position: bottom-right with extra bottom padding for taskbar
+        const rightPad = 40
+        const bottomPad = 70 // extra space for Windows taskbar
+        ctx.fillStyle = 'rgba(255, 255, 255, 1)'
+        ctx.fillText(text, W - rightPad, H - bottomPad)
+
+        // Download
+        canvas.toBlob((wallpaperBlob) => {
+          if (!wallpaperBlob) return
+          const dlUrl = URL.createObjectURL(wallpaperBlob)
+          const a = document.createElement('a')
+          a.href = dlUrl
+          a.download = `wallpaper_${img.filename}`
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          URL.revokeObjectURL(dlUrl)
+        }, 'image/jpeg', 0.92)
+
+        bitmap.close()
+      } catch (err) {
+        toast(`Failed to create wallpaper for ${img.filename}`, 'error')
+      }
+
+      await new Promise(r => setTimeout(r, 300))
+    }
+  }
+
   async function handleToggleAnalogSelected() {
     if (!manifest || !activeAlbum || selected.size === 0) return
     // If all selected are already analog, turn off; otherwise turn on
@@ -573,7 +648,14 @@ export default function GalleryAdmin() {
                   onClick={handleDownloadSelected}
                   className="px-3 py-1 text-[0.72rem] font-medium text-lime border border-lime/20 rounded-[2px] hover:bg-lime/10 transition-colors duration-200"
                 >
-                  Download Selected
+                  Download
+                </button>
+                <button
+                  onClick={handleDownloadWallpaper}
+                  className="px-3 py-1 text-[0.72rem] font-medium text-offwhite/60 border border-white/[0.07] rounded-[2px] hover:text-lime hover:border-lime/20 transition-colors duration-200"
+                  title="Download as 1920x1080 wallpaper with @fildous1 watermark"
+                >
+                  Wallpaper
                 </button>
               </>
             )}

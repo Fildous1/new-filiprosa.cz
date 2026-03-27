@@ -73,20 +73,27 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
     if (e.key === '0') resetZoom()
   }, [onClose, onPrev, onNext, isZoomed, resetZoom, triggerSmooth])
 
+  // Keyboard handler — separate effect so scroll lock doesn't re-run on every isZoomed change
+  useEffect(() => {
+    if (!isOpen) return
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, handleKeyDown])
+
+  // Scroll lock — only runs when isOpen changes, not on every render
+  const savedScrollY = useRef(0)
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener('keydown', handleKeyDown)
-      // Lock scrolling on both html and body for cross-browser support (including iOS Safari)
-      const scrollY = window.scrollY
+      savedScrollY.current = window.scrollY
       document.documentElement.style.overflow = 'hidden'
       document.body.style.overflow = 'hidden'
       document.body.style.position = 'fixed'
-      document.body.style.top = `-${scrollY}px`
+      document.body.style.top = `-${savedScrollY.current}px`
       document.body.style.left = '0'
       document.body.style.right = '0'
+      document.body.style.width = '100%'
       document.body.style.overscrollBehavior = 'none'
 
-      // Prevent touch scrolling on the background
       const preventTouch = (e: TouchEvent) => {
         if (e.target && (e.target as HTMLElement).closest?.('.lightbox-container')) return
         e.preventDefault()
@@ -94,7 +101,6 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
       document.addEventListener('touchmove', preventTouch, { passive: false })
 
       return () => {
-        document.removeEventListener('keydown', handleKeyDown)
         document.removeEventListener('touchmove', preventTouch)
         document.documentElement.style.overflow = ''
         document.body.style.overflow = ''
@@ -102,14 +108,12 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
         document.body.style.top = ''
         document.body.style.left = ''
         document.body.style.right = ''
+        document.body.style.width = ''
         document.body.style.overscrollBehavior = ''
-        window.scrollTo(0, scrollY)
+        window.scrollTo(0, savedScrollY.current)
       }
     }
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [isOpen, handleKeyDown])
+  }, [isOpen])
 
   // Clean up animation timeout
   useEffect(() => {

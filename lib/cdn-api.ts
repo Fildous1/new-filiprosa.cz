@@ -102,14 +102,6 @@ export async function fetchRosnik(): Promise<RosnikManifest> {
   return fetchManifest<RosnikManifest>('rosnik')
 }
 
-export async function fetchUsers(): Promise<import('./auth').UsersManifest> {
-  try {
-    return await fetchManifest<import('./auth').UsersManifest>('users')
-  } catch {
-    return { users: [] }
-  }
-}
-
 export interface GearManifest {
   images: Record<string, string> // sectionKey -> filename
 }
@@ -184,8 +176,8 @@ export async function uploadFiles(
 
 /** Save a manifest to the CDN. Automatically adds `updatedAt` timestamp. */
 export async function saveManifest(
-  type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'users',
-  data: GalleryManifest | MuseumManifest | RosnikManifest | GearManifest | import('./auth').UsersManifest,
+  type: 'gallery' | 'museum' | 'rosnik' | 'gear',
+  data: GalleryManifest | MuseumManifest | RosnikManifest | GearManifest,
 ): Promise<void> {
   // Stamp with current time for cache-busting
   const stamped = { ...data, updatedAt: Date.now() }

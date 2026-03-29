@@ -8,7 +8,7 @@
     Header always set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
     
     Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
-    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, X-Api-Key"
     Header always set Access-Control-Allow-Credentials "true"
 </IfModule>
 

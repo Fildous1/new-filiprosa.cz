@@ -7,7 +7,7 @@
  */
 
 // Admin authentication token — change this to a secure random string
-define('ADMIN_TOKEN', 'dDvCQPJ8xXnPmu4S');
+define('ADMIN_TOKEN', 'darkroom2026');
 
 // Base directory for CDN content (one level up from /api/)
 define('CDN_ROOT', dirname(__DIR__) . '/');
@@ -27,7 +27,12 @@ define('ALLOWED_MANIFEST_TYPES', ['gallery', 'museum', 'rosnik', 'gear']);
  */
 function requireAuth(): void {
     $headers = getallheaders();
-    $auth = $headers['Authorization'] ?? $headers['authorization'] ?? '';
+    $auth = $headers['Authorization']
+         ?? $headers['authorization']
+         ?? $_SERVER['HTTP_AUTHORIZATION']
+         ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION']
+         ?? $_SERVER['HTTP_X_API_KEY']
+         ?? '';
 
     if (!preg_match('/^Bearer\s+(.+)$/i', $auth, $matches)) {
         http_response_code(401);

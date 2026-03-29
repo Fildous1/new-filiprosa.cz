@@ -190,6 +190,7 @@ export async function saveUsersToCdn(manifest: UsersManifest): Promise<void> {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
+      'X-Api-Key': token,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(stamped),

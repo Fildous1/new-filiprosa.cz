@@ -17,6 +17,7 @@ function authHeaders(): HeadersInit {
   const token = sessionStorage.getItem('__fr_admin_auth') || ''
   return {
     'Authorization': `Bearer ${token}`,
+    'X-Api-Key': token,
   }
 }
 
@@ -214,6 +215,7 @@ function uploadBatchWithProgress(
 
     const token = sessionStorage.getItem('__fr_admin_auth') || ''
     xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+    xhr.setRequestHeader('X-Api-Key', token)
 
     xhr.upload.addEventListener('progress', (e) => {
       if (e.lengthComputable) {

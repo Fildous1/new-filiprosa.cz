@@ -38,6 +38,10 @@ export default function RosnikAdmin() {
   const pdfInputRef = useRef<HTMLInputElement>(null)
   const thumbInputRef = useRef<HTMLInputElement>(null)
 
+  const canUpload = hasPermission('rosnik', 'upload')
+  const canDelete = hasPermission('rosnik', 'delete')
+  const canEdit = hasPermission('rosnik', 'edit')
+
   useEffect(() => { loadData() }, [])
 
   async function loadData() {
@@ -163,12 +167,14 @@ export default function RosnikAdmin() {
             <h1 className="text-2xl font-display font-semibold text-offwhite tracking-[-0.02em] mt-2">Rosnik</h1>
             <p className="text-[0.78rem] text-muted mt-1">{manifest?.issues.length ?? 0} issues</p>
           </div>
-          <button
-            onClick={startAdd}
-            className="px-4 py-1.5 text-[0.75rem] font-medium text-lime border border-lime/30 rounded-[2px] hover:bg-lime/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-lime/50 active:scale-[0.97] transition-colors duration-200"
-          >
-            + Issue
-          </button>
+          {canEdit && (
+            <button
+              onClick={startAdd}
+              className="px-4 py-1.5 text-[0.75rem] font-medium text-lime border border-lime/30 rounded-[2px] hover:bg-lime/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-lime/50 active:scale-[0.97] transition-colors duration-200"
+            >
+              + Issue
+            </button>
+          )}
         </div>
 
         {/* Status messages */}
@@ -273,22 +279,26 @@ export default function RosnikAdmin() {
                         {editing.pdf}
                       </a>
                     )}
-                    <button
-                      onClick={() => pdfInputRef.current?.click()}
-                      className="px-3 py-1.5 text-[0.72rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-offwhite hover:border-white/20 transition-colors duration-200"
-                    >
-                      {pdfFile ? pdfFile.name : 'Choose PDF...'}
-                    </button>
-                    <input
-                      ref={pdfInputRef}
-                      type="file"
-                      accept=".pdf"
-                      onChange={e => {
-                        const f = e.target.files?.[0]
-                        if (f) setPdfFile(f)
-                      }}
-                      className="hidden"
-                    />
+                    {canUpload && (
+                      <>
+                        <button
+                          onClick={() => pdfInputRef.current?.click()}
+                          className="px-3 py-1.5 text-[0.72rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-offwhite hover:border-white/20 transition-colors duration-200"
+                        >
+                          {pdfFile ? pdfFile.name : 'Choose PDF...'}
+                        </button>
+                        <input
+                          ref={pdfInputRef}
+                          type="file"
+                          accept=".pdf"
+                          onChange={e => {
+                            const f = e.target.files?.[0]
+                            if (f) setPdfFile(f)
+                          }}
+                          className="hidden"
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -305,22 +315,26 @@ export default function RosnikAdmin() {
                         />
                       </div>
                     )}
-                    <button
-                      onClick={() => thumbInputRef.current?.click()}
-                      className="px-3 py-1.5 text-[0.72rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-offwhite hover:border-white/20 transition-colors duration-200"
-                    >
-                      {thumbFile ? thumbFile.name : 'Choose thumbnail...'}
-                    </button>
-                    <input
-                      ref={thumbInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={e => {
-                        const f = e.target.files?.[0]
-                        if (f) setThumbFile(f)
-                      }}
-                      className="hidden"
-                    />
+                    {canUpload && (
+                      <>
+                        <button
+                          onClick={() => thumbInputRef.current?.click()}
+                          className="px-3 py-1.5 text-[0.72rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-offwhite hover:border-white/20 transition-colors duration-200"
+                        >
+                          {thumbFile ? thumbFile.name : 'Choose thumbnail...'}
+                        </button>
+                        <input
+                          ref={thumbInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={e => {
+                            const f = e.target.files?.[0]
+                            if (f) setThumbFile(f)
+                          }}
+                          className="hidden"
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -397,18 +411,22 @@ export default function RosnikAdmin() {
                 </div>
 
                 <div className="flex gap-2 mt-3">
-                  <button
-                    onClick={() => startEdit(issue)}
-                    className="px-3 py-1 text-[0.68rem] font-medium text-lime/60 border border-lime/15 rounded-[2px] hover:bg-lime/10 hover:text-lime transition-colors duration-200"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteIssue(issue.id)}
-                    className="px-3 py-1 text-[0.68rem] font-medium text-red-400/40 border border-red-500/15 rounded-[2px] hover:bg-red-500/10 hover:text-red-400 transition-colors duration-200"
-                  >
-                    Delete
-                  </button>
+                  {canEdit && (
+                    <button
+                      onClick={() => startEdit(issue)}
+                      className="px-3 py-1 text-[0.68rem] font-medium text-lime/60 border border-lime/15 rounded-[2px] hover:bg-lime/10 hover:text-lime transition-colors duration-200"
+                    >
+                      Edit
+                    </button>
+                  )}
+                  {canDelete && (
+                    <button
+                      onClick={() => handleDeleteIssue(issue.id)}
+                      className="px-3 py-1 text-[0.68rem] font-medium text-red-400/40 border border-red-500/15 rounded-[2px] hover:bg-red-500/10 hover:text-red-400 transition-colors duration-200"
+                    >
+                      Delete
+                    </button>
+                  )}
                   {issue.pdf && (
                     <a
                       href={rosnikAssetUrl(issue.pdf)}

@@ -1,0 +1,80 @@
+# ============================================================
+# CDN Server — cdn.filiprosa.cz (fixed version for WEDOS)
+# ============================================================
+
+RewriteEngine On
+
+# 1. Agresivní HTTPS redirect
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 2. CORS fix pro OPTIONS (Preflight)
+# Odpovíme 200 OK dřív, než to spadne v PHP
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS, DELETE"
+    Header always set Access-Control-Allow-Headers "Authorization, Content-Type"
+</IfModule>
+
+# 3. Manual handling OPTIONS
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# 4. Fix for auth header (Wedos sometimes deletes)
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# 5. API routing
+RewriteRule ^api/upload$      api/upload.php      [L,QSA]
+RewriteRule ^api/manifest$    api/manifest.php    [L,QSA]
+RewriteRule ^api/delete$      api/delete.php      [L,QSA]
+RewriteRule ^api/save-users$  api/save-users.php  [L,QSA]
+RewriteRule ^api/contact$     api/contact.php     [L,QSA]
+
+# ------------------------------------------------------------
+# MIME Types
+# ------------------------------------------------------------
+<IfModule mod_mime.c>
+    AddType application/json .json
+    AddType image/webp .webp
+    AddType image/avif .avif
+    AddType application/pdf .pdf
+</IfModule>
+
+
+# Disable caching for images
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp|avif|svg)$">
+        Header set Cache-Control "no-cache, must-revalidate"
+        Header set Pragma "no-cache"
+    </FilesMatch>
+
+    # JSON manifests — never cache
+    <FilesMatch "\.json$">
+        Header set Cache-Control "no-store, no-cache, must-revalidate"
+        Header set Pragma "no-cache"
+    </FilesMatch>
+</IfModule>
+
+# ------------------------------------------------------------
+# Landing page
+# ------------------------------------------------------------
+DirectoryIndex index.html
+
+# ------------------------------------------------------------
+# Security
+# ------------------------------------------------------------
+
+# Prevent directory listing
+Options -Indexes
+
+# Block direct access to PHP files outside /api/
+# (the api/.htaccess explicitly re-allows them)
+<FilesMatch "\.php$">
+    Require all denied
+</FilesMatch>
+
+# Protect hidden files
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>

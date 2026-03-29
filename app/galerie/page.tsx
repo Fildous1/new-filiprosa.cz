@@ -317,6 +317,12 @@ function GalleryPhoto({ item, index, imgErrors, setImgErrors, onOpen }: {
             A
           </span>
         )}
+        {/* Year badge */}
+        {item.data.year && (
+          <span className="absolute bottom-2 right-2 z-10 px-1.5 py-0.5 text-[0.55rem] font-medium bg-dark/70 text-offwhite/50 rounded-full backdrop-blur-sm">
+            {item.data.year}
+          </span>
+        )}
         {/* Overlay */}
         <div
           className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"

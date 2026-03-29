@@ -33,7 +33,7 @@ const gearData: GearSection[] = [
     key: 'digital',
     titleKey: 'gear.digital',
     items: [
-      { name: 'Canon EOS 80D', museumMatch: 'Canon EOS 80D' },
+      { name: 'Canon EOS 80D', museumMatch: 'Canon EOS 80D (W)' },
       { name: 'Canon PowerShot G9', museumMatch: 'Canon PowerShot G9' },
     ],
   },

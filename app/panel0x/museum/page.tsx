@@ -62,6 +62,10 @@ export default function MuseumAdmin() {
   const [galleryUploading, setGalleryUploading] = useState(false)
   const [galleryProgress, setGalleryProgress] = useState<{ loaded: number; total: number } | null>(null)
 
+  const canUpload = hasPermission('museum', 'upload')
+  const canDelete = hasPermission('museum', 'delete')
+  const canEdit = hasPermission('museum', 'edit')
+
   const { toast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const galleryInputRef = useRef<HTMLInputElement>(null)
@@ -249,12 +253,14 @@ export default function MuseumAdmin() {
               {manifest?.cameras.length ?? 0} cameras &middot; {analog} analog &middot; {working} working
             </p>
           </div>
-          <button
-            onClick={startAdd}
-            className="px-4 py-1.5 text-[0.75rem] font-medium text-lime border border-lime/30 rounded-[2px] hover:bg-lime/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-lime/50 active:scale-[0.97] transition-colors duration-200"
-          >
-            + Camera
-          </button>
+          {canEdit && (
+            <button
+              onClick={startAdd}
+              className="px-4 py-1.5 text-[0.75rem] font-medium text-lime border border-lime/30 rounded-[2px] hover:bg-lime/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-lime/50 active:scale-[0.97] transition-colors duration-200"
+            >
+              + Camera
+            </button>
+          )}
         </div>
 
         {/* Status messages */}
@@ -337,12 +343,14 @@ export default function MuseumAdmin() {
                         />
                       </div>
                     )}
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      className="px-3 py-1.5 text-[0.72rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-offwhite hover:border-white/20 transition-colors duration-200"
-                    >
-                      {thumbFile ? thumbFile.name : 'Choose file...'}
-                    </button>
+                    {canUpload && (
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-3 py-1.5 text-[0.72rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-offwhite hover:border-white/20 transition-colors duration-200"
+                      >
+                        {thumbFile ? thumbFile.name : 'Choose file...'}
+                      </button>
+                    )}
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -447,30 +455,34 @@ export default function MuseumAdmin() {
                     <span className="text-[0.68rem]" title="Camera photos">{cam.galleryImages?.length ?? 0}</span>
                     <span className="text-[0.58rem] text-muted/30 mx-0.5">/</span>
                     <span className="text-[0.68rem]" title="Sample shots">{cam.sampleImages?.length ?? 0}</span>
-                    <button
-                      onClick={() => {
-                        setGalleryUploadId(cam.id)
-                        setGalleryUploadType('gallery')
-                        galleryInputRef.current?.click()
-                      }}
-                      disabled={galleryUploading}
-                      className="ml-1.5 px-1 py-0.5 text-[0.55rem] font-medium text-lime/50 border border-lime/10 rounded-[2px] hover:text-lime hover:border-lime/30 disabled:opacity-30 transition-colors duration-200"
-                      title="Upload camera photos"
-                    >
-                      +cam
-                    </button>
-                    <button
-                      onClick={() => {
-                        setGalleryUploadId(cam.id)
-                        setGalleryUploadType('sample')
-                        galleryInputRef.current?.click()
-                      }}
-                      disabled={galleryUploading}
-                      className="ml-1 px-1 py-0.5 text-[0.55rem] font-medium text-muted/40 border border-white/[0.06] rounded-[2px] hover:text-offwhite hover:border-white/20 disabled:opacity-30 transition-colors duration-200"
-                      title="Upload sample shots"
-                    >
-                      +shot
-                    </button>
+                    {canUpload && (
+                      <button
+                        onClick={() => {
+                          setGalleryUploadId(cam.id)
+                          setGalleryUploadType('gallery')
+                          galleryInputRef.current?.click()
+                        }}
+                        disabled={galleryUploading}
+                        className="ml-1.5 px-1 py-0.5 text-[0.55rem] font-medium text-lime/50 border border-lime/10 rounded-[2px] hover:text-lime hover:border-lime/30 disabled:opacity-30 transition-colors duration-200"
+                        title="Upload camera photos"
+                      >
+                        +cam
+                      </button>
+                    )}
+                    {canUpload && (
+                      <button
+                        onClick={() => {
+                          setGalleryUploadId(cam.id)
+                          setGalleryUploadType('sample')
+                          galleryInputRef.current?.click()
+                        }}
+                        disabled={galleryUploading}
+                        className="ml-1 px-1 py-0.5 text-[0.55rem] font-medium text-muted/40 border border-white/[0.06] rounded-[2px] hover:text-offwhite hover:border-white/20 disabled:opacity-30 transition-colors duration-200"
+                        title="Upload sample shots"
+                      >
+                        +shot
+                      </button>
+                    )}
                   </td>
                   <td className="px-3 py-2.5 whitespace-nowrap">
                     <span className={`text-[0.65rem] ${
@@ -480,18 +492,22 @@ export default function MuseumAdmin() {
                     </span>
                   </td>
                   <td className="px-3 py-2.5 text-right whitespace-nowrap">
-                    <button
-                      onClick={() => startEdit(cam)}
-                      className="px-2 py-0.5 text-[0.68rem] text-lime/60 hover:text-lime transition-colors duration-200 mr-2"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteCamera(cam.id)}
-                      className="px-2 py-0.5 text-[0.68rem] text-red-400/40 hover:text-red-400 transition-colors duration-200"
-                    >
-                      Delete
-                    </button>
+                    {canEdit && (
+                      <button
+                        onClick={() => startEdit(cam)}
+                        className="px-2 py-0.5 text-[0.68rem] text-lime/60 hover:text-lime transition-colors duration-200 mr-2"
+                      >
+                        Edit
+                      </button>
+                    )}
+                    {canDelete && (
+                      <button
+                        onClick={() => handleDeleteCamera(cam.id)}
+                        className="px-2 py-0.5 text-[0.68rem] text-red-400/40 hover:text-red-400 transition-colors duration-200"
+                      >
+                        Delete
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -533,12 +549,14 @@ export default function MuseumAdmin() {
                         className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-200"
                         loading="lazy"
                       />
-                      <button
-                        onClick={() => handleDeletePhoto(cam.id, filename, 'gallery')}
-                        className="absolute top-0.5 right-0.5 w-4 h-4 bg-dark/80 text-red-400/60 hover:text-red-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-[0.6rem]"
-                      >
-                        &times;
-                      </button>
+                      {canDelete && (
+                        <button
+                          onClick={() => handleDeletePhoto(cam.id, filename, 'gallery')}
+                          className="absolute top-0.5 right-0.5 w-4 h-4 bg-dark/80 text-red-400/60 hover:text-red-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-[0.6rem]"
+                        >
+                          &times;
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -556,12 +574,14 @@ export default function MuseumAdmin() {
                         className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-200"
                         loading="lazy"
                       />
-                      <button
-                        onClick={() => handleDeletePhoto(cam.id, filename, 'sample')}
-                        className="absolute top-0.5 right-0.5 w-4 h-4 bg-dark/80 text-red-400/60 hover:text-red-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-[0.6rem]"
-                      >
-                        &times;
-                      </button>
+                      {canDelete && (
+                        <button
+                          onClick={() => handleDeletePhoto(cam.id, filename, 'sample')}
+                          className="absolute top-0.5 right-0.5 w-4 h-4 bg-dark/80 text-red-400/60 hover:text-red-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-[0.6rem]"
+                        >
+                          &times;
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>

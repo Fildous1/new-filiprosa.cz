@@ -13,11 +13,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: npm install
+    # Assuming the site is already built
+    #- name: Install dependencies
+    #  run: npm install
 
-    - name: Build project
-      run: npm run build
+    #- name: Build project
+    #  run: npm run build
 
     - name: Deploy to Production via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4

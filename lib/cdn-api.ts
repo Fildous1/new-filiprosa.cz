@@ -29,6 +29,7 @@ export interface GalleryImage {
   caption: { cs: string; en: string }
   featured?: boolean
   analog?: boolean
+  year?: number
 }
 
 export interface GalleryAlbum {

@@ -133,7 +133,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Magazine
     'magazine.heading': 'Nerovný Rosník',
-    'magazine.description': 'Nerovný Rosník je mnou vytvořený časopis, který obsahuje nejrůznější úvahy, články a\u00A0průzkumy spojené s mými zájmy. Původně se jednalo jenom o\u00A0úkol do\u00A0češtiny, ale po\u00A0ohlasech, které jsem dostal jsem se rozhodl vydat i\u00A0další.',
+    'magazine.description': 'Nerovný Rosník je mnou vytvořený časopis, který obsahuje nejrůznější úvahy, články a\u00A0průzkumy spojené s mými zájmy. Původně se jednalo jenom o\u00A0úkol do\u00A0češtiny, ale po\u00A0ohlasech, které jsem dostal jsem se rozhodl vydat i\u00A0další. Slovo do tajenky: AVANTGARDA',
     'magazine.download': 'Stáhnout PDF',
     'magazine.view': 'Zobrazit',
     'magazine.back': 'Zpět',

@@ -186,7 +186,7 @@ export async function saveUsersToCdn(manifest: UsersManifest): Promise<void> {
   const stamped = { ...manifest, updatedAt: Date.now() }
   const token = sessionStorage.getItem('__fr_admin_auth') || ''
 
-  const res = await fetch(`${CDN_URL}api/save-users.php`, {
+  const res = await fetch(`${CDN_URL}api/save-users`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,

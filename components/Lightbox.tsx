@@ -21,21 +21,47 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
-  const [animating, setAnimating] = useState(false)
   const dragStart = useRef({ x: 0, y: 0, panX: 0, panY: 0 })
   const didDrag = useRef(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
   const lastTouchDist = useRef<number | null>(null)
-  const animTimeout = useRef<ReturnType<typeof setTimeout>>(undefined)
+
+  // Live refs for zoom/pan to avoid stale closures in RAF-driven handlers
+  const zoomRef = useRef(zoom)
+  const panRef = useRef(pan)
+  zoomRef.current = zoom
+  panRef.current = pan
+
+  // Track whether we're in a smooth (programmatic) transition vs drag/wheel
+  const smoothRef = useRef(false)
+  const smoothTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const isZoomed = zoom > 1
 
-  // Trigger smooth transition for programmatic zoom changes
+  const applyTransform = useCallback(() => {
+    if (!imgRef.current) return
+    const z = zoomRef.current
+    const p = panRef.current
+    imgRef.current.style.transform = `scale(${z}) translate(${p.x / z}px, ${p.y / z}px)`
+  }, [])
+
   const triggerSmooth = useCallback(() => {
-    setAnimating(true)
-    if (animTimeout.current) clearTimeout(animTimeout.current)
-    animTimeout.current = setTimeout(() => setAnimating(false), 380)
+    smoothRef.current = true
+    if (imgRef.current) {
+      imgRef.current.style.transition = 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)'
+    }
+    if (smoothTimer.current) clearTimeout(smoothTimer.current)
+    smoothTimer.current = setTimeout(() => {
+      smoothRef.current = false
+      if (imgRef.current) imgRef.current.style.transition = 'none'
+    }, 380)
+  }, [])
+
+  const clearSmooth = useCallback(() => {
+    smoothRef.current = false
+    if (imgRef.current) imgRef.current.style.transition = 'none'
+    if (smoothTimer.current) clearTimeout(smoothTimer.current)
   }, [])
 
   // Check if a point is inside the visible (zoomed) image area
@@ -49,14 +75,35 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
     triggerSmooth()
     setZoom(1)
     setPan({ x: 0, y: 0 })
-  }, [triggerSmooth])
+    panRef.current = { x: 0, y: 0 }
+    zoomRef.current = 1
+    applyTransform()
+  }, [triggerSmooth, applyTransform])
 
   // Reset zoom when changing images
   useEffect(() => {
     setZoom(1)
     setPan({ x: 0, y: 0 })
-    setAnimating(false)
-  }, [currentIndex])
+    panRef.current = { x: 0, y: 0 }
+    zoomRef.current = 1
+    clearSmooth()
+    if (imgRef.current) {
+      imgRef.current.style.transform = 'scale(1) translate(0px, 0px)'
+      imgRef.current.style.willChange = 'auto'
+    }
+  }, [currentIndex, clearSmooth])
+
+  // Sync willChange based on zoom
+  useEffect(() => {
+    if (imgRef.current) {
+      imgRef.current.style.willChange = zoom > 1 ? 'transform' : 'auto'
+    }
+  }, [zoom])
+
+  // Apply transform whenever zoom/pan state changes (for programmatic changes)
+  useEffect(() => {
+    applyTransform()
+  }, [zoom, pan, applyTransform])
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') { resetZoom(); onClose() }
@@ -73,14 +120,14 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
     if (e.key === '0') resetZoom()
   }, [onClose, onPrev, onNext, isZoomed, resetZoom, triggerSmooth])
 
-  // Keyboard handler — separate effect so scroll lock doesn't re-run on every isZoomed change
+  // Keyboard handler
   useEffect(() => {
     if (!isOpen) return
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isOpen, handleKeyDown])
 
-  // Scroll lock — only runs when isOpen changes, not on every render
+  // Scroll lock — only runs when isOpen changes
   const savedScrollY = useRef(0)
   useEffect(() => {
     if (isOpen) {
@@ -111,29 +158,29 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
         document.body.style.right = ''
         document.body.style.width = ''
         document.body.style.overscrollBehavior = ''
-        // Restore instantly — no visible scroll animation
         window.scrollTo({ top: y, behavior: 'instant' as ScrollBehavior })
       }
     }
   }, [isOpen])
 
-  // Clean up animation timeout
+  // Clean up timer
   useEffect(() => {
-    return () => { if (animTimeout.current) clearTimeout(animTimeout.current) }
+    return () => { if (smoothTimer.current) clearTimeout(smoothTimer.current) }
   }, [])
 
-  // Mouse wheel zoom — no transition for continuous scrolling
+  // Mouse wheel zoom — direct DOM update, no transition
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    setAnimating(false)
+    clearSmooth()
     const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP
     setZoom(z => {
       const newZoom = Math.min(Math.max(z + delta, MIN_ZOOM), MAX_ZOOM)
-      if (newZoom === 1) setPan({ x: 0, y: 0 })
+      if (newZoom === 1) { setPan({ x: 0, y: 0 }); panRef.current = { x: 0, y: 0 } }
+      zoomRef.current = newZoom
       return newZoom
     })
-  }, [])
+  }, [clearSmooth])
 
   // Double-click to toggle zoom
   const handleDoubleClick = useCallback((e: React.MouseEvent) => {
@@ -153,19 +200,16 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
     }
   }, [isZoomed, triggerSmooth])
 
-  // Single click on image: toggle zoom (zoom in at 100%, zoom out when zoomed)
+  // Single click on image: toggle zoom
   const handleImageClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
-    // If user was dragging, ignore this click
     if (didDrag.current) return
 
     triggerSmooth()
     if (isZoomed) {
-      // Click to unzoom
       setZoom(1)
       setPan({ x: 0, y: 0 })
     } else {
-      // Click to zoom to 3x centered on click point
       setZoom(3)
       const rect = containerRef.current?.getBoundingClientRect()
       if (rect) {
@@ -176,35 +220,38 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
     }
   }, [isZoomed, triggerSmooth])
 
-  // Mouse drag for panning
+  // Mouse drag for panning — direct DOM manipulation for performance
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (!isZoomed) return
+    if (zoomRef.current <= 1) return
     e.preventDefault()
     e.stopPropagation()
     didDrag.current = false
     setIsDragging(true)
-    setAnimating(false)
-    dragStart.current = { x: e.clientX, y: e.clientY, panX: pan.x, panY: pan.y }
-  }, [isZoomed, pan])
+    clearSmooth()
+    dragStart.current = { x: e.clientX, y: e.clientY, panX: panRef.current.x, panY: panRef.current.y }
+  }, [clearSmooth])
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!isDragging) return
     e.preventDefault()
     const dx = e.clientX - dragStart.current.x
     const dy = e.clientY - dragStart.current.y
-    // Mark as a real drag if moved beyond threshold
     if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
       didDrag.current = true
     }
-    setPan({
-      x: dragStart.current.panX + dx,
-      y: dragStart.current.panY + dy,
-    })
-  }, [isDragging])
+    // Update ref + DOM directly — skip React state during drag
+    const newPan = { x: dragStart.current.panX + dx, y: dragStart.current.panY + dy }
+    panRef.current = newPan
+    applyTransform()
+  }, [isDragging, applyTransform])
 
   const handleMouseUp = useCallback(() => {
+    if (isDragging) {
+      // Commit final pan position to React state
+      setPan({ ...panRef.current })
+    }
     setIsDragging(false)
-  }, [])
+  }, [isDragging])
 
   // Touch handlers
   const getTouchDistance = (touches: React.TouchList) => {
@@ -217,42 +264,46 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
     if (e.touches.length === 2) {
       e.preventDefault()
       lastTouchDist.current = getTouchDistance(e.touches)
-    } else if (e.touches.length === 1 && isZoomed) {
+    } else if (e.touches.length === 1 && zoomRef.current > 1) {
       didDrag.current = false
-      dragStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, panX: pan.x, panY: pan.y }
+      dragStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, panX: panRef.current.x, panY: panRef.current.y }
       setIsDragging(true)
-      setAnimating(false)
+      clearSmooth()
     }
-  }, [isZoomed, pan])
+  }, [clearSmooth])
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
     if (e.touches.length === 2 && lastTouchDist.current !== null) {
       e.preventDefault()
+      clearSmooth()
       const newDist = getTouchDistance(e.touches)
       const scale = newDist / lastTouchDist.current
       setZoom(z => {
         const nz = Math.min(Math.max(z * scale, MIN_ZOOM), MAX_ZOOM)
-        if (nz === 1) setPan({ x: 0, y: 0 })
+        if (nz === 1) { setPan({ x: 0, y: 0 }); panRef.current = { x: 0, y: 0 } }
+        zoomRef.current = nz
         return nz
       })
       lastTouchDist.current = newDist
-    } else if (e.touches.length === 1 && isDragging && isZoomed) {
+    } else if (e.touches.length === 1 && isDragging && zoomRef.current > 1) {
       const dx = e.touches[0].clientX - dragStart.current.x
       const dy = e.touches[0].clientY - dragStart.current.y
       if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
         didDrag.current = true
       }
-      setPan({
-        x: dragStart.current.panX + dx,
-        y: dragStart.current.panY + dy,
-      })
+      const newPan = { x: dragStart.current.panX + dx, y: dragStart.current.panY + dy }
+      panRef.current = newPan
+      applyTransform()
     }
-  }, [isDragging, isZoomed])
+  }, [isDragging, clearSmooth, applyTransform])
 
   const handleTouchEnd = useCallback(() => {
     lastTouchDist.current = null
+    if (isDragging) {
+      setPan({ ...panRef.current })
+    }
     setIsDragging(false)
-  }, [])
+  }, [isDragging])
 
   const handleClose = useCallback(() => {
     resetZoom()
@@ -272,9 +323,6 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
   }, [triggerSmooth])
 
   const btnClass = "w-10 h-10 flex items-center justify-center text-offwhite/40 hover:text-lime transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime"
-
-  // Smooth transition for programmatic zoom, none during drag/wheel
-  const imgTransition = (!isDragging && animating) ? 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)' : 'none'
 
   return (
     <AnimatePresence>
@@ -361,7 +409,7 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
             </button>
           )}
 
-          {/* Image container — zoom & pan applied directly via style */}
+          {/* Image container — zoom & pan applied directly via ref */}
           <div
             ref={containerRef}
             className="lightbox-container relative z-1 flex items-center justify-center select-none"
@@ -388,7 +436,6 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
               if (isInsideImage(e.clientX, e.clientY)) {
                 handleImageClick(e)
               }
-              // If not on image, let it bubble to backdrop → close
             }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -403,7 +450,7 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
               style={{
                 transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`,
                 transformOrigin: 'center center',
-                transition: imgTransition,
+                transition: 'none',
                 willChange: zoom > 1 ? 'transform' : 'auto',
               }}
               draggable={false}

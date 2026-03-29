@@ -210,7 +210,7 @@ export default function GalleryAdmin() {
               ...a,
               images: a.images.map((img, i) =>
                 i === editingImage._index
-                  ? { filename: editingImage.filename, caption: editingImage.caption, featured: editingImage.featured, analog: editingImage.analog }
+                  ? { filename: editingImage.filename, caption: editingImage.caption, featured: editingImage.featured, analog: editingImage.analog, year: editingImage.year }
                   : img
               ),
             }
@@ -319,7 +319,7 @@ export default function GalleryAdmin() {
 
         // Watermark text
         const text = '@fildous1'
-        const fontSize = 45
+        const fontSize = 40
         // Load Montserrat SemiBold via FontFace API
         try {
           const font = new FontFace('Montserrat', 'url(https://fonts.gstatic.com/s/montserrat/v26/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCuM70w-Y3tcoqK5.woff2)', { weight: '600' })
@@ -354,7 +354,7 @@ export default function GalleryAdmin() {
           a.click()
           document.body.removeChild(a)
           URL.revokeObjectURL(dlUrl)
-        }, 'image/jpeg', 0.92)
+        }, 'image/jpeg', 1)
 
         bitmap.close()
       } catch (err) {
@@ -422,12 +422,14 @@ export default function GalleryAdmin() {
             </p>
           </div>
           <div className="flex gap-2">
-            <button
-              onClick={() => setShowAddAlbum(true)}
-              className="px-4 py-1.5 text-[0.75rem] font-medium text-lime border border-lime/30 rounded-[2px] hover:bg-lime/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-lime/50 active:scale-[0.97] transition-colors duration-200"
-            >
-              + Album
-            </button>
+            {canEdit && (
+              <button
+                onClick={() => setShowAddAlbum(true)}
+                className="px-4 py-1.5 text-[0.75rem] font-medium text-lime border border-lime/30 rounded-[2px] hover:bg-lime/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-lime/50 active:scale-[0.97] transition-colors duration-200"
+              >
+                + Album
+              </button>
+            )}
           </div>
         </div>
 
@@ -575,19 +577,23 @@ export default function GalleryAdmin() {
               <p className="text-[0.72rem] text-muted mt-0.5">{activeAlbum.description.en}</p>
             </div>
             <div className="flex gap-2">
-              <button
-                onClick={() => startEditAlbum(activeAlbum)}
-                className="px-3 py-1.5 text-[0.72rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-offwhite hover:border-white/20 transition-colors duration-200"
-              >
-                Edit Album
-              </button>
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-                className="px-3 py-1.5 text-[0.72rem] font-medium text-lime border border-lime/20 rounded-[2px] hover:bg-lime/10 disabled:opacity-40 transition-colors duration-200"
-              >
-                {uploading ? 'Uploading...' : 'Upload Photos'}
-              </button>
+              {canEdit && (
+                <button
+                  onClick={() => startEditAlbum(activeAlbum)}
+                  className="px-3 py-1.5 text-[0.72rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-offwhite hover:border-white/20 transition-colors duration-200"
+                >
+                  Edit Album
+                </button>
+              )}
+              {canUpload && (
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="px-3 py-1.5 text-[0.72rem] font-medium text-lime border border-lime/20 rounded-[2px] hover:bg-lime/10 disabled:opacity-40 transition-colors duration-200"
+                >
+                  {uploading ? 'Uploading...' : 'Upload Photos'}
+                </button>
+              )}
               {uploading && uploadProgress && (
                 <UploadProgressBar loaded={uploadProgress.loaded} total={uploadProgress.total} />
               )}
@@ -599,7 +605,7 @@ export default function GalleryAdmin() {
                 onChange={handleUploadPhotos}
                 className="hidden"
               />
-              {activeAlbum.images.length === 0 && (
+              {canDelete && activeAlbum.images.length === 0 && (
                 <button
                   onClick={() => handleDeleteAlbum(activeAlbum.slug)}
                   className="px-3 py-1.5 text-[0.72rem] font-medium text-red-400/60 border border-red-500/20 rounded-[2px] hover:bg-red-500/10 transition-colors duration-200"
@@ -623,27 +629,33 @@ export default function GalleryAdmin() {
             {selected.size > 0 && (
               <>
                 <span className="text-[0.72rem] text-muted">{selected.size} selected</span>
-                <button
-                  onClick={handleDeleteSelected}
-                  disabled={saving}
-                  className="px-3 py-1 text-[0.72rem] font-medium text-red-400/80 border border-red-500/20 rounded-[2px] hover:bg-red-500/10 disabled:opacity-40 transition-colors duration-200"
-                >
-                  Delete Selected
-                </button>
-                <button
-                  onClick={handleToggleAnalogSelected}
-                  disabled={saving}
-                  className="px-3 py-1 text-[0.72rem] font-medium text-offwhite/60 border border-white/[0.07] rounded-[2px] hover:text-lime hover:border-lime/20 disabled:opacity-40 transition-colors duration-200"
-                >
-                  {activeAlbum && Array.from(selected).every(i => activeAlbum.images[i]?.analog) ? 'Unmark Analog' : 'Mark Analog'}
-                </button>
-                <button
-                  onClick={handleToggleFeaturedSelected}
-                  disabled={saving}
-                  className="px-3 py-1 text-[0.72rem] font-medium text-offwhite/60 border border-white/[0.07] rounded-[2px] hover:text-lime hover:border-lime/20 disabled:opacity-40 transition-colors duration-200"
-                >
-                  {activeAlbum && Array.from(selected).every(i => activeAlbum.images[i]?.featured) ? 'Unmark Featured' : 'Mark Featured'}
-                </button>
+                {canDelete && (
+                  <button
+                    onClick={handleDeleteSelected}
+                    disabled={saving}
+                    className="px-3 py-1 text-[0.72rem] font-medium text-red-400/80 border border-red-500/20 rounded-[2px] hover:bg-red-500/10 disabled:opacity-40 transition-colors duration-200"
+                  >
+                    Delete Selected
+                  </button>
+                )}
+                {canEdit && (
+                  <button
+                    onClick={handleToggleAnalogSelected}
+                    disabled={saving}
+                    className="px-3 py-1 text-[0.72rem] font-medium text-offwhite/60 border border-white/[0.07] rounded-[2px] hover:text-lime hover:border-lime/20 disabled:opacity-40 transition-colors duration-200"
+                  >
+                    {activeAlbum && Array.from(selected).every(i => activeAlbum.images[i]?.analog) ? 'Unmark Analog' : 'Mark Analog'}
+                  </button>
+                )}
+                {canEdit && (
+                  <button
+                    onClick={handleToggleFeaturedSelected}
+                    disabled={saving}
+                    className="px-3 py-1 text-[0.72rem] font-medium text-offwhite/60 border border-white/[0.07] rounded-[2px] hover:text-lime hover:border-lime/20 disabled:opacity-40 transition-colors duration-200"
+                  >
+                    {activeAlbum && Array.from(selected).every(i => activeAlbum.images[i]?.featured) ? 'Unmark Featured' : 'Mark Featured'}
+                  </button>
+                )}
                 <button
                   onClick={handleDownloadSelected}
                   className="px-3 py-1 text-[0.72rem] font-medium text-lime border border-lime/20 rounded-[2px] hover:bg-lime/10 transition-colors duration-200"
@@ -698,18 +710,22 @@ export default function GalleryAdmin() {
                         </svg>
                       )}
                     </div>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setEditingImage({ ...img, _albumSlug: activeAlbum.slug, _index: i }) }}
-                      className="px-1.5 py-0.5 text-[0.5rem] font-medium text-lime bg-dark/80 rounded-[2px] hover:bg-dark"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleDeleteImage(activeAlbum.slug, i) }}
-                      className="px-1.5 py-0.5 text-[0.5rem] font-medium text-red-400 bg-dark/80 rounded-[2px] hover:bg-dark"
-                    >
-                      Del
-                    </button>
+                    {canEdit && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setEditingImage({ ...img, _albumSlug: activeAlbum.slug, _index: i }) }}
+                        className="px-1.5 py-0.5 text-[0.5rem] font-medium text-lime bg-dark/80 rounded-[2px] hover:bg-dark"
+                      >
+                        Edit
+                      </button>
+                    )}
+                    {canDelete && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleDeleteImage(activeAlbum.slug, i) }}
+                        className="px-1.5 py-0.5 text-[0.5rem] font-medium text-red-400 bg-dark/80 rounded-[2px] hover:bg-dark"
+                      >
+                        Del
+                      </button>
+                    )}
                   </div>
                   {/* Bottom badges — always visible */}
                   <div className="absolute bottom-0 left-0 right-0 flex items-center gap-0.5 p-1">
@@ -734,12 +750,14 @@ export default function GalleryAdmin() {
         ) : activeAlbum && activeSlug !== '__all__' ? (
           <div className="px-5 py-8 bg-charcoal border border-white/[0.05] rounded-[3px] text-center">
             <p className="text-[0.8rem] text-muted">No images in this album.</p>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="mt-3 px-4 py-1.5 text-[0.75rem] font-medium text-lime border border-lime/20 rounded-[2px] hover:bg-lime/10 transition-colors duration-200"
-            >
-              Upload Photos
-            </button>
+            {canUpload && (
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="mt-3 px-4 py-1.5 text-[0.75rem] font-medium text-lime border border-lime/20 rounded-[2px] hover:bg-lime/10 transition-colors duration-200"
+              >
+                Upload Photos
+              </button>
+            )}
           </div>
         ) : null}
 
@@ -805,6 +823,16 @@ export default function GalleryAdmin() {
                   </button>
                   <span className="text-[0.75rem] text-muted">Analog</span>
                 </label>
+                <div>
+                  <label className="block text-[0.68rem] text-muted/50 uppercase tracking-wide mb-1">Year</label>
+                  <input
+                    type="number"
+                    placeholder="e.g. 2024"
+                    value={editingImage.year ?? ''}
+                    onChange={e => setEditingImage(p => p ? { ...p, year: e.target.value ? parseInt(e.target.value) : undefined } : null)}
+                    className="w-full px-3 py-2 bg-dark border border-white/[0.08] rounded-[2px] text-[0.8rem] text-offwhite placeholder:text-muted/30 focus:outline-none focus:border-lime/40"
+                  />
+                </div>
               </div>
 
               <div className="flex gap-2 mt-5">

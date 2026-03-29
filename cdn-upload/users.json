@@ -1,16 +1,39 @@
 {
-  "users": [
-    {
-      "username": "admin",
-      "passwordHash": "525fef49091c09d5d03802048062ce398bef97fa9379f1dfcb4982fac9f64cdc",
-      "salt": "49e43a7ab4365abcae01750c14f32c1e5a15cf5c7807132e8b092bce40139e07",
-      "role": "admin",
-      "permissions": {
-        "gallery": ["upload", "delete", "edit"],
-        "museum": ["upload", "delete", "edit"],
-        "rosnik": ["upload", "delete", "edit"]
-      }
-    }
-  ],
-  "updatedAt": 1774437912260
+    "users": [
+        {
+            "username": "admin",
+            "passwordHash": "337cb2228d4207e6f1503d1aedc27b9a2700c5ca50d599d74aa6fbdf17781869",
+            "salt": "a3385293815ec2336099ca22596c78b04323736173b5d06ceed00d86b2ebbc10",
+            "role": "admin",
+            "permissions": {
+                "gallery": [
+                    "upload",
+                    "delete",
+                    "edit"
+                ],
+                "museum": [
+                    "upload",
+                    "delete",
+                    "edit"
+                ],
+                "rosnik": [
+                    "upload",
+                    "delete",
+                    "edit"
+                ]
+            }
+        },
+        {
+            "username": "guest",
+            "passwordHash": "4f5def1bff0cde4af6a1ee4f5e91a9923a09b473f0ea8c89383ca3470ca57147",
+            "salt": "d9227434501f5627232ecde0d13694302be9ba587267035514ea3ef5bfb06832",
+            "role": "editor",
+            "permissions": {
+                "gallery": [],
+                "museum": [],
+                "rosnik": []
+            }
+        }
+    ],
+    "updatedAt": 1774643635249
 }

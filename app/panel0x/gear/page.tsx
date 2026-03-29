@@ -11,6 +11,7 @@ import {
   type GearManifest,
 } from '@/lib/cdn-api'
 import { useToast } from '@/components/admin/Toast'
+import { hasPermission } from '@/lib/auth'
 
 const SECTIONS = [
   { key: 'analog', label: 'Analog Bodies' },
@@ -29,6 +30,8 @@ export default function GearAdmin() {
   const { toast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [activeSection, setActiveSection] = useState<string | null>(null)
+  const canUpload = hasPermission('gallery', 'upload')
+  const canDelete = hasPermission('gallery', 'delete')
 
   useEffect(() => {
     fetchGear()
@@ -136,14 +139,16 @@ export default function GearAdmin() {
                 )}
                 <p className="text-[0.82rem] text-offwhite font-medium flex-1">{s.label}</p>
                 <div className="flex gap-2 flex-shrink-0">
-                  <button
-                    onClick={() => triggerUpload(s.key)}
-                    disabled={uploading === s.key}
-                    className="px-3 py-1 text-[0.72rem] font-medium text-lime border border-lime/20 rounded-[2px] hover:bg-lime/10 disabled:opacity-40 transition-colors duration-200"
-                  >
-                    {uploading === s.key ? '...' : imageFile ? 'Replace' : 'Upload'}
-                  </button>
-                  {imageFile && (
+                  {canUpload && (
+                    <button
+                      onClick={() => triggerUpload(s.key)}
+                      disabled={uploading === s.key}
+                      className="px-3 py-1 text-[0.72rem] font-medium text-lime border border-lime/20 rounded-[2px] hover:bg-lime/10 disabled:opacity-40 transition-colors duration-200"
+                    >
+                      {uploading === s.key ? '...' : imageFile ? 'Replace' : 'Upload'}
+                    </button>
+                  )}
+                  {canDelete && imageFile && (
                     <button
                       onClick={() => handleRemove(s.key)}
                       disabled={uploading === s.key}

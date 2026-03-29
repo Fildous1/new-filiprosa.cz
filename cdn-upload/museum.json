@@ -1,0 +1,576 @@
+{
+    "cameras": [
+        {
+            "id": 1,
+            "brand": "Carl Zeiss",
+            "model": "Ikon nettar 515/2",
+            "description": {
+                "cs": "Je to verze, která fotí na formát 6x9, který mě velmi zajímá. Zatím jsem na něj vyfotil pouze 1 film. Ukázky z něj můžete vidět níže. Bohužel to vypadá, že se mi buď nepodařilo přijatelně zaostřit ani jeden snímek. Buď jsem naprosto marný a nebo má nějakou závadu. Naštěstí všechny časy na něm fungují dobře. Měch je nepoškozený a celkově je v dobrém stavu.",
+                "en": "This is the version that shoots on the 6x9 format, which I find very interesting. So far I've only shot 1 roll, but I'm sure I'll be very happy with it."
+            },
+            "type": "Foldable",
+            "sensor": "6x9",
+            "isAnalog": true,
+            "hasFlash": false,
+            "isWorking": true,
+            "releaseYear": 1933,
+            "releaseCountry": {
+                "cs": "Velká Británie",
+                "en": "Great Britain"
+            },
+            "acquisitionYear": 2025,
+            "purchasePrice": 1500,
+            "note": {
+                "cs": "z Bazoše",
+                "en": "from Bazos (Czech marketplace)"
+            },
+            "link": "https://camera-wiki.org/wiki/Nettar#Nettar_515.2F2",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "Min-250729-140206.jpg",
+                "Min-250729-140342.jpg",
+                "Min-250729-140356.jpg",
+                "Min-250729-140408.jpg",
+                "Min-250729-140502.jpg",
+                "Min-250729-140623.jpg",
+                "Min-250729-141007.jpg"
+            ],
+            "sampleImages": [
+                "camera-1.jpg",
+                "frame-03.jpg",
+                "frame-06.jpg"
+            ]
+        },
+        {
+            "id": 2,
+            "brand": "Kodak",
+            "model": "Brownie No. 2 Model F",
+            "description": {
+                "cs": "Je to sice jeden z nejnovějších modelů, ale je to zástupce nejstarší řady fotoaparátů v mé sbírce. Kodak Brownie fotoaparáty byly první, které umožnily běžným lidem pořizovat fotky. Do té doby bylo focení záležitost pouze fotografů a to většinou v ateliérech, což bylo i poměrně drahé.",
+                "en": "The Brownie was a line of the first affordable cameras for ordinary people. This model is from 1935 and I got it in Brighton."
+            },
+            "type": "Box",
+            "sensor": "6x9",
+            "isAnalog": true,
+            "hasFlash": false,
+            "isWorking": true,
+            "releaseYear": 1935,
+            "releaseCountry": {
+                "cs": "Velká Británie",
+                "en": "Great Britain"
+            },
+            "acquisitionYear": 2025,
+            "purchasePrice": 180,
+            "note": {
+                "cs": "ze Snoopers Paradise v Brightonu za 6 £",
+                "en": "from Snoopers Paradise in Brighton for 6 GBP"
+            },
+            "link": "https://cameragocamera.com/2019/07/27/kodak-box-brownie-no-2/",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "brownie-logo-white.png",
+                "Min-250729-143725.jpg",
+                "Min-250729-143745.jpg",
+                "Min-250729-143757.jpg",
+                "Min-250729-143827.jpg",
+                "Min-250729-143846.jpg"
+            ],
+            "sampleImages": [
+                "photo-1.jpg",
+                "photo-2.jpg"
+            ]
+        },
+        {
+            "id": 3,
+            "brand": "Lubitel",
+            "model": "no. 2",
+            "description": {
+                "cs": "Sovětský výtvor. Dostal jsem jej od tety. Nejsem fanoušek sovětských foťáků, ale tenhle je přijatelný. Trochu připomíná český Flexaret, i když ten se mi zdá mnohem kvalitnější.",
+                "en": "A Soviet camera, somewhat similar to the Czech Flexaret. I received it as a gift."
+            },
+            "type": "TLR",
+            "sensor": "6x6",
+            "isAnalog": true,
+            "hasFlash": false,
+            "isWorking": true,
+            "releaseYear": 1954,
+            "releaseCountry": {
+                "cs": "Sovětský svaz",
+                "en": "Soviet Union"
+            },
+            "acquisitionYear": 2025,
+            "purchasePrice": 0,
+            "note": {
+                "cs": "od Hely Bartoníkové na Jihlávce",
+                "en": "gift from Hela Bartonikova at Jihlavka"
+            },
+            "link": "https://camera-wiki.org/wiki/Lubitel_2",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "Min-250729-133037.jpg",
+                "Min-250729-133113.jpg",
+                "Min-250729-133126.jpg",
+                "Min-250729-133145.jpg",
+                "Min-250729-133203.jpg",
+                "Min-250729-133418.jpg",
+                "Min-250729-134800.jpg",
+                "Min-250729-135007.jpg",
+                "Min-250729-135123.jpg",
+                "Min-250729-135232.jpg"
+            ]
+        },
+        {
+            "id": 4,
+            "brand": "Pentacon",
+            "model": "Six TL",
+            "description": {
+                "cs": "Toto jeden z mých nejoblíbenějších kousků. Zvuk uzávěrky je naprosto dokonalý. Líbí se mi i jeho waist-level viewfinder. Sice je to hrozně nepraktické, takže většinou ho nepoužívám u pasu, ale hrozně se mi to líbí. Je zajímavé s odstupem vidět jak ta fotka bude vypadat.",
+                "en": "One of my favorites. The first medium format SLR in my collection. It has a waist-level viewfinder and renders beautifully."
+            },
+            "type": "SLR",
+            "sensor": "6x6",
+            "isAnalog": true,
+            "hasFlash": false,
+            "isWorking": true,
+            "releaseYear": 1968,
+            "releaseCountry": {
+                "cs": "Východní Německo",
+                "en": "East Germany"
+            },
+            "acquisitionYear": 2025,
+            "purchasePrice": 3300,
+            "note": {
+                "cs": "z Aukra, první medium format SLR",
+                "en": "from Aukro, first medium format SLR"
+            },
+            "link": "https://en.wikipedia.org/wiki/Pentacon_Six",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "Min-250729-141320.jpg",
+                "Min-250729-141505.jpg",
+                "Min-250729-141611.jpg",
+                "Min-250729-141705.jpg",
+                "Min-250729-142027.jpg",
+                "Min-250729-142120.jpg",
+                "Min-250729-142444.jpg"
+            ],
+            "sampleImages": [
+                "frame01.jpg",
+                "frame-02.jpg",
+                "frame-03.jpg",
+                "frame-05.jpg",
+                "frame-10.jpg",
+                "frame12.jpg"
+            ]
+        },
+        {
+            "id": 5,
+            "brand": "Olympus",
+            "model": "Trip AF S-2",
+            "description": {
+                "cs": "Tento používala moje babička na začátku milénia. Zatím jsem ho nevyzkoušel, ale mám to v plánu. Není moc vybavený funkcemi, ale vypadá to, že je kvalitně zpracovaný.",
+                "en": "My grandmother's camera. Simple, but well-made Point & Shoot."
+            },
+            "type": "Point & Shoot",
+            "sensor": "35mm",
+            "isAnalog": true,
+            "hasFlash": true,
+            "isWorking": true,
+            "releaseYear": 1992,
+            "releaseCountry": {
+                "cs": "Celosvětově",
+                "en": "Worldwide"
+            },
+            "acquisitionYear": 2024,
+            "purchasePrice": 0,
+            "note": {
+                "cs": "od babičky Jarmilky",
+                "en": "from grandmother Jarmilka"
+            },
+            "link": "https://cameragocamera.com/2022/11/13/olympus-trip-af-s-2/",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "Min-250729-143555.jpg",
+                "Min-250729-143642.jpg",
+                "Min-250729-143707.jpg"
+            ]
+        },
+        {
+            "id": 6,
+            "brand": "Kirin",
+            "model": "Tanrei Can Cam",
+            "description": {
+                "cs": "Toto je opravdu kuriozní zařízení. Na internetu je o něm pramálo informací. Byl to totiž reklamní předmět, který si společně s foťákem ve tvaru fotbalového míče přivezla moje teta z Japonska.",
+                "en": "A promotional item from Japan. A very rare camera in the shape of a beer can."
+            },
+            "type": "Point & Shoot",
+            "sensor": "35mm",
+            "isAnalog": true,
+            "hasFlash": true,
+            "isWorking": true,
+            "releaseYear": 1996,
+            "releaseCountry": {
+                "cs": "Japonsko",
+                "en": "Japan"
+            },
+            "acquisitionYear": 2024,
+            "purchasePrice": 0,
+            "note": {
+                "cs": "od katky, z Japonska, propagační předmět",
+                "en": "from Katka, from Japan, promotional item"
+            },
+            "link": "",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "can-1.jpg",
+                "can-2.jpg",
+                "can-3.jpg"
+            ]
+        },
+        {
+            "id": 7,
+            "brand": "JFA",
+            "model": "Soccer ball camera",
+            "description": {
+                "cs": "Stejně jako o druhém fotoaparátu z Japonska, který vlastním toho i o tomto moc nevím. Prodával se ku příležitosti Olympijských her v Japonsku 1996.",
+                "en": "A commemorative camera from the 1996 Olympics in the shape of a soccer ball."
+            },
+            "type": "Point & Shoot",
+            "sensor": "35mm",
+            "isAnalog": true,
+            "hasFlash": true,
+            "isWorking": true,
+            "releaseYear": 1996,
+            "releaseCountry": {
+                "cs": "Japonsko",
+                "en": "Japan"
+            },
+            "acquisitionYear": 2024,
+            "purchasePrice": 0,
+            "note": {
+                "cs": "od katky, z Japonska, propagační předmět",
+                "en": "from Katka, from Japan, promotional item"
+            },
+            "link": "",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "football-1.jpg",
+                "football-2.jpg"
+            ]
+        },
+        {
+            "id": 8,
+            "brand": "Carl Zeiss",
+            "model": "Ikon nettar 515",
+            "description": {
+                "cs": "S tímto fotoaparátem započla moje vášeň pro tyto zajímavé přístroje. Koupil jsem ho na bleším trhu v Brně. Zkoušel jsem na něj v roce 2023 vyfotit 1 film, ale vypadá to, že je čočka nějak poškozená, nebo jsem tehdy ještě nebyl příliš zdatný v umění vyvolávání. Jinak je ale v docela slušném stavu.",
+                "en": "The first camera that sparked my passion for photography. The lens might be damaged, but I still shoot with it."
+            },
+            "type": "Foldable",
+            "sensor": "6x4,5",
+            "isAnalog": true,
+            "hasFlash": false,
+            "isWorking": true,
+            "releaseYear": 1937,
+            "releaseCountry": {
+                "cs": "Velká Británie",
+                "en": "Great Britain"
+            },
+            "acquisitionYear": 2023,
+            "purchasePrice": 400,
+            "note": {
+                "cs": "cena je cca, z blešího trhu v Brně",
+                "en": "from a flea market in Brno"
+            },
+            "link": "https://camera-wiki.org/wiki/Nettar#Nettar_515",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "Min-250729-130159.jpg",
+                "Min-250729-130241.jpg",
+                "Min-250729-130313.jpg",
+                "Min-250729-130328.jpg",
+                "Min-250729-130342.jpg",
+                "Min-250729-130419.jpg",
+                "Min-250729-130535.jpg",
+                "Min-250729-132003.jpg",
+                "Min-250729-132308.jpg",
+                "Min-250729-135620.jpg",
+                "Min-250729-135701.jpg"
+            ],
+            "sampleImages": [
+                "photo-1.jpg",
+                "photo-2.jpg",
+                "photo-3.jpg"
+            ]
+        },
+        {
+            "id": 9,
+            "brand": "Minolta",
+            "model": "Riva Zoom 70W",
+            "description": {
+                "cs": "Tento jsem také koupil na bleším trhu v Brně. Byl to pro mě velmi lukrativní obchod, jelikož ho používal jeden fotograf, kterého jsem už nějakou dobu sledoval na YouTube. Jsem velkým fanouškem toho, kolika funkcemi disponuje včetně zoomu a datování fotek. Bohužel nedávno přestalo fungovat nastavení data a času :(",
+                "en": "Has zoom and a photo dating function. Great deal from a flea market."
+            },
+            "type": "Point & Shoot",
+            "sensor": "35mm",
+            "isAnalog": true,
+            "hasFlash": true,
+            "isWorking": true,
+            "releaseYear": 1995,
+            "releaseCountry": {
+                "cs": "Celosvětově",
+                "en": "Worldwide"
+            },
+            "acquisitionYear": 2023,
+            "purchasePrice": 500,
+            "note": {
+                "cs": "mega deal z blešáku v Brně",
+                "en": "great deal from a flea market in Brno"
+            },
+            "link": "https://camera-wiki.org/wiki/Minolta_Riva_Zoom_70W",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "Min-250729-142938.jpg",
+                "Min-250729-143037.jpg",
+                "Min-250729-143056.jpg",
+                "Min-250729-143113.jpg",
+                "Min-250729-143247.jpg",
+                "Min-250729-143439.jpg"
+            ],
+            "sampleImages": [
+                "photo-1.jpg",
+                "photo-2.jpg",
+                "photo-3.jpg"
+            ]
+        },
+        {
+            "id": 10,
+            "brand": "Canon",
+            "model": "EOS 80D (W)",
+            "description": {
+                "cs": "Jedná se o můj hlavní digitální zrcadlovku, se kterou fotím většinu svých fotek. Koupil jsem si ho za svojí první větší výplatu z brigády v roce 2023. Je už poněkud starší, ale stále více než dostačující.",
+                "en": "My main digital camera. Great for portraits and product photography."
+            },
+            "type": "DSLR",
+            "sensor": "APS-C",
+            "isAnalog": false,
+            "hasFlash": true,
+            "isWorking": true,
+            "releaseYear": 2018,
+            "releaseCountry": {
+                "cs": "Celosvětově",
+                "en": "Worldwide"
+            },
+            "acquisitionYear": 2023,
+            "purchasePrice": 11000,
+            "note": {
+                "cs": "hlavní digitál",
+                "en": "main digital camera"
+            },
+            "link": "https://www.megapixel.cz/canon-eos-80d-telo#section-parameters",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "camera-1.jpg"
+            ],
+            "sampleImages": [
+                "photo-1.jpg",
+                "photo-2.jpg",
+                "photo-3.jpg",
+                "photo-4.jpg",
+                "photo-5.jpg",
+                "photo-6.jpg",
+                "photo-7.jpg",
+                "photo-8.jpg",
+                "photo-9.jpg"
+            ]
+        },
+        {
+            "id": 11,
+            "brand": "Carl Zeiss",
+            "model": "Werra 1",
+            "description": {
+                "cs": "Daroval mi ho můj praděda, který ho ve svých letech sám používal. Je zcela manuální a má závěrku integrovanou do objektivu. Je z Východního Německa, takže je to pravý komunistický zážitek.",
+                "en": "From my grandfather. A manual camera with a shutter in the lens. East German made."
+            },
+            "type": "Rangefinder",
+            "sensor": "35mm",
+            "isAnalog": true,
+            "hasFlash": false,
+            "isWorking": true,
+            "releaseYear": 1954,
+            "releaseCountry": {
+                "cs": "Východní Německo",
+                "en": "East Germany"
+            },
+            "acquisitionYear": 2022,
+            "purchasePrice": 0,
+            "note": {
+                "cs": "",
+                "en": ""
+            },
+            "link": "https://camera-wiki.org/wiki/werra",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "Min-250729-144237.jpg",
+                "Min-250729-144247.jpg",
+                "Min-250729-144300.jpg",
+                "Min-250729-144317.jpg",
+                "Min-250729-144404.jpg"
+            ],
+            "sampleImages": [
+                "photo-1.jpg",
+                "photo-2.jpg",
+                "photo-3.jpg",
+                "photo-4.jpg"
+            ]
+        },
+        {
+            "id": 12,
+            "brand": "Olympus",
+            "model": "Trip AF 51",
+            "description": {
+                "cs": "Používala ho moje mamka, když byla mladá. I když to tak na první pohled nemusí působit, jedná se o kvalitní produkt, který ve své době a tedy i dnes vůbec nebyl a není levný. Bohužel ten můj už nefunguje, jelikož v něm vytekly baterky.",
+                "en": "My mother's camera from her youth. Unfortunately not working due to leaked batteries."
+            },
+            "type": "Point & Shoot",
+            "sensor": "35mm",
+            "isAnalog": true,
+            "hasFlash": true,
+            "isWorking": false,
+            "releaseYear": 2002,
+            "releaseCountry": {
+                "cs": "Celosvětově",
+                "en": "Worldwide"
+            },
+            "acquisitionYear": 2021,
+            "purchasePrice": 0,
+            "note": {
+                "cs": "od mamky, vytekla baterka :(",
+                "en": "from mom, batteries leaked"
+            },
+            "link": "https://www.olympus-global.com/en/news/2002a/nr020611tripafe.html",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "af51-1.jpg",
+                "af51-2.jpg"
+            ]
+        },
+        {
+            "id": 13,
+            "brand": "Canon",
+            "model": "EOS 650",
+            "description": {
+                "cs": "Moje mamka ho našla ve skříni. Odstartoval moji zálibu ve focení. Je to první zrcadlovka od Canonu, takže ostření a funkce nejsou nic moc, ale rozhodně je velmi použitelný a je kvalitně vyrobený.",
+                "en": "The very first Canon EOS ever made. This camera started my hobby. Solid build and great images."
+            },
+            "type": "SLR",
+            "sensor": "35mm",
+            "isAnalog": true,
+            "hasFlash": false,
+            "isWorking": true,
+            "releaseYear": 1987,
+            "releaseCountry": {
+                "cs": "Celosvětově",
+                "en": "Worldwide"
+            },
+            "acquisitionYear": 2020,
+            "purchasePrice": 0,
+            "note": {
+                "cs": "hlavní analog, první EOS ever",
+                "en": "main analog camera, first EOS ever made"
+            },
+            "link": "https://camera-wiki.org/wiki/Canon_EOS_650",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "Min-250729-144823.jpg",
+                "Min-250729-144859.jpg",
+                "Min-250729-144923.jpg",
+                "Min-250729-145000.jpg",
+                "Min-250729-145148.jpg",
+                "Min-250729-145303.jpg"
+            ],
+            "sampleImages": [
+                "photo-1.jpg",
+                "photo-2.jpg",
+                "photo-3.jpg",
+                "photo-4.jpg",
+                "photo-5.jpg"
+            ]
+        },
+        {
+            "id": 14,
+            "brand": "Olympus",
+            "model": "AZ-1 Zoom",
+            "description": {
+                "cs": "Koupil jsem ho na Aukru ve snaze sehnat mojí sestře dárek k narozeninám. Nakonec poslouží mně. Byl součástí velkého balíku napůl funkčních 15 foťáků a tyto tam byly dva, oba funkční. Už jsem na něj vyfotil jeden film a dopadlo to přijatelně až pěkně.",
+                "en": "One of 15 cameras purchased at once. Produced great results on the first roll."
+            },
+            "type": "Point & Shoot",
+            "sensor": "35mm",
+            "isAnalog": true,
+            "hasFlash": true,
+            "isWorking": true,
+            "releaseYear": 1987,
+            "releaseCountry": {
+                "cs": "Celosvětově",
+                "en": "Worldwide"
+            },
+            "acquisitionYear": 2025,
+            "purchasePrice": 10,
+            "link": "https://camera-wiki.org/wiki/Olympus_AZ-1_Zoom_(QD)",
+            "image": "thumb.jpg",
+            "sampleImages": [
+                "frame-01.jpg",
+                "frame-16.jpg",
+                "frame-22.jpg"
+            ]
+        },
+        {
+            "id": 15,
+            "brand": "Canon",
+            "model": "PowerShot G9",
+            "description": {
+                "cs": "Byl to dárek, který jsem dostal Vánoce 2025. Už delší dobu jsem si přál nějaký kvalitnější digitální kompakt. Je sice trochu staršího vydání, ale to mi vůbec nevadí. Je hojně vybaven funkcemi manuálního i automatického nastavení, což mi plně dostačuje.",
+                "en": "Christmas 2025 gift. Older model but feature-rich. Great compact camera."
+            },
+            "type": "Compact",
+            "sensor": "1/1.7\"",
+            "isAnalog": false,
+            "hasFlash": true,
+            "isWorking": true,
+            "releaseYear": 2007,
+            "releaseCountry": {
+                "cs": "Celosvětově",
+                "en": "Worldwide"
+            },
+            "acquisitionYear": 2025,
+            "purchasePrice": 2300,
+            "link": "https://global.canon/en/c-museum/product/dcc548.html",
+            "image": "thumb.jpg",
+            "galleryImages": [
+                "camera-1.jpg",
+                "camera-2.jpg",
+                "camera-3.jpg",
+                "camera-4.jpg"
+            ],
+            "sampleImages": [
+                "IGpost-01.jpg",
+                "IGpost-02.jpg",
+                "IGpost-03.jpg",
+                "IGpost-04.jpg",
+                "IGpost-06.jpg",
+                "IGpost-07.jpg"
+            ]
+        }
+    ],
+    "cameraTypes": [
+        "Foldable",
+        "Box",
+        "TLR",
+        "SLR",
+        "Point & Shoot",
+        "Rangefinder",
+        "DSLR",
+        "Compact"
+    ]
+}

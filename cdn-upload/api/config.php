@@ -27,20 +27,38 @@ define('ALLOWED_MANIFEST_TYPES', ['gallery', 'museum', 'rosnik', 'gear']);
  */
 function requireAuth(): void {
     $headers = getallheaders();
-    $auth = $headers['Authorization']
-         ?? $headers['authorization']
-         ?? $_SERVER['HTTP_AUTHORIZATION']
-         ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION']
-         ?? $_SERVER['HTTP_X_API_KEY']
-         ?? '';
+    $token = '';
 
-    if (!preg_match('/^Bearer\s+(.+)$/i', $auth, $matches)) {
+    // Try all possible sources for the Bearer token
+    $candidates = [
+        $headers['Authorization'] ?? '',
+        $headers['authorization'] ?? '',
+        $_SERVER['HTTP_AUTHORIZATION'] ?? '',
+        $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '',
+    ];
+
+    foreach ($candidates as $candidate) {
+        if ($candidate && preg_match('/^Bearer\s+(.+)$/i', $candidate, $m)) {
+            $token = $m[1];
+            break;
+        }
+    }
+
+    // Fallback: X-Api-Key sends raw token (no "Bearer " prefix)
+    if (!$token) {
+        $token = $headers['X-Api-Key']
+              ?? $headers['x-api-key']
+              ?? $_SERVER['HTTP_X_API_KEY']
+              ?? '';
+    }
+
+    if (!$token) {
         http_response_code(401);
         echo json_encode(['error' => 'Missing or invalid Authorization header']);
         exit;
     }
 
-    if (!hash_equals(ADMIN_TOKEN, $matches[1])) {
+    if (!hash_equals(ADMIN_TOKEN, $token)) {
         http_response_code(403);
         echo json_encode(['error' => 'Invalid token']);
         exit;
@@ -54,7 +72,7 @@ function apiHeaders(): void {
     header('Content-Type: application/json; charset=utf-8');
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-    header('Access-Control-Allow-Headers: Authorization, Content-Type');
+    header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Api-Key');
 
     // Handle preflight
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {

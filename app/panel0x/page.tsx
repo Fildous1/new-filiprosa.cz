@@ -289,6 +289,11 @@ export default function AdminDashboard() {
           </a>
         </div>
 
+        {/* CDN Debug */}
+        {adminUser && (
+          <CdnDebug />
+        )}
+
         {/* Info */}
         <div className="mt-4 px-5 py-4 bg-charcoal border border-white/[0.05] rounded-[3px]">
           <p className="text-[0.72rem] text-muted/60 leading-relaxed">
@@ -437,6 +442,54 @@ export default function AdminDashboard() {
         )}
 
       </div>
+    </div>
+  )
+}
+
+function CdnDebug() {
+  const [result, setResult] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  async function runDebug() {
+    setLoading(true)
+    setResult(null)
+    try {
+      const cdnUrl = localStorage.getItem('__fr_cdn_url') || 'https://cdn.filiprosa.cz/'
+      const token = sessionStorage.getItem('__fr_admin_auth') || ''
+      const res = await fetch(`${cdnUrl}api/debug`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'X-Api-Key': token,
+          'Content-Type': 'application/json',
+        },
+      })
+      const text = await res.text()
+      setResult(`HTTP ${res.status}\n\n${text}`)
+    } catch (err) {
+      setResult(`Error: ${err instanceof Error ? err.message : String(err)}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="mt-4 px-5 py-4 bg-charcoal border border-orange-500/20 rounded-[3px]">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[0.72rem] text-orange-400/80 font-medium uppercase tracking-wider">CDN Debug</p>
+        <button
+          onClick={runDebug}
+          disabled={loading}
+          className="px-3 py-1 text-[0.72rem] font-medium text-orange-400 border border-orange-500/30 rounded-[2px] hover:bg-orange-500/10 disabled:opacity-40 transition-colors duration-200"
+        >
+          {loading ? 'Testing...' : 'Test Auth'}
+        </button>
+      </div>
+      {result && (
+        <pre className="mt-2 p-3 bg-dark border border-white/[0.06] rounded-[2px] text-[0.65rem] text-offwhite/70 font-mono overflow-x-auto whitespace-pre-wrap max-h-[400px] overflow-y-auto">
+          {result}
+        </pre>
+      )}
     </div>
   )
 }

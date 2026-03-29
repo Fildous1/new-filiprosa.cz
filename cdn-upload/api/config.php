@@ -7,7 +7,7 @@
  */
 
 // Admin authentication token — change this to a secure random string
-define('ADMIN_TOKEN', 'darkroom2026');
+define('ADMIN_TOKEN', 'dDvCQPJ8xXnPmu4S');
 
 // Base directory for CDN content (one level up from /api/)
 define('CDN_ROOT', dirname(__DIR__) . '/');

@@ -1,0 +1,80 @@
+# ============================================================
+# new.filiprosa.cz — Next.js Static Export
+# ============================================================
+
+# Enforce HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ------------------------------------------------------------
+# Clean URLs — /galerie or /galerie/ → serve galerie.html
+# ------------------------------------------------------------
+
+# If not a real file, and a matching .html exists, serve it
+# The optional trailing slash (/?) handles both /galerie and /galerie/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+
+# Custom 404
+ErrorDocument 404 /404.html
+
+# ------------------------------------------------------------
+# Caching
+# ------------------------------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # _next/static assets are content-hashed — cache forever
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+
+    # HTML pages — no cache
+    ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(js|css|woff2?)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+    <FilesMatch "\.html$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+    </FilesMatch>
+</IfModule>
+
+# ------------------------------------------------------------
+# Security
+# ------------------------------------------------------------
+Options -Indexes
+
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<Files ".htaccess">
+    Order allow,deny
+    Allow from all
+</Files>
+
+# Security headers
+<IfModule mod_headers.c>
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # XSS Protection (legacy browsers)
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Referrer Policy — don't leak full URLs to third parties
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Permissions Policy — disable unnecessary browser features
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+
+    # HSTS — enforce HTTPS for 1 year
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>

@@ -4,7 +4,6 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
-import GrainOverlay from '@/components/GrainOverlay'
 import Lightbox from '@/components/Lightbox'
 import { useI18n, type Locale } from '@/lib/i18n'
 import { fetchGallery, galleryImageUrl, galleryThumbUrl, type GalleryAlbum, type GalleryImage } from '@/lib/cdn-api'
@@ -142,7 +141,6 @@ export default function GaleriePage() {
 
   return (
     <>
-      <GrainOverlay />
       <Navigation />
 
       <main className="min-h-dvh pt-28 pb-20">

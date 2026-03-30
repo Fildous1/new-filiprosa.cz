@@ -183,7 +183,7 @@ export default function Contact() {
           >
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-[0.68rem] text-muted/50 uppercase tracking-[0.08em] mb-1.5">
+                <label className="block text-[0.68rem] text-muted uppercase tracking-[0.08em] mb-1.5">
                   {locale === 'cs' ? 'Jméno' : 'Name'}
                 </label>
                 <input
@@ -197,7 +197,7 @@ export default function Contact() {
                 />
               </div>
               <div>
-                <label className="block text-[0.68rem] text-muted/50 uppercase tracking-[0.08em] mb-1.5">
+                <label className="block text-[0.68rem] text-muted uppercase tracking-[0.08em] mb-1.5">
                   E-mail
                 </label>
                 <input
@@ -211,7 +211,7 @@ export default function Contact() {
                 />
               </div>
               <div>
-                <label className="block text-[0.68rem] text-muted/50 uppercase tracking-[0.08em] mb-1.5">
+                <label className="block text-[0.68rem] text-muted uppercase tracking-[0.08em] mb-1.5">
                   {locale === 'cs' ? 'Zpráva' : 'Message'}
                 </label>
                 <textarea

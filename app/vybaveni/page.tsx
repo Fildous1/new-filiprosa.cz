@@ -4,7 +4,6 @@ import { useRef, useEffect, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
-import GrainOverlay from '@/components/GrainOverlay'
 import { useI18n } from '@/lib/i18n'
 import { fetchMuseum, fetchGear, gearImageUrl, type Camera, type GearManifest } from '@/lib/cdn-api'
 
@@ -105,7 +104,6 @@ export default function VybaveniPage() {
 
   return (
     <>
-      <GrainOverlay />
       <Navigation />
 
       <main className="min-h-dvh pt-28 pb-20">

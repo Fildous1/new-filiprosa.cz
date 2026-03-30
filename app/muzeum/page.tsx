@@ -4,7 +4,6 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
-import GrainOverlay from '@/components/GrainOverlay'
 import { useI18n, type Locale } from '@/lib/i18n'
 import { fetchMuseum, museumImageUrl, type Camera } from '@/lib/cdn-api'
 import Lightbox from '@/components/Lightbox'
@@ -93,7 +92,6 @@ export default function MuzeumPage() {
   if (selectedCamera) {
     return (
       <>
-        <GrainOverlay />
         <Navigation />
         <CameraDetail
           camera={selectedCamera}
@@ -109,7 +107,6 @@ export default function MuzeumPage() {
 
   return (
     <>
-      <GrainOverlay />
       <Navigation />
 
       <main className="min-h-dvh pt-28 pb-20">
@@ -206,7 +203,7 @@ export default function MuzeumPage() {
                       }}
                       onMouseOver={(e) => {
                         e.currentTarget.style.transform = 'translateY(-4px)'
-                        e.currentTarget.style.boxShadow = '0 4px 16px rgba(181,202,44,0.06), 0 12px 36px rgba(0,0,0,0.3)'
+                        e.currentTarget.style.boxShadow = '0 4px 16px rgba(185,208,38,0.06), 0 12px 36px rgba(0,0,0,0.3)'
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.transform = 'translateY(0)'

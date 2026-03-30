@@ -26,6 +26,7 @@ export default function Navigation() {
   const projectLinks = [
     { label: t('projects.museum.title'), href: '/muzeum' },
     { label: t('projects.magazine.title'), href: '/rosnik' },
+    { label: t('projects.mafos.title'), href: '/mafos' },
     { label: t('projects.meetup.title'), href: 'https://meetup.filiprosa.cz', external: true },
   ]
 
@@ -86,7 +87,7 @@ export default function Navigation() {
       >
         <a
           href={href}
-          className="relative text-[0.82rem] font-medium tracking-[0.03em] text-offwhite/50 hover:text-offwhite transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-4 group inline-flex items-center gap-1"
+          className="relative text-[0.82rem] font-medium tracking-[0.03em] text-offwhite/60 hover:text-offwhite transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-4 group inline-flex items-center gap-1"
           onClick={() => {
             // Both links navigate directly; dropdown shows on hover
           }}
@@ -155,7 +156,7 @@ export default function Navigation() {
                 <a
                   key={label}
                   href={href}
-                  className="relative text-[0.82rem] font-medium tracking-[0.03em] text-offwhite/50 hover:text-offwhite transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-4 group"
+                  className="relative text-[0.82rem] font-medium tracking-[0.03em] text-offwhite/60 hover:text-offwhite transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-4 group"
                 >
                   {label}
                   <span className="absolute bottom-[-3px] left-0 w-0 h-px bg-lime transition-[width] duration-350 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-full group-focus-visible:w-full" />
@@ -174,7 +175,7 @@ export default function Navigation() {
           </button>
           <a
             href="/#kontakt"
-            className="inline-flex items-center gap-2 px-5 py-2 text-[0.8rem] font-semibold tracking-[0.03em] bg-lime text-dark rounded-[2px] hover:translate-y-[-2px] hover:shadow-[0_8px_32px_rgba(181,202,44,0.2),0_2px_8px_rgba(181,202,44,0.15)] active:translate-y-0 transition-transform duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-3"
+            className="inline-flex items-center gap-2 px-5 py-2 text-[0.8rem] font-semibold tracking-[0.03em] bg-lime text-dark rounded-[2px] hover:translate-y-[-2px] hover:shadow-[0_8px_32px_rgba(185,208,38,0.2),0_2px_8px_rgba(185,208,38,0.15)] active:translate-y-0 transition-transform duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-3"
           >
             {t('nav.cta')}
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
+import JSZip from 'jszip'
 import {
   fetchGallery,
   saveManifest,
@@ -275,24 +276,72 @@ export default function GalleryAdmin() {
   async function handleDownloadSelected() {
     if (!activeAlbum || selected.size === 0) return
     const indices = Array.from(selected).sort((a, b) => a - b)
+
+    if (indices.length === 1) {
+      // Single file: fetch blob and download directly
+      const img = activeAlbum.images[indices[0]]
+      const url = galleryImageUrl(activeSlug, img.filename)
+      try {
+        const res = await fetch(url)
+        const blob = await res.blob()
+        const dlUrl = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = dlUrl
+        a.download = img.filename
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(dlUrl)
+      } catch {
+        toast(`Failed to download ${img.filename}`, 'error')
+      }
+      return
+    }
+
+    // Multiple files: zip them
+    const zip = new JSZip()
     for (const idx of indices) {
       const img = activeAlbum.images[idx]
       const url = galleryImageUrl(activeSlug, img.filename)
+      try {
+        const res = await fetch(url)
+        const blob = await res.blob()
+        zip.file(img.filename, blob)
+      } catch {
+        toast(`Failed to fetch ${img.filename}`, 'error')
+      }
+    }
+    try {
+      const zipBlob = await zip.generateAsync({ type: 'blob' })
+      const dlUrl = URL.createObjectURL(zipBlob)
       const a = document.createElement('a')
-      a.href = url
-      a.download = img.filename
-      a.target = '_blank'
+      a.href = dlUrl
+      a.download = `${activeSlug}_photos.zip`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
-      // Small delay between downloads to avoid browser blocking
-      await new Promise(r => setTimeout(r, 200))
+      URL.revokeObjectURL(dlUrl)
+    } catch {
+      toast('Failed to create zip', 'error')
     }
   }
 
   async function handleDownloadWallpaper() {
     if (!activeAlbum || selected.size === 0) return
     const indices = Array.from(selected).sort((a, b) => a - b)
+
+    // Pre-load font before processing any images
+    const fontFamily = 'WallpaperFont'
+    try {
+      const font = new FontFace(
+        fontFamily,
+        'url(https://fonts.gstatic.com/s/montserrat/v29/JTUFjIg1_i6t8kCHKm459Wx7xQYXK0vOoz6jq6R8WXh0pg.woff2)',
+        { weight: '600', style: 'italic' }
+      )
+      await font.load()
+      document.fonts.add(font)
+    } catch { /* fallback handled below */ }
+
     for (const idx of indices) {
       const img = activeAlbum.images[idx]
       const url = galleryImageUrl(activeSlug, img.filename)
@@ -302,59 +351,49 @@ export default function GalleryAdmin() {
         const blob = await response.blob()
         const bitmap = await createImageBitmap(blob)
 
-        const W = 1920
-        const H = 1080
+        // Use source image's full resolution
+        const W = bitmap.width
+        const H = bitmap.height
         const canvas = document.createElement('canvas')
         canvas.width = W
         canvas.height = H
         const ctx = canvas.getContext('2d')!
 
-        // Draw image as cover/fill
-        const scale = Math.max(W / bitmap.width, H / bitmap.height)
-        const sw = W / scale
-        const sh = H / scale
-        const sx = (bitmap.width - sw) / 2
-        const sy = (bitmap.height - sh) / 2
-        ctx.drawImage(bitmap, sx, sy, sw, sh, 0, 0, W, H)
+        // Draw image at full resolution, no scaling
+        ctx.drawImage(bitmap, 0, 0, W, H)
 
-        // Watermark text
+        // Watermark — scale font relative to image size
         const text = '@fildous1'
-        const fontSize = 40
-        // Load Montserrat SemiBold via FontFace API
-        try {
-          const font = new FontFace('Montserrat', 'url(https://fonts.gstatic.com/s/montserrat/v26/JTUHjIg1_i6t8kCHKm4532VJOt5-QNFgpCuM70w-Y3tcoqK5.woff2)', { weight: '600' })
-          await font.load()
-          document.fonts.add(font)
-        } catch { /* font may already be loaded or fallback to system */ }
-
-        ctx.font = `600 italic ${fontSize}px Montserrat, "Segoe UI", Arial, sans-serif`
+        const fontSize = Math.round(Math.max(W, H) * 0.022)
+        ctx.font = `italic 600 ${fontSize}px ${fontFamily}, Montserrat, sans-serif`
         ctx.textAlign = 'right'
         ctx.textBaseline = 'bottom'
 
-        // Soft black shadow
         ctx.shadowColor = 'rgba(0, 0, 0, 0.6)'
-        ctx.shadowBlur = 12
+        ctx.shadowBlur = fontSize * 0.3
         ctx.shadowOffsetX = 2
         ctx.shadowOffsetY = 2
 
-        // Position: bottom-right with extra bottom padding for taskbar
-        const rightPad = 48
-        const bottomPad = 78 // extra space for Windows taskbar
+        const rightPad = Math.round(W * 0.025)
+        const bottomPad = Math.round(H * 0.05)
         ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
         ctx.fillText(text, W - rightPad, H - bottomPad)
 
-        // Download
-        canvas.toBlob((wallpaperBlob) => {
-          if (!wallpaperBlob) return
+        // Download as PNG — lossless, no compression artifacts
+        const wallpaperBlob = await new Promise<Blob | null>(resolve =>
+          canvas.toBlob(resolve, 'image/png')
+        )
+        if (wallpaperBlob) {
           const dlUrl = URL.createObjectURL(wallpaperBlob)
           const a = document.createElement('a')
           a.href = dlUrl
-          a.download = `wallpaper_${img.filename}`
+          const baseName = img.filename.replace(/\.[^.]+$/, '')
+          a.download = `wallpaper_${baseName}.png`
           document.body.appendChild(a)
           a.click()
           document.body.removeChild(a)
           URL.revokeObjectURL(dlUrl)
-        }, 'image/jpeg', 1)
+        }
 
         bitmap.close()
       } catch (err) {

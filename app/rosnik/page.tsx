@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
-import GrainOverlay from '@/components/GrainOverlay'
 import { useI18n, type Locale } from '@/lib/i18n'
 import { fetchRosnik, rosnikAssetUrl, type MagazineIssue } from '@/lib/cdn-api'
 
@@ -31,7 +30,6 @@ export default function RosnikPage() {
 
   return (
     <>
-      <GrainOverlay />
       <Navigation />
 
       {/* Full-screen PDF Overlay */}

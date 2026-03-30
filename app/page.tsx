@@ -6,13 +6,11 @@ import Projects from '@/components/Projects'
 import About from '@/components/About'
 import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
-import GrainOverlay from '@/components/GrainOverlay'
 import BottomBlur from '@/components/BottomBlur'
 
 export default function Home() {
   return (
     <>
-      <GrainOverlay />
       <BottomBlur />
       <Navigation />
       <Hero />

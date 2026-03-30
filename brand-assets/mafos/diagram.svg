@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="290mm"
+   height="153.37253mm"
+   viewBox="0 0 290 153.37252"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   sodipodi:docname="diagram.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:clip-to-page="false"
+     inkscape:zoom="0.77147867"
+     inkscape:cx="550.89015"
+     inkscape:cy="250.16894"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <defs
+     id="defs1" />
+  <g
+     transform="matrix(0.26458333,0,0,0.26458333,-77.859615,2.8239209)"
+     id="g14">
+    <g
+       id="g4"
+       inkscape:label="phone-holder">
+      <rect
+         x="429.79977"
+         y="447.16476"
+         width="403"
+         height="81"
+         stroke="#000000"
+         stroke-width="2"
+         stroke-miterlimit="8"
+         fill="#a1a3a4"
+         id="rect1"
+         inkscape:label="holder" />
+      <path
+         d="m 458.79978,495.00076 c 0,-4.328 3.508,-7.836 7.836,-7.836 h 329.328 c 4.327,0 7.836,3.508 7.836,7.836 v 5.328 c 0,4.328 -3.509,7.836 -7.836,7.836 h -329.328 c -4.328,0 -7.836,-3.508 -7.836,-7.836 z"
+         stroke="#000000"
+         stroke-width="2"
+         stroke-miterlimit="8"
+         fill="#d9d9d9"
+         fill-rule="evenodd"
+         id="path6"
+         inkscape:label="phone" />
+      <path
+         d="m 440.79978,470.16476 h 381.382"
+         stroke="#000000"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-miterlimit="8"
+         fill="none"
+         fill-rule="evenodd"
+         id="path7"
+         inkscape:label="film" />
+    </g>
+    <g
+       id="g3"
+       inkscape:label="mafos">
+      <path
+         d="m 365.86078,97.164766 h 15.62 16.621 466.396 20.79 11.451 c 4.452,0 8.061,3.604004 8.061,8.050004 v 64.89999 c 0,4.446 -3.609,8.05 -8.061,8.05 h -32.241 c -4.452,0 -8.061,-3.604 -8.061,-8.05 v -50.96999 h -450.274 v 50.96999 c 0,4.446 -3.609,8.05 -8.061,8.05 h -32.241 c -4.452,0 -8.061,-3.604 -8.061,-8.05 v -64.89999 c 0,-4.446 3.609,-8.050004 8.061,-8.050004 z"
+         stroke="#000000"
+         stroke-width="2"
+         stroke-miterlimit="8"
+         fill="#a1a3a4"
+         fill-rule="evenodd"
+         id="path2"
+         inkscape:label="top" />
+      <g
+         id="g2"
+         inkscape:label="bottom">
+        <path
+           d="m 361.30378,169.16476 h 46.013 c 6.354,0 11.504,5.151 11.504,11.504 v 336.548 h 426.958 v -336.548 c 0,-6.353 5.15,-11.504 11.504,-11.504 h 46.013 c 6.354,0 11.504,5.151 11.504,11.504 v 336.548 3.999 17.949 h -565 v -17.949 -3.999 -336.548 c 0,-6.353 5.15,-11.504 11.504,-11.504 z"
+           stroke="#000000"
+           stroke-width="2"
+           stroke-miterlimit="8"
+           fill="#a1a3a4"
+           fill-rule="evenodd"
+           id="path3"
+           inkscape:label="main" />
+        <path
+           d="m 866.79978,209.16476 c 0,-7.732 6.268,-14 14,-14 7.732,0 14,6.268 14,14 0,7.732 -6.268,14 -14,14 -7.732,0 -14,-6.268 -14,-14 z"
+           stroke="#000000"
+           stroke-width="2"
+           stroke-miterlimit="8"
+           fill="#a1a3a4"
+           fill-rule="evenodd"
+           id="path4"
+           inkscape:label="peg2" />
+        <path
+           d="m 369.79978,209.16476 c 0,-7.732 6.268,-14 14,-14 7.732,0 14,6.268 14,14 0,7.732 -6.268,14 -14,14 -7.732,0 -14,-6.268 -14,-14 z"
+           stroke="#000000"
+           stroke-width="2"
+           stroke-miterlimit="8"
+           fill="#a1a3a4"
+           fill-rule="evenodd"
+           id="path5"
+           inkscape:label="peg1" />
+      </g>
+    </g>
+    <g
+       id="g5"
+       inkscape:label="dslr">
+      <path
+         d="m 592.14178,195.84376 84.688,-0.679 17.97,275 -123,-0.905 z"
+         stroke="#000000"
+         stroke-width="2"
+         stroke-miterlimit="8"
+         stroke-dasharray="8, 6"
+         fill="none"
+         fill-rule="evenodd"
+         id="path1"
+         inkscape:label="fov" />
+      <g
+         id="g1"
+         inkscape:label="camera">
+        <rect
+           x="590.7998"
+           y="46.164764"
+           width="86"
+           height="156"
+           stroke="#000000"
+           stroke-width="2"
+           stroke-miterlimit="8"
+           fill="#d9d9d9"
+           id="rect7"
+           inkscape:label="front-el" />
+        <path
+           d="m 682.80878,32.164766 c 2.757,0 4.991,2.234 4.991,4.991 V 183.17376 c 0,2.757 -2.234,4.991 -4.991,4.991 h -98.018 c -2.757,0 -4.991,-2.234 -4.991,-4.991 V 37.155766 c 0,-2.757 2.234,-4.991 4.991,-4.991 z"
+           stroke="#000000"
+           stroke-width="2"
+           stroke-miterlimit="8"
+           fill="#d9d9d9"
+           fill-rule="evenodd"
+           id="path8"
+           inkscape:label="lens" />
+        <path
+           d="m 542.79978,24.970766 c 0,-3.206 2.6,-5.806 5.806,-5.806 h 208.388 c 3.206,0 5.806,2.6 5.806,5.806 v 66.388 c 0,3.206 -2.6,5.806 -5.806,5.806 h -208.388 c -3.206,0 -5.806,-2.6 -5.806,-5.806 z"
+           stroke="#000000"
+           stroke-width="2"
+           stroke-miterlimit="8"
+           fill="#d9d9d9"
+           fill-rule="evenodd"
+           id="path9"
+           inkscape:label="body" />
+      </g>
+    </g>
+    <g
+       id="g7"
+       inkscape:label="arrows">
+      <path
+         d="m 1010.3338,63.046766 -217.55402,-2.714 c -0.828,-0.01 -1.491,-0.69 -1.481,-1.518 0.01,-0.829 0.69,-1.492 1.519,-1.481 l 217.55302,2.713 c 0.828,0.011 1.491,0.691 1.481,1.519 -0.01,0.828 -0.69,1.492 -1.518,1.481 z m -216.12902,3.305 -14.905,-7.687 15.092,-7.312 z"
+         id="path10" />
+      <path
+         d="M 1009.2144,294.49775 813.86078,452.25176 c -0.645,0.52 -0.745,1.464 -0.225,2.109 0.521,0.644 1.465,0.745 2.11,0.225 L 1011.0992,296.83177 c 0.6445,-0.52047 0.745,-1.46488 0.2246,-2.1094 -0.5205,-0.64452 -1.4649,-0.74508 -2.1094,-0.22462 z m -197.95662,152.14301 -6.958,15.259 16.382,-3.589 z"
+         id="path11" />
+      <path
+         d="m 1009.7528,500.15776 -186.96902,-1.859 c -0.828,-0.008 -1.493,-0.686 -1.485,-1.515 0.009,-0.828 0.687,-1.493 1.515,-1.485 l 186.96902,1.859 c 0.829,0.008 1.494,0.687 1.485,1.515 -0.01,0.828 -0.686,1.493 -1.515,1.485 z m -185.52802,4.156 -14.925,-7.649 15.074,-7.35 z"
+         id="path12" />
+    </g>
+    <g
+       id="g6"
+       inkscape:label="labels">
+      <text
+         font-family="Georgia, Georgia_MSFontService, sans-serif"
+         font-weight="700"
+         font-size="37px"
+         id="text12"
+         x="1038.5808"
+         y="77.164764">Digitální foťák</text>
+      <text
+         font-family="Georgia, Georgia_MSFontService, sans-serif"
+         font-weight="700"
+         font-size="37px"
+         id="text13"
+         x="1038.5808"
+         y="311.16476">Negativ</text>
+      <text
+         font-family="Georgia, Georgia_MSFontService, sans-serif"
+         font-weight="700"
+         font-size="37px"
+         id="text14"
+         x="1037.7488"
+         y="514.16473">Dotykový mobil</text>
+    </g>
+  </g>
+</svg>

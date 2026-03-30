@@ -77,7 +77,7 @@ export default function FeaturedPhotos() {
         style={{
           background: `
             radial-gradient(ellipse 50% 50% at 80% 30%, rgba(42,18,21,0.25) 0%, transparent 70%),
-            radial-gradient(ellipse 60% 40% at 20% 70%, rgba(181,202,44,0.03) 0%, transparent 60%)
+            radial-gradient(ellipse 60% 40% at 20% 70%, rgba(185,208,38,0.03) 0%, transparent 60%)
           `,
         }}
       />

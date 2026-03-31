@@ -37,3 +37,4 @@ jobs:
           **/.git*/**
           **/node_modules/**
           .htaccess
+          .txt

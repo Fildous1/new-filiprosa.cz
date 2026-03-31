@@ -132,42 +132,48 @@ function Carousel({ items, initialSlide = 0 }: { items: { img: string; label: st
 
   return (
     <div>
-      <div className="relative flex items-center mb-6">
-        {/* Prev peek + arrow */}
-        <div className="relative flex-shrink-0 w-14 sm:w-20 z-10">
-          <div className="relative aspect-[3/2] overflow-hidden" style={{ maskImage: 'linear-gradient(to right, transparent, black)', WebkitMaskImage: 'linear-gradient(to right, transparent, black)' }}>
-            <Image src={items[prevIdx].img} alt="" fill sizes="100px" className="object-contain" />
-          </div>
+      <div className="relative mb-6">
+        {/* Current image + arrows */}
+        <div className="flex items-center">
           <button
             onClick={() => go(-1)}
-            className="absolute inset-0 flex items-center justify-center text-muted hover:text-lime transition-colors duration-200"
+            className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border border-white/[0.08] text-muted hover:text-lime hover:border-lime/30 transition-colors duration-200"
           >
             <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
             </svg>
           </button>
-        </div>
 
-        {/* Current image */}
-        <div className="flex-1 min-w-0 flex justify-center px-3">
-          <div className="relative aspect-[3/2] w-[75%]">
-            <Image src={items[current].img} alt={items[current].label} fill sizes="700px" className="object-contain" />
+          <div className="flex-1 min-w-0 flex justify-center px-3">
+            <div className="relative aspect-[3/2] w-[75%]">
+              <Image src={items[current].img} alt={items[current].label} fill sizes="700px" className="object-contain" />
+            </div>
           </div>
-        </div>
 
-        {/* Next peek + arrow */}
-        <div className="relative flex-shrink-0 w-14 sm:w-20 z-10">
-          <div className="relative aspect-[3/2] overflow-hidden" style={{ maskImage: 'linear-gradient(to left, transparent, black)', WebkitMaskImage: 'linear-gradient(to left, transparent, black)' }}>
-            <Image src={items[nextIdx].img} alt="" fill sizes="100px" className="object-contain" />
-          </div>
           <button
             onClick={() => go(1)}
-            className="absolute inset-0 flex items-center justify-center text-muted hover:text-lime transition-colors duration-200"
+            className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border border-white/[0.08] text-muted hover:text-lime hover:border-lime/30 transition-colors duration-200"
           >
             <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
             </svg>
           </button>
+        </div>
+
+        {/* Prev peek — positioned absolutely, 80% height, fades at inner edge */}
+        <div
+          className="hidden sm:block absolute top-[10%] left-0 w-[12%] h-[80%] pointer-events-none"
+          style={{ maskImage: 'linear-gradient(to right, black 30%, transparent)', WebkitMaskImage: 'linear-gradient(to right, black 30%, transparent)' }}
+        >
+          <Image src={items[prevIdx].img} alt="" fill sizes="120px" className="object-contain object-right" />
+        </div>
+
+        {/* Next peek — positioned absolutely, 80% height, fades at inner edge */}
+        <div
+          className="hidden sm:block absolute top-[10%] right-0 w-[12%] h-[80%] pointer-events-none"
+          style={{ maskImage: 'linear-gradient(to left, black 30%, transparent)', WebkitMaskImage: 'linear-gradient(to left, black 30%, transparent)' }}
+        >
+          <Image src={items[nextIdx].img} alt="" fill sizes="120px" className="object-contain object-left" />
         </div>
       </div>
 

@@ -132,12 +132,26 @@ function Carousel({ items, initialSlide = 0 }: { items: { img: string; label: st
 
   return (
     <div>
-      <div className="relative mb-6">
-        {/* Current image + arrows */}
-        <div className="flex items-center">
+      <div className="relative overflow-hidden mb-6">
+        {/* Prev peek — full height, mostly off-screen, only right edge visible */}
+        <div className="hidden sm:block absolute top-0 bottom-0 right-[100%] w-[65%] translate-x-[12%] pointer-events-none opacity-60">
+          <div className="relative w-full h-full">
+            <Image src={items[prevIdx].img} alt="" fill sizes="500px" className="object-contain object-right" />
+          </div>
+        </div>
+
+        {/* Next peek — full height, mostly off-screen, only left edge visible */}
+        <div className="hidden sm:block absolute top-0 bottom-0 left-[100%] w-[65%] -translate-x-[12%] pointer-events-none opacity-60">
+          <div className="relative w-full h-full">
+            <Image src={items[nextIdx].img} alt="" fill sizes="500px" className="object-contain object-left" />
+          </div>
+        </div>
+
+        {/* Center: arrows + spotlight */}
+        <div className="relative z-10 flex items-center">
           <button
             onClick={() => go(-1)}
-            className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border border-white/[0.08] text-muted hover:text-lime hover:border-lime/30 transition-colors duration-200"
+            className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border border-white/[0.08] text-muted hover:text-lime hover:border-lime/30 transition-colors duration-200 bg-dark/60 backdrop-blur-sm"
           >
             <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -152,28 +166,12 @@ function Carousel({ items, initialSlide = 0 }: { items: { img: string; label: st
 
           <button
             onClick={() => go(1)}
-            className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border border-white/[0.08] text-muted hover:text-lime hover:border-lime/30 transition-colors duration-200"
+            className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border border-white/[0.08] text-muted hover:text-lime hover:border-lime/30 transition-colors duration-200 bg-dark/60 backdrop-blur-sm"
           >
             <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
             </svg>
           </button>
-        </div>
-
-        {/* Prev peek — positioned absolutely, 80% height, fades at inner edge */}
-        <div
-          className="hidden sm:block absolute top-[10%] left-0 w-[12%] h-[80%] pointer-events-none"
-          style={{ maskImage: 'linear-gradient(to right, black 30%, transparent)', WebkitMaskImage: 'linear-gradient(to right, black 30%, transparent)' }}
-        >
-          <Image src={items[prevIdx].img} alt="" fill sizes="120px" className="object-contain object-right" />
-        </div>
-
-        {/* Next peek — positioned absolutely, 80% height, fades at inner edge */}
-        <div
-          className="hidden sm:block absolute top-[10%] right-0 w-[12%] h-[80%] pointer-events-none"
-          style={{ maskImage: 'linear-gradient(to left, black 30%, transparent)', WebkitMaskImage: 'linear-gradient(to left, black 30%, transparent)' }}
-        >
-          <Image src={items[nextIdx].img} alt="" fill sizes="120px" className="object-contain object-left" />
         </div>
       </div>
 

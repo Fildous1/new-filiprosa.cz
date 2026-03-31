@@ -133,15 +133,21 @@ function Carousel({ items, initialSlide = 0 }: { items: { img: string; label: st
   return (
     <div>
       <div className="relative overflow-hidden mb-6">
-        {/* Prev peek — full height, mostly off-screen, only right edge visible */}
-        <div className="hidden sm:block absolute top-0 bottom-0 right-[100%] w-[65%] translate-x-[12%] pointer-events-none opacity-60">
+        {/* Prev peek — full height, mostly off-screen */}
+        <div
+          className="hidden sm:block absolute top-0 bottom-0 right-[100%] w-[65%] translate-x-[22%] pointer-events-none"
+          style={{ maskImage: 'linear-gradient(to left, transparent, black 40%)', WebkitMaskImage: 'linear-gradient(to left, transparent, black 40%)' }}
+        >
           <div className="relative w-full h-full">
             <Image src={items[prevIdx].img} alt="" fill sizes="500px" className="object-contain object-right" />
           </div>
         </div>
 
-        {/* Next peek — full height, mostly off-screen, only left edge visible */}
-        <div className="hidden sm:block absolute top-0 bottom-0 left-[100%] w-[65%] -translate-x-[12%] pointer-events-none opacity-60">
+        {/* Next peek — full height, mostly off-screen */}
+        <div
+          className="hidden sm:block absolute top-0 bottom-0 left-[100%] w-[65%] -translate-x-[22%] pointer-events-none"
+          style={{ maskImage: 'linear-gradient(to right, transparent, black 40%)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 40%)' }}
+        >
           <div className="relative w-full h-full">
             <Image src={items[nextIdx].img} alt="" fill sizes="500px" className="object-contain object-left" />
           </div>

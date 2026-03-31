@@ -7,13 +7,7 @@ import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import { useI18n } from '@/lib/i18n'
 
-const TIMELINE = [
-  { date: '8/2023', cs: 'Objev negativů, první prototyp z trubek', en: 'Discovery of negatives, first tube prototype' },
-  { date: '9/2023', cs: 'Makro kroužky, kartonový prototyp', en: 'Macro rings, cardboard prototype' },
-  { date: '1/2024', cs: 'Negative Lab Pro', en: 'Negative Lab Pro' },
-  { date: '6/2025', cs: 'Začátek práce na 3D modelu', en: 'Started working on 3D model' },
-  { date: '7/2025', cs: 'Mafoš hotov', en: 'Mafoš finished' },
-]
+const TIMELINE_COUNT = 5
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -121,8 +115,8 @@ function Section({ children, className = '' }: { children: React.ReactNode; clas
   )
 }
 
-function Carousel({ items }: { items: { img: string; label: string; desc: string }[] }) {
-  const [current, setCurrent] = useState(0)
+function Carousel({ items, initialSlide = 0 }: { items: { img: string; label: string; desc: string }[]; initialSlide?: number }) {
+  const [current, setCurrent] = useState(initialSlide)
 
   const go = useCallback((dir: number) => {
     setCurrent(prev => {
@@ -133,35 +127,48 @@ function Carousel({ items }: { items: { img: string; label: string; desc: string
     })
   }, [items.length])
 
+  const prevIdx = (current - 1 + items.length) % items.length
+  const nextIdx = (current + 1) % items.length
+
   return (
     <div>
-      <div className="relative flex items-center gap-3 mb-6">
-        {/* Prev arrow */}
-        <button
-          onClick={() => go(-1)}
-          className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border border-white/[0.08] text-muted hover:text-lime hover:border-lime/30 transition-colors duration-200"
-        >
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-          </svg>
-        </button>
+      <div className="relative flex items-center mb-6">
+        {/* Prev peek + arrow */}
+        <div className="relative flex-shrink-0 w-14 sm:w-20 z-10">
+          <div className="relative aspect-[3/2] overflow-hidden" style={{ maskImage: 'linear-gradient(to right, transparent, black)', WebkitMaskImage: 'linear-gradient(to right, transparent, black)' }}>
+            <Image src={items[prevIdx].img} alt="" fill sizes="100px" className="object-contain" />
+          </div>
+          <button
+            onClick={() => go(-1)}
+            className="absolute inset-0 flex items-center justify-center text-muted hover:text-lime transition-colors duration-200"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+        </div>
 
         {/* Current image */}
-        <div className="flex-1 min-w-0 flex justify-center">
+        <div className="flex-1 min-w-0 flex justify-center px-3">
           <div className="relative aspect-[3/2] w-[75%]">
             <Image src={items[current].img} alt={items[current].label} fill sizes="700px" className="object-contain" />
           </div>
         </div>
 
-        {/* Next arrow */}
-        <button
-          onClick={() => go(1)}
-          className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border border-white/[0.08] text-muted hover:text-lime hover:border-lime/30 transition-colors duration-200"
-        >
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-          </svg>
-        </button>
+        {/* Next peek + arrow */}
+        <div className="relative flex-shrink-0 w-14 sm:w-20 z-10">
+          <div className="relative aspect-[3/2] overflow-hidden" style={{ maskImage: 'linear-gradient(to left, transparent, black)', WebkitMaskImage: 'linear-gradient(to left, transparent, black)' }}>
+            <Image src={items[nextIdx].img} alt="" fill sizes="100px" className="object-contain" />
+          </div>
+          <button
+            onClick={() => go(1)}
+            className="absolute inset-0 flex items-center justify-center text-muted hover:text-lime transition-colors duration-200"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Label + description */}
@@ -416,7 +423,7 @@ export default function MafosPage() {
             <p className="font-body text-muted text-[0.95rem] leading-[1.75] max-w-[40rem] mb-10">
               {t('mafos.making.p1')}
             </p>
-            <Carousel items={makingStages} />
+            <Carousel items={makingStages} initialSlide={4} />
           </Section>
 
           <div className="film-strip" style={{ marginLeft: 'calc(-50vw + 50%)', width: '100vw' }} />
@@ -468,11 +475,11 @@ export default function MafosPage() {
               <div className="md:w-56 md:sticky md:top-28">
                 <h3 className="font-body text-[0.72rem] font-semibold tracking-[0.1em] uppercase text-lime/60 mb-5">{t('mafos.timeline.title')}</h3>
                 <div className="relative pl-4 border-l border-white/[0.06]">
-                  {TIMELINE.map((item, i) => (
+                  {Array.from({ length: TIMELINE_COUNT }, (_, i) => (
                     <div key={i} className="mb-6 last:mb-0 relative">
                       <div className="absolute -left-[calc(1rem+3.5px)] top-[0.4rem] w-[7px] h-[7px] rounded-full bg-lime/40" />
-                      <span className="font-body text-[0.7rem] font-semibold text-muted block">{item.date}</span>
-                      <span className="font-body text-[0.82rem] text-offwhite/70">{locale === 'cs' ? item.cs : item.en}</span>
+                      <span className="font-body text-[0.7rem] font-semibold text-muted block">{t(`mafos.timeline.${i + 1}.date`)}</span>
+                      <span className="font-body text-[0.82rem] text-offwhite/70">{t(`mafos.timeline.${i + 1}`)}</span>
                     </div>
                   ))}
                 </div>

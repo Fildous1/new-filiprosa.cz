@@ -1,65 +1,110 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
-import ServiceCard from './ServiceCard'
 import { useI18n } from '@/lib/i18n'
 
-const iconClass = "w-5 h-5 text-lime stroke-current fill-none"
+const ease = [0.16, 1, 0.3, 1] as const
+
+interface BentoCardProps {
+  title: string
+  subtitle: string
+  description: string
+  imgPlaceholder: string
+  delay: number
+  darkroom?: boolean
+  className?: string
+}
+
+function BentoCard({ title, subtitle, description, imgPlaceholder, delay, darkroom, className = '' }: BentoCardProps) {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: '0px 0px -30px 0px' })
+  const [glowPos, setGlowPos] = useState({ x: 0, y: 0 })
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 32 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.9, delay, ease }}
+      className={`relative rounded-[2px] overflow-hidden cursor-default group ${className}`}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect()
+        setGlowPos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: 'var(--color-charcoal)',
+        border: '1px solid rgba(255,255,255,0.05)',
+        transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        transform: hovered ? 'translateY(-5px)' : 'translateY(0)',
+        boxShadow: hovered
+          ? darkroom
+            ? '0 4px 20px rgba(140,40,40,0.15), 0 20px 60px rgba(0,0,0,0.4)'
+            : '0 4px 20px rgba(185,208,38,0.08), 0 20px 60px rgba(0,0,0,0.4)'
+          : 'none',
+      }}
+    >
+      {/* Background image placeholder */}
+      <img
+        src={imgPlaceholder}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+        style={{ opacity: hovered ? 0.4 : 0.15 }}
+      />
+
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0" style={{
+        background: hovered && darkroom
+          ? 'linear-gradient(160deg, rgba(60,15,15,0.7) 0%, rgba(20,18,16,0.85) 100%)'
+          : 'linear-gradient(160deg, rgba(20,18,16,0.5) 0%, rgba(20,18,16,0.85) 100%)',
+        transition: 'background 0.5s ease',
+      }} />
+
+      {/* Cursor-following glow */}
+      <div
+        className="pointer-events-none absolute rounded-full"
+        style={{
+          left: glowPos.x,
+          top: glowPos.y,
+          width: 280,
+          height: 280,
+          transform: 'translate(-50%, -50%)',
+          background: darkroom
+            ? 'radial-gradient(circle, rgba(140,40,40,0.12) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(185,208,38,0.08) 0%, transparent 70%)',
+          opacity: hovered ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 p-8 lg:p-10 flex flex-col justify-end h-full min-h-[240px]">
+        <span className="font-body text-[0.7rem] font-semibold tracking-[0.12em] uppercase mb-3 transition-colors duration-400"
+          style={{ color: hovered && darkroom ? 'rgba(180,80,80,0.7)' : 'rgba(185,208,38,0.5)' }}
+        >
+          {subtitle}
+        </span>
+        <h3
+          className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.15] mb-3"
+          style={{ fontSize: 'clamp(1.3rem, 2.5vw, 1.7rem)', fontStyle: 'italic' }}
+        >
+          {title}
+        </h3>
+        <p className="font-body text-muted text-[0.875rem] leading-[1.7] max-w-[28rem]">
+          {description}
+        </p>
+      </div>
+    </motion.div>
+  )
+}
 
 export default function Services() {
   const headerRef = useRef<HTMLDivElement>(null)
   const headerInView = useInView(headerRef, { once: true, margin: '0px 0px -30px 0px' })
   const { t } = useI18n()
-
-  const services = [
-    {
-      icon: (
-        <svg className={iconClass} viewBox="0 0 24 24" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0" />
-        </svg>
-      ),
-      title: t('services.portrait.title'),
-      description: t('services.portrait.desc'),
-    },
-    {
-      icon: (
-        <svg className={iconClass} viewBox="0 0 24 24" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-        </svg>
-      ),
-      title: t('services.product.title'),
-      description: t('services.product.desc'),
-    },
-    {
-      icon: (
-        <svg className={iconClass} viewBox="0 0 24 24" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
-        </svg>
-      ),
-      title: t('services.bw.title'),
-      description: t('services.bw.desc'),
-    },
-    {
-      icon: (
-        <svg className={iconClass} viewBox="0 0 24 24" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 3.75H6A2.25 2.25 0 0 0 3.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0 1 20.25 6v1.5m0 9V18A2.25 2.25 0 0 1 18 20.25h-1.5m-9 0H6A2.25 2.25 0 0 1 3.75 18v-1.5" />
-        </svg>
-      ),
-      title: t('services.scan.title'),
-      description: t('services.scan.desc'),
-    },
-    {
-      icon: (
-        <svg className={iconClass} viewBox="0 0 24 24" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
-        </svg>
-      ),
-      title: t('services.darkroom.title'),
-      description: t('services.darkroom.desc'),
-      wide: true,
-    },
-  ]
 
   return (
     <section id="sluzby" className="relative" style={{ padding: 'clamp(5rem, 10vw, 8rem) 0' }}>
@@ -78,7 +123,7 @@ export default function Services() {
           ref={headerRef}
           initial={{ opacity: 0, y: 32 }}
           animate={headerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.9, ease }}
           className="max-w-[36rem] mb-16 md:mb-24"
         >
           <span className="section-num">{t('services.num')}</span>
@@ -96,17 +141,43 @@ export default function Services() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {services.map((service, i) => (
-            <ServiceCard
-              key={i}
-              icon={service.icon}
-              title={service.title}
-              description={service.description}
-              wide={service.wide}
-              delay={0.08 * (i + 1)}
-            />
-          ))}
+        {/* Bento grid — asymmetric layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Card 1: Capture — tall, spans 2 rows on large */}
+          <BentoCard
+            title={t('services.capture.title')}
+            subtitle={t('services.capture.subtitle')}
+            description={t('services.capture.desc')}
+            imgPlaceholder="/images/services/capture.jpg"
+            delay={0.08}
+            className="lg:row-span-2"
+          />
+          {/* Card 2: Processing */}
+          <BentoCard
+            title={t('services.processing.title')}
+            subtitle={t('services.processing.subtitle')}
+            description={t('services.processing.desc')}
+            imgPlaceholder="/images/services/processing.jpg"
+            delay={0.16}
+          />
+          {/* Card 3: Prints — darkroom red on hover */}
+          <BentoCard
+            title={t('services.prints.title')}
+            subtitle={t('services.prints.subtitle')}
+            description={t('services.prints.desc')}
+            imgPlaceholder="/images/services/prints.jpg"
+            delay={0.24}
+            darkroom
+          />
+          {/* Card 4: Digitalization — spans 2 columns on large */}
+          <BentoCard
+            title={t('services.digital.title')}
+            subtitle={t('services.digital.subtitle')}
+            description={t('services.digital.desc')}
+            imgPlaceholder="/images/services/digital.jpg"
+            delay={0.32}
+            className="sm:col-span-2"
+          />
         </div>
       </div>
     </section>

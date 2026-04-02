@@ -30,7 +30,7 @@ jobs:
         protocol: ftp
         # Nahráváme pouze obsah složky 'out', kterou vytvořil build
         local-dir: ./out/
-        server-dir: /www/subdom/new/
+        server-dir: /www/domains/filiprosa.cz
         # Vyloučíme věci, které na serveru nechceme přepsat (např. configy)
         exclude: |
           **/.git*

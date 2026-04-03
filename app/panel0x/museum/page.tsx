@@ -182,6 +182,10 @@ export default function MuseumAdmin() {
       }
       await saveManifest('museum', updated)
       setManifest(updated)
+      // Also update editing state if editing this camera
+      if (editing && editing.id === galleryUploadId) {
+        setEditing(prev => prev ? { ...prev, [field]: deduped } : null)
+      }
       toast(`${files.length} ${galleryUploadType === 'sample' ? 'sample' : 'gallery'} photo(s) uploaded`)
     } catch (err) {
       toast(err instanceof Error ? err.message : 'Upload failed', 'error')
@@ -207,6 +211,10 @@ export default function MuseumAdmin() {
           ? { ...c, [field]: (c[field] ?? []).filter((f: string) => f !== filename) }
           : c
       ),
+    }
+    // Also update the editing state if we're editing this camera
+    if (editing && editing.id === cameraId) {
+      setEditing(prev => prev ? { ...prev, [field]: (prev[field] ?? []).filter((f: string) => f !== filename) } : null)
     }
     await handleSave(updated)
   }
@@ -382,6 +390,111 @@ export default function MuseumAdmin() {
                 </div>
               )}
 
+              {/* Photo management — only for existing cameras */}
+              {!isNew && (
+                <div className="mt-6 pt-5 border-t border-white/[0.06]">
+                  {/* Gallery photos */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-[0.68rem] text-muted/50 uppercase tracking-wide">Camera photos ({editing.galleryImages?.length ?? 0})</p>
+                      {canUpload && (
+                        <button
+                          onClick={() => {
+                            setGalleryUploadId(editing.id)
+                            setGalleryUploadType('gallery')
+                            galleryInputRef.current?.click()
+                          }}
+                          disabled={galleryUploading}
+                          className="px-2 py-0.5 text-[0.68rem] font-medium text-lime/60 border border-lime/15 rounded-[2px] hover:text-lime hover:border-lime/30 disabled:opacity-30 transition-colors duration-200"
+                        >
+                          + Add photos
+                        </button>
+                      )}
+                    </div>
+                    {(editing.galleryImages?.length ?? 0) > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {editing.galleryImages?.map(filename => (
+                          <div key={filename} className="group relative w-16 h-16 bg-dark border border-white/[0.06] rounded-[2px] overflow-hidden">
+                            <img
+                              src={museumImageUrl(editing.id, filename)}
+                              alt={filename}
+                              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-200"
+                              loading="lazy"
+                            />
+                            {canDelete && (
+                              <button
+                                onClick={() => handleDeletePhoto(editing.id, filename, 'gallery')}
+                                className="absolute top-0.5 right-0.5 w-4 h-4 bg-dark/80 text-red-400/60 hover:text-red-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-[0.6rem]"
+                              >
+                                &times;
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Sample shots */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-[0.68rem] text-muted/50 uppercase tracking-wide">Sample shots ({editing.sampleImages?.length ?? 0})</p>
+                      {canUpload && (
+                        <button
+                          onClick={() => {
+                            setGalleryUploadId(editing.id)
+                            setGalleryUploadType('sample')
+                            galleryInputRef.current?.click()
+                          }}
+                          disabled={galleryUploading}
+                          className="px-2 py-0.5 text-[0.68rem] font-medium text-muted/50 border border-white/[0.06] rounded-[2px] hover:text-offwhite hover:border-white/20 disabled:opacity-30 transition-colors duration-200"
+                        >
+                          + Add shots
+                        </button>
+                      )}
+                    </div>
+                    {(editing.sampleImages?.length ?? 0) > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {editing.sampleImages?.map(filename => (
+                          <div key={filename} className="group relative w-16 h-16 bg-dark border border-white/[0.06] rounded-[2px] overflow-hidden">
+                            <img
+                              src={museumImageUrl(editing.id, filename)}
+                              alt={filename}
+                              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-200"
+                              loading="lazy"
+                            />
+                            {canDelete && (
+                              <button
+                                onClick={() => handleDeletePhoto(editing.id, filename, 'sample')}
+                                className="absolute top-0.5 right-0.5 w-4 h-4 bg-dark/80 text-red-400/60 hover:text-red-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-[0.6rem]"
+                              >
+                                &times;
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Gallery upload progress */}
+                  {galleryUploading && galleryProgress && (
+                    <div className="mt-3 flex items-center gap-3">
+                      <span className="text-[0.68rem] text-muted">Uploading...</span>
+                      <div className="flex-1 h-1.5 bg-dark border border-white/[0.06] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-lime/60 rounded-full transition-[width] duration-150"
+                          style={{ width: `${galleryProgress.total > 0 ? Math.round((galleryProgress.loaded / galleryProgress.total) * 100) : 0}%` }}
+                        />
+                      </div>
+                      <span className="text-[0.65rem] text-muted font-mono">
+                        {galleryProgress.total > 0 ? Math.round((galleryProgress.loaded / galleryProgress.total) * 100) : 0}%
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="flex gap-2 mt-4">
                 <button
                   onClick={handleSaveCamera}
@@ -455,34 +568,6 @@ export default function MuseumAdmin() {
                     <span className="text-[0.68rem]" title="Camera photos">{cam.galleryImages?.length ?? 0}</span>
                     <span className="text-[0.58rem] text-muted/30 mx-0.5">/</span>
                     <span className="text-[0.68rem]" title="Sample shots">{cam.sampleImages?.length ?? 0}</span>
-                    {canUpload && (
-                      <button
-                        onClick={() => {
-                          setGalleryUploadId(cam.id)
-                          setGalleryUploadType('gallery')
-                          galleryInputRef.current?.click()
-                        }}
-                        disabled={galleryUploading}
-                        className="ml-1.5 px-1 py-0.5 text-[0.55rem] font-medium text-lime/50 border border-lime/10 rounded-[2px] hover:text-lime hover:border-lime/30 disabled:opacity-30 transition-colors duration-200"
-                        title="Upload camera photos"
-                      >
-                        +cam
-                      </button>
-                    )}
-                    {canUpload && (
-                      <button
-                        onClick={() => {
-                          setGalleryUploadId(cam.id)
-                          setGalleryUploadType('sample')
-                          galleryInputRef.current?.click()
-                        }}
-                        disabled={galleryUploading}
-                        className="ml-1 px-1 py-0.5 text-[0.55rem] font-medium text-muted/40 border border-white/[0.06] rounded-[2px] hover:text-offwhite hover:border-white/20 disabled:opacity-30 transition-colors duration-200"
-                        title="Upload sample shots"
-                      >
-                        +shot
-                      </button>
-                    )}
                   </td>
                   <td className="px-3 py-2.5 whitespace-nowrap">
                     <span className={`text-[0.65rem] ${
@@ -515,80 +600,6 @@ export default function MuseumAdmin() {
           </table>
         </div>
 
-        {/* Gallery upload progress */}
-        {galleryUploading && galleryProgress && (
-          <div className="mt-4 flex items-center gap-3">
-            <span className="text-[0.72rem] text-muted">Uploading gallery photos...</span>
-            <div className="flex-1 max-w-xs h-1.5 bg-dark border border-white/[0.06] rounded-full overflow-hidden">
-              <div
-                className="h-full bg-lime/60 rounded-full transition-[width] duration-150"
-                style={{ width: `${galleryProgress.total > 0 ? Math.round((galleryProgress.loaded / galleryProgress.total) * 100) : 0}%` }}
-              />
-            </div>
-            <span className="text-[0.65rem] text-muted font-mono">
-              {galleryProgress.total > 0 ? Math.round((galleryProgress.loaded / galleryProgress.total) * 100) : 0}%
-            </span>
-          </div>
-        )}
-
-        {/* Photo management for each camera */}
-        {manifest?.cameras.filter(c => (c.galleryImages?.length ?? 0) > 0 || (c.sampleImages?.length ?? 0) > 0).map(cam => (
-          <div key={cam.id} className="mt-6 px-4 py-3 bg-charcoal border border-white/[0.05] rounded-[3px]">
-            <p className="text-[0.75rem] text-offwhite font-medium mb-3">
-              {cam.brand} {cam.model}
-            </p>
-            {(cam.galleryImages?.length ?? 0) > 0 && (
-              <>
-                <p className="text-[0.65rem] text-muted uppercase tracking-wide mb-1.5">Camera photos ({cam.galleryImages?.length})</p>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {cam.galleryImages?.map(filename => (
-                    <div key={filename} className="group relative w-16 h-16 bg-dark border border-white/[0.06] rounded-[2px] overflow-hidden">
-                      <img
-                        src={museumImageUrl(cam.id, filename)}
-                        alt={filename}
-                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-200"
-                        loading="lazy"
-                      />
-                      {canDelete && (
-                        <button
-                          onClick={() => handleDeletePhoto(cam.id, filename, 'gallery')}
-                          className="absolute top-0.5 right-0.5 w-4 h-4 bg-dark/80 text-red-400/60 hover:text-red-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-[0.6rem]"
-                        >
-                          &times;
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-            {(cam.sampleImages?.length ?? 0) > 0 && (
-              <>
-                <p className="text-[0.65rem] text-muted uppercase tracking-wide mb-1.5">Sample shots ({cam.sampleImages?.length})</p>
-                <div className="flex flex-wrap gap-2">
-                  {cam.sampleImages?.map(filename => (
-                    <div key={filename} className="group relative w-16 h-16 bg-dark border border-white/[0.06] rounded-[2px] overflow-hidden">
-                      <img
-                        src={museumImageUrl(cam.id, filename)}
-                        alt={filename}
-                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-200"
-                        loading="lazy"
-                      />
-                      {canDelete && (
-                        <button
-                          onClick={() => handleDeletePhoto(cam.id, filename, 'sample')}
-                          className="absolute top-0.5 right-0.5 w-4 h-4 bg-dark/80 text-red-400/60 hover:text-red-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-[0.6rem]"
-                        >
-                          &times;
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        ))}
 
       </div>
     </div>

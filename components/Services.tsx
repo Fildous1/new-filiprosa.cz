@@ -1,8 +1,9 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
+import { fetchServices, servicesImageUrl, type ServicesManifest } from '@/lib/cdn-api'
 
 const ease = [0.16, 1, 0.3, 1] as const
 
@@ -105,6 +106,11 @@ export default function Services() {
   const headerRef = useRef<HTMLDivElement>(null)
   const headerInView = useInView(headerRef, { once: true, margin: '0px 0px -30px 0px' })
   const { t } = useI18n()
+  const [cdnImages, setCdnImages] = useState<ServicesManifest>({ images: {} })
+
+  useEffect(() => {
+    fetchServices().then(setCdnImages).catch(() => {})
+  }, [])
 
   return (
     <section id="sluzby" className="relative" style={{ padding: 'clamp(5rem, 10vw, 8rem) 0' }}>
@@ -148,7 +154,7 @@ export default function Services() {
             title={t('services.capture.title')}
             subtitle={t('services.capture.subtitle')}
             description={t('services.capture.desc')}
-            imgPlaceholder="/images/services/capture.jpg"
+            imgPlaceholder={cdnImages.images.capture ? servicesImageUrl(cdnImages.images.capture) : '/images/services/capture.jpg'}
             delay={0.08}
             className="lg:row-span-2"
           />
@@ -157,7 +163,7 @@ export default function Services() {
             title={t('services.processing.title')}
             subtitle={t('services.processing.subtitle')}
             description={t('services.processing.desc')}
-            imgPlaceholder="/images/services/processing.jpg"
+            imgPlaceholder={cdnImages.images.processing ? servicesImageUrl(cdnImages.images.processing) : '/images/services/processing.jpg'}
             delay={0.16}
           />
           {/* Card 3: Prints — darkroom red on hover */}
@@ -165,7 +171,7 @@ export default function Services() {
             title={t('services.prints.title')}
             subtitle={t('services.prints.subtitle')}
             description={t('services.prints.desc')}
-            imgPlaceholder="/images/services/prints.jpg"
+            imgPlaceholder={cdnImages.images.prints ? servicesImageUrl(cdnImages.images.prints) : '/images/services/prints.jpg'}
             delay={0.24}
             darkroom
           />
@@ -174,7 +180,7 @@ export default function Services() {
             title={t('services.digital.title')}
             subtitle={t('services.digital.subtitle')}
             description={t('services.digital.desc')}
-            imgPlaceholder="/images/services/digital.jpg"
+            imgPlaceholder={cdnImages.images.digital ? servicesImageUrl(cdnImages.images.digital) : '/images/services/digital.jpg'}
             delay={0.32}
             className="sm:col-span-2"
           />

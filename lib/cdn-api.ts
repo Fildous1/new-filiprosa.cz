@@ -120,6 +120,22 @@ export function gearImageUrl(filename: string): string {
   return `${CDN_URL}gear/${filename}`
 }
 
+export interface ServicesManifest {
+  images: Record<string, string> // cardKey -> filename
+}
+
+export async function fetchServices(): Promise<ServicesManifest> {
+  try {
+    return await fetchManifest<ServicesManifest>('services')
+  } catch {
+    return { images: {} }
+  }
+}
+
+export function servicesImageUrl(filename: string): string {
+  return `${CDN_URL}services/${filename}`
+}
+
 /* ------------------------------------------------------------------ */
 /*  CDN asset URL helpers                                             */
 /* ------------------------------------------------------------------ */
@@ -178,8 +194,8 @@ export async function uploadFiles(
 
 /** Save a manifest to the CDN. Automatically adds `updatedAt` timestamp. */
 export async function saveManifest(
-  type: 'gallery' | 'museum' | 'rosnik' | 'gear',
-  data: GalleryManifest | MuseumManifest | RosnikManifest | GearManifest,
+  type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'services',
+  data: GalleryManifest | MuseumManifest | RosnikManifest | GearManifest | ServicesManifest,
 ): Promise<void> {
   // Stamp with current time for cache-busting
   const stamped = { ...data, updatedAt: Date.now() }

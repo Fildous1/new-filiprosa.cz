@@ -1,0 +1,7 @@
+Text: #f9f9f9 - rgb(249, 249, 249) - hsl(0, 0%, 98%)
+Background: #131010 - rgb(19, 16, 16) - hsl(0, 9%, 7%)
+Primary: #1c5e1f - rgb(28, 94, 31) - hsl(123, 54%, 24%)
+Secondary: #0b0b0b - rgb(11, 11, 11) - hsl(0, 0%, 4%)
+Accent: #e0b05e - rgb(224, 176, 94) - hsl(38, 68%, 62%)
+
+Realtime Colors link for selected colors: https://www.realtimecolors.com/?colors=f9f9f9-131010-1c5e1f-0b0b0b-e0b05e&fonts=Playfair%20Display-DM%20Sans

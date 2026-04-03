@@ -117,8 +117,8 @@ export interface SessionInfo {
 }
 
 /** Store session info after successful login. */
-export function setSession(user: User): void {
-  const cdnToken = localStorage.getItem(CDN_TOKEN_KEY) || ''
+export function setSession(user: User, token?: string): void {
+  const cdnToken = token || localStorage.getItem(CDN_TOKEN_KEY) || ''
   sessionStorage.setItem(SESSION_AUTH_KEY, cdnToken)
   sessionStorage.setItem(SESSION_USER_KEY, user.username)
   sessionStorage.setItem(SESSION_ROLE_KEY, user.role)

@@ -1,5 +1,0 @@
-1. Prototyp z trubek
-2. Prototyp z kartonu
-3. 3D model v Blenderu (prespective.png)
-4. Slicer (table.png)
-5. Finální produkt (front-up.png)

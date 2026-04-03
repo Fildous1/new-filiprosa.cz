@@ -40,6 +40,12 @@ const sections = [
     description: 'Manage gear section images',
     detail: 'Upload photos for each gear category',
   },
+  {
+    href: '/panel0x/services',
+    label: 'Services',
+    description: 'Manage services section images',
+    detail: 'Upload background photos for service cards',
+  },
 ]
 
 function getPasswordStrength(pw: string): { score: number; label: string; color: string } {
@@ -289,10 +295,6 @@ export default function AdminDashboard() {
           </a>
         </div>
 
-        {/* CDN Debug */}
-        {adminUser && (
-          <CdnDebug />
-        )}
 
         {/* Info */}
         <div className="mt-4 px-5 py-4 bg-charcoal border border-white/[0.05] rounded-[3px]">

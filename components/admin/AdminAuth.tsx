@@ -99,7 +99,7 @@ export default function AdminAuth({ children }: { children: ReactNode }) {
         // Save the new users manifest to CDN
         await saveUsersToCdn({ users: [adminUser] })
 
-        setSession(adminUser)
+        setSession(adminUser, password)
         resetRateLimit()
         setAuthed(true)
         setSubmitting(false)
@@ -138,8 +138,7 @@ export default function AdminAuth({ children }: { children: ReactNode }) {
 
       // Success
       const cdnToken = getCdnToken()
-      sessionStorage.setItem('__fr_admin_auth', cdnToken)
-      setSession(user)
+      setSession(user, cdnToken)
       resetRateLimit()
       setAuthed(true)
     } catch {

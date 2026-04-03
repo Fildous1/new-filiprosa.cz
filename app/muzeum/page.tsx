@@ -203,7 +203,7 @@ export default function MuzeumPage() {
                       }}
                       onMouseOver={(e) => {
                         e.currentTarget.style.transform = 'translateY(-4px)'
-                        e.currentTarget.style.boxShadow = '0 4px 16px rgba(185,208,38,0.06), 0 12px 36px rgba(0,0,0,0.3)'
+                        e.currentTarget.style.boxShadow = '0 4px 16px rgba(var(--lime-rgb),0.06), 0 12px 36px rgba(0,0,0,0.3)'
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.transform = 'translateY(0)'
@@ -236,7 +236,7 @@ export default function MuzeumPage() {
                         <div
                           className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                           style={{
-                            background: 'linear-gradient(to top, rgba(19,16,16,0.7), transparent 60%)',
+                            background: 'linear-gradient(to top, rgba(var(--dark-rgb),0.7), transparent 60%)',
                           }}
                         />
                         {/* Status badges */}
@@ -363,7 +363,7 @@ function CameraDetail({
                   <div
                     className="absolute inset-0 pointer-events-none"
                     style={{
-                      background: 'linear-gradient(to top, rgba(19,16,16,0.3), transparent 40%)',
+                      background: 'linear-gradient(to top, rgba(var(--dark-rgb),0.3), transparent 40%)',
                     }}
                   />
                 </div>
@@ -480,13 +480,13 @@ function PhotoGrid({
             <div
               className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               style={{
-                background: 'linear-gradient(to top, rgba(19,16,16,0.5), transparent 50%)',
+                background: 'linear-gradient(to top, rgba(var(--dark-rgb),0.5), transparent 50%)',
               }}
             />
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
-                background: 'rgba(42,18,21,0.1)',
+                background: 'rgba(var(--darkroom-rgb),0.1)',
                 mixBlendMode: 'multiply',
               }}
             />

@@ -100,7 +100,7 @@ export default function RosnikPage() {
                 src="/images/rosnik.png"
                 alt="Nerovn\u00fd Rosn\u00edk"
                 className="h-20 sm:h-24 w-auto"
-                style={{ filter: 'drop-shadow(0 0 20px rgba(185,208,38,0.1))' }}
+                style={{ filter: 'drop-shadow(0 0 20px rgba(var(--lime-rgb),0.1))' }}
               />
             </div>
             <p
@@ -149,7 +149,7 @@ export default function RosnikPage() {
                       }}
                       onMouseOver={(e) => {
                         e.currentTarget.style.transform = 'translateY(-4px)'
-                        e.currentTarget.style.boxShadow = '0 4px 16px rgba(185,208,38,0.06), 0 16px 48px rgba(0,0,0,0.35)'
+                        e.currentTarget.style.boxShadow = '0 4px 16px rgba(var(--lime-rgb),0.06), 0 16px 48px rgba(0,0,0,0.35)'
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.transform = 'translateY(0)'
@@ -165,13 +165,13 @@ export default function RosnikPage() {
                       <div
                         className="absolute inset-0 pointer-events-none"
                         style={{
-                          background: 'linear-gradient(to top, rgba(19,16,16,0.6), transparent 60%)',
+                          background: 'linear-gradient(to top, rgba(var(--dark-rgb),0.6), transparent 60%)',
                         }}
                       />
                       <div
                         className="absolute inset-0 pointer-events-none"
                         style={{
-                          background: 'rgba(42,18,21,0.15)',
+                          background: 'rgba(var(--darkroom-rgb),0.15)',
                           mixBlendMode: 'multiply',
                         }}
                       />

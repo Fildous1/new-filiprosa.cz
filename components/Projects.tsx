@@ -67,8 +67,8 @@ export default function Projects() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 50% 50% at 80% 30%, rgba(185,208,38,0.03) 0%, transparent 70%),
-            radial-gradient(ellipse 40% 50% at 15% 70%, rgba(42,18,21,0.2) 0%, transparent 60%)
+            radial-gradient(ellipse 50% 50% at 80% 30%, rgba(var(--lime-rgb),0.03) 0%, transparent 70%),
+            radial-gradient(ellipse 40% 50% at 15% 70%, rgba(var(--darkroom-rgb),0.2) 0%, transparent 60%)
           `,
         }}
       />
@@ -111,7 +111,7 @@ export default function Projects() {
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.transform = 'translateY(-6px)'
-                e.currentTarget.style.boxShadow = '0 4px 16px rgba(185,208,38,0.06), 0 16px 48px rgba(0,0,0,0.35)'
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(var(--lime-rgb),0.06), 0 16px 48px rgba(0,0,0,0.35)'
               }}
               onMouseOut={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)'

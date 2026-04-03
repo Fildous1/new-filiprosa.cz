@@ -86,7 +86,7 @@ export interface RosnikManifest {
 }
 
 /** Fetch a manifest JSON from the CDN. */
-export async function fetchManifest<T>(type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'users'): Promise<T> {
+export async function fetchManifest<T>(type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'services' | 'users'): Promise<T> {
   const res = await fetch(`${CDN_URL}${type}.json`, { cache: 'no-store' })
   if (!res.ok) throw new Error(`Failed to fetch ${type} manifest: ${res.status}`)
   return res.json()

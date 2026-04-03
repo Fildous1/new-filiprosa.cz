@@ -114,7 +114,7 @@ export default function Navigation() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-48 bg-[rgba(19,16,16,0.95)] backdrop-blur-[16px] border border-white/[0.08] rounded-[3px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+              className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-48 bg-[rgba(var(--dark-rgb),0.95)] backdrop-blur-[16px] border border-white/[0.08] rounded-[3px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
             >
               {dropdownLinks.map(link => (
                 <a
@@ -138,7 +138,7 @@ export default function Navigation() {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-100 backdrop-blur-[16px] backdrop-saturate-[1.6] bg-[rgba(19,16,16,0.78)] border-b border-white/[0.04]">
+    <nav className="fixed top-0 left-0 right-0 z-100 backdrop-blur-[16px] backdrop-saturate-[1.6] bg-[rgba(var(--dark-rgb),0.78)] border-b border-white/[0.04]">
       <div className="max-w-[1200px] mx-auto px-6 lg:px-10 flex items-center justify-between h-16 md:h-[4.5rem]">
         {/* Logo */}
         <a href="/" aria-label="Filip Rosa">
@@ -175,7 +175,7 @@ export default function Navigation() {
           </button>
           <a
             href="/#kontakt"
-            className="inline-flex items-center gap-2 px-5 py-2 text-[0.8rem] font-semibold tracking-[0.03em] bg-lime text-dark rounded-[2px] hover:translate-y-[-2px] hover:shadow-[0_8px_32px_rgba(185,208,38,0.2),0_2px_8px_rgba(185,208,38,0.15)] active:translate-y-0 transition-transform duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-3"
+            className="inline-flex items-center gap-2 px-5 py-2 text-[0.8rem] font-semibold tracking-[0.03em] bg-lime text-dark rounded-[2px] hover:translate-y-[-2px] hover:shadow-[0_8px_32px_rgba(var(--lime-rgb),0.2),0_2px_8px_rgba(var(--lime-rgb),0.15)] active:translate-y-0 transition-transform duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-3"
           >
             {t('nav.cta')}
             <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
@@ -213,7 +213,7 @@ export default function Navigation() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden bg-[rgba(19,16,16,0.95)] border-t border-white/[0.04]"
+            className="md:hidden bg-[rgba(var(--dark-rgb),0.95)] border-t border-white/[0.04]"
           >
             <div className="p-6 flex flex-col gap-5">
               {links.map(({ label, href, dropdown }) =>

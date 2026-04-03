@@ -44,7 +44,7 @@ function BentoCard({ title, subtitle, description, imgPlaceholder, delay, darkro
         boxShadow: hovered
           ? darkroom
             ? '0 4px 20px rgba(140,40,40,0.15), 0 20px 60px rgba(0,0,0,0.4)'
-            : '0 4px 20px rgba(185,208,38,0.08), 0 20px 60px rgba(0,0,0,0.4)'
+            : '0 4px 20px rgba(var(--lime-rgb),0.08), 0 20px 60px rgba(0,0,0,0.4)'
           : 'none',
       }}
     >
@@ -59,8 +59,8 @@ function BentoCard({ title, subtitle, description, imgPlaceholder, delay, darkro
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0" style={{
         background: hovered && darkroom
-          ? 'linear-gradient(160deg, rgba(60,15,15,0.7) 0%, rgba(20,18,16,0.85) 100%)'
-          : 'linear-gradient(160deg, rgba(20,18,16,0.5) 0%, rgba(20,18,16,0.85) 100%)',
+          ? 'linear-gradient(160deg, rgba(60,15,15,0.7) 0%, rgba(var(--charcoal-rgb),0.85) 100%)'
+          : 'linear-gradient(160deg, rgba(var(--charcoal-rgb),0.5) 0%, rgba(var(--charcoal-rgb),0.85) 100%)',
         transition: 'background 0.5s ease',
       }} />
 
@@ -75,7 +75,7 @@ function BentoCard({ title, subtitle, description, imgPlaceholder, delay, darkro
           transform: 'translate(-50%, -50%)',
           background: darkroom
             ? 'radial-gradient(circle, rgba(140,40,40,0.12) 0%, transparent 70%)'
-            : 'radial-gradient(circle, rgba(185,208,38,0.08) 0%, transparent 70%)',
+            : 'radial-gradient(circle, rgba(var(--lime-rgb),0.08) 0%, transparent 70%)',
           opacity: hovered ? 1 : 0,
           transition: 'opacity 0.3s ease',
         }}
@@ -84,7 +84,7 @@ function BentoCard({ title, subtitle, description, imgPlaceholder, delay, darkro
       {/* Content */}
       <div className="relative z-10 p-8 lg:p-10 flex flex-col justify-end h-full min-h-[240px]">
         <span className="font-body text-[0.7rem] font-semibold tracking-[0.12em] uppercase mb-3 transition-colors duration-400"
-          style={{ color: hovered && darkroom ? 'rgba(180,80,80,0.7)' : 'rgba(185,208,38,0.5)' }}
+          style={{ color: hovered && darkroom ? 'rgba(180,80,80,0.7)' : 'rgba(var(--lime-rgb),0.5)' }}
         >
           {subtitle}
         </span>
@@ -118,8 +118,8 @@ export default function Services() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 60% 50% at 20% 80%, rgba(185,208,38,0.03) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 60% at 90% 20%, rgba(42,18,21,0.2) 0%, transparent 60%)
+            radial-gradient(ellipse 60% 50% at 20% 80%, rgba(var(--lime-rgb),0.03) 0%, transparent 70%),
+            radial-gradient(ellipse 50% 60% at 90% 20%, rgba(var(--darkroom-rgb),0.2) 0%, transparent 60%)
           `,
         }}
       />

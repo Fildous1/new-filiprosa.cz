@@ -24,8 +24,8 @@ export default function WorkGallery() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 50% 50% at 80% 30%, rgba(42,18,21,0.25) 0%, transparent 70%),
-            radial-gradient(ellipse 60% 40% at 20% 70%, rgba(185,208,38,0.03) 0%, transparent 60%)
+            radial-gradient(ellipse 50% 50% at 80% 30%, rgba(var(--darkroom-rgb),0.25) 0%, transparent 70%),
+            radial-gradient(ellipse 60% 40% at 20% 70%, rgba(var(--lime-rgb),0.03) 0%, transparent 60%)
           `,
         }}
       />
@@ -87,7 +87,7 @@ function WorkItem({ item, index }: { item: typeof workItems[number]; index: numb
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(to top, rgba(14,11,11,0.5) 0%, transparent 50%)',
+          background: 'linear-gradient(to top, rgba(var(--warmblack-rgb),0.5) 0%, transparent 50%)',
           mixBlendMode: 'multiply',
         }}
       />

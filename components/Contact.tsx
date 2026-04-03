@@ -110,7 +110,7 @@ export default function Contact() {
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(185,208,38,0.025) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(var(--lime-rgb),0.025) 0%, transparent 70%)',
           filter: 'blur(80px)',
         }}
       />
@@ -238,7 +238,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={sending || sent}
-                className="px-8 py-3 text-[0.85rem] font-semibold tracking-[0.03em] bg-lime text-dark rounded-[2px] hover:translate-y-[-2px] hover:shadow-[0_8px_32px_rgba(185,208,38,0.2),0_2px_8px_rgba(185,208,38,0.15)] active:translate-y-0 transition-transform duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-3 disabled:opacity-50"
+                className="px-8 py-3 text-[0.85rem] font-semibold tracking-[0.03em] bg-lime text-dark rounded-[2px] hover:translate-y-[-2px] hover:shadow-[0_8px_32px_rgba(var(--lime-rgb),0.2),0_2px_8px_rgba(var(--lime-rgb),0.15)] active:translate-y-0 transition-transform duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-3 disabled:opacity-50"
               >
                 {sending
                   ? (locale === 'cs' ? 'Odesílám...' : 'Sending...')

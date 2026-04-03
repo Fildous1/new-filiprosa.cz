@@ -19,8 +19,8 @@ export default function About() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 50% 50% at 70% 60%, rgba(185,208,38,0.03) 0%, transparent 70%),
-            radial-gradient(ellipse 40% 40% at 10% 30%, rgba(42,18,21,0.2) 0%, transparent 60%)
+            radial-gradient(ellipse 50% 50% at 70% 60%, rgba(var(--lime-rgb),0.03) 0%, transparent 70%),
+            radial-gradient(ellipse 40% 40% at 10% 30%, rgba(var(--darkroom-rgb),0.2) 0%, transparent 60%)
           `,
         }}
       />
@@ -45,13 +45,13 @@ export default function About() {
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
-                    background: 'linear-gradient(to top, rgba(19,16,16,0.6), transparent 60%)',
+                    background: 'linear-gradient(to top, rgba(var(--dark-rgb),0.6), transparent 60%)',
                   }}
                 />
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
-                    background: 'rgba(42,18,21,0.15)',
+                    background: 'rgba(var(--darkroom-rgb),0.15)',
                     mixBlendMode: 'multiply',
                   }}
                 />

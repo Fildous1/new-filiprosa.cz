@@ -43,7 +43,7 @@ export default function ServiceCard({ icon, title, description, wide, delay = 0 
       }}
       onMouseOver={(e) => {
         e.currentTarget.style.transform = 'translateY(-6px)'
-        e.currentTarget.style.boxShadow = '0 4px 16px rgba(185,208,38,0.06), 0 16px 48px rgba(0,0,0,0.35)'
+        e.currentTarget.style.boxShadow = '0 4px 16px rgba(var(--lime-rgb),0.06), 0 16px 48px rgba(0,0,0,0.35)'
       }}
       onMouseOut={(e) => {
         e.currentTarget.style.transform = 'translateY(0)'

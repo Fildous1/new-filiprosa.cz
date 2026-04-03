@@ -4,6 +4,8 @@
    CUSTOM THEME — Tailwind v4
    ════════════════════════════════════════ */
 @theme {
+  /* ── Core palette (edit these + :root RGB channels below to retheme the entire site) ──
+     Reference: public/colors/colors-codes.txt */
   --color-lime: #b5ca2c;
   --color-lime-light: #d0e256;
   --color-lime-dark: #8c9c1e;
@@ -17,6 +19,18 @@
 
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+/* ── RGB channels for alpha variants in inline styles ── */
+:root {
+  --lime-rgb: 181, 202, 44;
+  --dark-rgb: 19, 16, 16;
+  --charcoal-rgb: 26, 22, 20;
+  --warmblack-rgb: 14, 11, 11;
+  --offwhite-rgb: 247, 243, 236;
+  --cream-rgb: 240, 234, 224;
+  --muted-rgb: 176, 160, 144;
+  --darkroom-rgb: 42, 18, 21;
 }
 
 /* ════════════════════════════════════════
@@ -38,7 +52,7 @@ body {
 }
 
 ::selection {
-  background: rgba(185, 208, 38, 0.25);
+  background: color-mix(in srgb, var(--color-lime) 25%, transparent);
   color: var(--color-offwhite);
 }
 
@@ -73,8 +87,8 @@ body {
   -webkit-backdrop-filter: blur(12px);
   background: linear-gradient(
     to top,
-    rgba(19, 16, 16, 0.85) 0%,
-    rgba(19, 16, 16, 0.4) 50%,
+    color-mix(in srgb, var(--color-dark) 85%, transparent) 0%,
+    color-mix(in srgb, var(--color-dark) 40%, transparent) 50%,
     transparent 100%
   );
   mask-image: linear-gradient(to top, black 20%, transparent 100%);
@@ -89,8 +103,8 @@ body {
   font-size: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.15em;
-  color: rgba(185, 208, 38, 0.5);
-  border: 1px solid rgba(185, 208, 38, 0.15);
+  color: color-mix(in srgb, var(--color-lime) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-lime) 15%, transparent);
   padding: 0.25rem 0.6rem;
   border-radius: 2px;
   display: inline-block;
@@ -103,8 +117,8 @@ body {
   height: 5px;
   background-image: repeating-linear-gradient(
     90deg,
-    rgba(185, 208, 38, 0.14) 0px,
-    rgba(185, 208, 38, 0.14) 6px,
+    color-mix(in srgb, var(--color-lime) 14%, transparent) 0px,
+    color-mix(in srgb, var(--color-lime) 14%, transparent) 6px,
     transparent 6px,
     transparent 14px
   );
@@ -133,7 +147,7 @@ body {
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(185, 208, 38, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-lime) 8%, transparent) 0%, transparent 70%);
   pointer-events: none;
   transform: translate(-50%, -50%);
   opacity: 0;
@@ -204,8 +218,8 @@ body {
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(245, 240, 232, 0.6);
-  background: rgba(14, 11, 11, 0.5);
+  color: color-mix(in srgb, var(--color-offwhite) 60%, transparent);
+  background: color-mix(in srgb, var(--color-warmblack) 50%, transparent);
   backdrop-filter: blur(8px);
   padding: 0.3rem 0.6rem;
   border-radius: 2px;

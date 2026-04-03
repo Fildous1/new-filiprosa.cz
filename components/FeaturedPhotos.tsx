@@ -76,8 +76,8 @@ export default function FeaturedPhotos() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 50% 50% at 80% 30%, rgba(42,18,21,0.25) 0%, transparent 70%),
-            radial-gradient(ellipse 60% 40% at 20% 70%, rgba(185,208,38,0.03) 0%, transparent 60%)
+            radial-gradient(ellipse 50% 50% at 80% 30%, rgba(var(--darkroom-rgb),0.25) 0%, transparent 70%),
+            radial-gradient(ellipse 60% 40% at 20% 70%, rgba(var(--lime-rgb),0.03) 0%, transparent 60%)
           `,
         }}
       />
@@ -187,17 +187,17 @@ function FeaturedItem({ item, index, hasError, onError, onClick }: { item: Featu
         <div
           className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           style={{
-            background: 'linear-gradient(to top, rgba(19,16,16,0.5) 0%, transparent 50%)',
+            background: 'linear-gradient(to top, rgba(var(--dark-rgb),0.5) 0%, transparent 50%)',
           }}
         />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'rgba(42,18,21,0.1)',
+            background: 'rgba(var(--darkroom-rgb),0.1)',
             mixBlendMode: 'multiply',
           }}
         />
-        <span className="absolute bottom-3 left-3 z-2 font-body text-[0.7rem] font-medium tracking-[0.1em] uppercase text-offwhite/60 bg-[rgba(19,16,16,0.5)] backdrop-blur-[8px] px-2 py-1 rounded-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <span className="absolute bottom-3 left-3 z-2 font-body text-[0.7rem] font-medium tracking-[0.1em] uppercase text-offwhite/60 bg-[rgba(var(--dark-rgb),0.5)] backdrop-blur-[8px] px-2 py-1 rounded-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           {item.albumTitle}
         </span>
       </button>

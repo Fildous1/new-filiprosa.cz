@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import {
   getSession,
   clearSession,
-  isAdmin,
   hashPassword,
   generateSalt,
   verifyPassword,
@@ -254,22 +253,38 @@ export default function AdminDashboard() {
             </Link>
           ))}
 
-          {/* Users section — admin only */}
+          {/* Admin-only sections */}
           {adminUser && (
-            <Link
-              href="/panel0x/users"
-              className="group flex items-center justify-between px-5 py-4 bg-charcoal border border-white/[0.05] rounded-[3px] hover:border-white/[0.13] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 active:scale-[0.99] transition-colors duration-200"
-            >
-              <div>
-                <p className="text-[0.95rem] font-medium text-offwhite group-hover:text-lime transition-colors duration-200 flex items-center gap-2">
-                  Users
-                  <span className="text-[0.6rem] text-lime/40 border border-lime/20 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider font-medium">Admin</span>
-                </p>
-                <p className="text-[0.78rem] text-muted mt-0.5">Manage users and permissions</p>
-                <p className="text-[0.7rem] text-muted/40 mt-1">Add/remove users, set access rights</p>
-              </div>
-              <span className="text-muted/40 group-hover:text-lime/50 transition-colors duration-200 ml-6 text-lg leading-none">&rarr;</span>
-            </Link>
+            <>
+              <Link
+                href="/panel0x/users"
+                className="group flex items-center justify-between px-5 py-4 bg-charcoal border border-white/[0.05] rounded-[3px] hover:border-white/[0.13] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 active:scale-[0.99] transition-colors duration-200"
+              >
+                <div>
+                  <p className="text-[0.95rem] font-medium text-offwhite group-hover:text-lime transition-colors duration-200 flex items-center gap-2">
+                    Users
+                    <span className="text-[0.6rem] text-lime/40 border border-lime/20 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider font-medium">Admin</span>
+                  </p>
+                  <p className="text-[0.78rem] text-muted mt-0.5">Manage users and permissions</p>
+                  <p className="text-[0.7rem] text-muted/40 mt-1">Add/remove users, set access rights</p>
+                </div>
+                <span className="text-muted/40 group-hover:text-lime/50 transition-colors duration-200 ml-6 text-lg leading-none">&rarr;</span>
+              </Link>
+              <Link
+                href="/panel0x/debug"
+                className="group flex items-center justify-between px-5 py-4 bg-charcoal border border-orange-500/10 rounded-[3px] hover:border-orange-500/25 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange-400/30 active:scale-[0.99] transition-colors duration-200"
+              >
+                <div>
+                  <p className="text-[0.95rem] font-medium text-offwhite group-hover:text-orange-400 transition-colors duration-200 flex items-center gap-2">
+                    Debug
+                    <span className="text-[0.6rem] text-orange-400/40 border border-orange-500/20 px-1.5 py-0.5 rounded-[2px] uppercase tracking-wider font-medium">Admin</span>
+                  </p>
+                  <p className="text-[0.78rem] text-muted mt-0.5">Diagnostics and debug tools</p>
+                  <p className="text-[0.7rem] text-muted/40 mt-1">CDN tests, auth storage, environment info</p>
+                </div>
+                <span className="text-muted/40 group-hover:text-orange-400/50 transition-colors duration-200 ml-6 text-lg leading-none">&rarr;</span>
+              </Link>
+            </>
           )}
         </div>
 
@@ -448,50 +463,3 @@ export default function AdminDashboard() {
   )
 }
 
-function CdnDebug() {
-  const [result, setResult] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-
-  async function runDebug() {
-    setLoading(true)
-    setResult(null)
-    try {
-      const cdnUrl = localStorage.getItem('__fr_cdn_url') || 'https://cdn.filiprosa.cz/'
-      const token = sessionStorage.getItem('__fr_admin_auth') || ''
-      const res = await fetch(`${cdnUrl}api/debug`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'X-Api-Key': token,
-          'Content-Type': 'application/json',
-        },
-      })
-      const text = await res.text()
-      setResult(`HTTP ${res.status}\n\n${text}`)
-    } catch (err) {
-      setResult(`Error: ${err instanceof Error ? err.message : String(err)}`)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return (
-    <div className="mt-4 px-5 py-4 bg-charcoal border border-orange-500/20 rounded-[3px]">
-      <div className="flex items-center justify-between mb-2">
-        <p className="text-[0.72rem] text-orange-400/80 font-medium uppercase tracking-wider">CDN Debug</p>
-        <button
-          onClick={runDebug}
-          disabled={loading}
-          className="px-3 py-1 text-[0.72rem] font-medium text-orange-400 border border-orange-500/30 rounded-[2px] hover:bg-orange-500/10 disabled:opacity-40 transition-colors duration-200"
-        >
-          {loading ? 'Testing...' : 'Test Auth'}
-        </button>
-      </div>
-      {result && (
-        <pre className="mt-2 p-3 bg-dark border border-white/[0.06] rounded-[2px] text-[0.65rem] text-offwhite/70 font-mono overflow-x-auto whitespace-pre-wrap max-h-[400px] overflow-y-auto">
-          {result}
-        </pre>
-      )}
-    </div>
-  )
-}

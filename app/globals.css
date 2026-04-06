@@ -6,16 +6,17 @@
 @theme {
   /* ── Core palette (edit these + :root RGB channels below to retheme the entire site) ──
      Reference: public/colors/colors-codes.txt */
-  --color-lime: #b5ca2c;
-  --color-lime-light: #d0e256;
-  --color-lime-dark: #8c9c1e;
+  --color-lime: #3bc442;
+  --color-lime-light: #62d067;
+  --color-lime-dark: #2f9d34;
   --color-dark: #131010;
-  --color-charcoal: #1a1614;
-  --color-warmblack: #0e0b0b;
-  --color-offwhite: #f7f3ec;
-  --color-cream: #f0eae0;
-  --color-muted: #b0a090;
-  --color-darkroom: #2a1215;
+  --color-charcoal: #1c1717;
+  --color-warmblack: #0e0c0c;
+  --color-offwhite: #f2f2f2;
+  --color-cream: #e6e6e6;
+  --color-muted: #8b7474;
+  --color-darkroom: #2b1e08;
+  --color-accent: #e0b05e;
 
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
@@ -23,14 +24,15 @@
 
 /* ── RGB channels for alpha variants in inline styles ── */
 :root {
-  --lime-rgb: 181, 202, 44;
+  --lime-rgb: 59, 196, 66;
   --dark-rgb: 19, 16, 16;
-  --charcoal-rgb: 26, 22, 20;
-  --warmblack-rgb: 14, 11, 11;
-  --offwhite-rgb: 247, 243, 236;
-  --cream-rgb: 240, 234, 224;
-  --muted-rgb: 176, 160, 144;
-  --darkroom-rgb: 42, 18, 21;
+  --charcoal-rgb: 28, 23, 23;
+  --warmblack-rgb: 14, 12, 12;
+  --offwhite-rgb: 242, 242, 242;
+  --cream-rgb: 230, 230, 230;
+  --muted-rgb: 139, 116, 116;
+  --darkroom-rgb: 43, 30, 8;
+  --accent-rgb: 224, 176, 94;
 }
 
 /* ════════════════════════════════════════

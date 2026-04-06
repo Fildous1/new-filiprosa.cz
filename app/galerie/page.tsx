@@ -168,12 +168,18 @@ export default function GaleriePage() {
             >
               {t('gallery.heading')}
             </h1>
-            <p
-              className="font-body text-muted max-w-[36rem]"
-              style={{ fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)' }}
-            >
-              {t('gallery.description')}
-            </p>
+            {activeAlbum && (() => {
+              const album = albumsWithImages.find(a => a.slug === activeAlbum)
+              const desc = album?.description[locale as Locale]
+              return desc ? (
+                <p
+                  className="font-body text-muted max-w-[36rem]"
+                  style={{ fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)' }}
+                >
+                  {desc}
+                </p>
+              ) : null
+            })()}
           </motion.div>
 
           {/* Loading state — skeleton */}

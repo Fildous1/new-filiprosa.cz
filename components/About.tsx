@@ -1,8 +1,9 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
+import { fetchSite, siteImageUrl, type SiteManifest } from '@/lib/cdn-api'
 
 export default function About() {
   const photoRef = useRef<HTMLDivElement>(null)
@@ -11,7 +12,16 @@ export default function About() {
   const photoInView = useInView(photoRef, { once: true, margin: '0px 0px -30px 0px' })
   const textInView = useInView(textRef, { once: true, margin: '0px 0px -30px 0px' })
   const statsInView = useInView(statsRef, { once: true, margin: '0px 0px -30px 0px' })
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
+  const [site, setSite] = useState<SiteManifest | null>(null)
+
+  useEffect(() => {
+    fetchSite().then(setSite).catch(() => {})
+  }, [])
+
+  const profileImageSrc = site?.profileImage ? siteImageUrl(site.profileImage) : '/images/profile.jpg'
+  const aboutP1 = (locale === 'cs' ? site?.aboutP1Cs : site?.aboutP1En) || t('about.p1')
+  const aboutP2 = (locale === 'cs' ? site?.aboutP2Cs : site?.aboutP2En) || t('about.p2')
 
   return (
     <section id="o-mne" className="relative" style={{ padding: 'clamp(5rem, 10vw, 8rem) 0' }}>
@@ -38,7 +48,7 @@ export default function About() {
             <div className="relative">
               <div className="relative aspect-[3/4] bg-charcoal border border-white/[0.05] rounded-[2px] overflow-hidden">
                 <img
-                  src="/images/profile.jpg"
+                  src={profileImageSrc}
                   alt="Filip Rosa"
                   className="w-full h-full object-cover"
                 />
@@ -87,13 +97,13 @@ export default function About() {
                 className="font-body text-muted mb-5"
                 style={{ fontSize: 'clamp(0.9rem, 1.4vw, 1.02rem)' }}
               >
-                {t('about.p1')}
+                {aboutP1}
               </p>
               <p
                 className="font-body text-muted mb-5"
                 style={{ fontSize: 'clamp(0.9rem, 1.4vw, 1.02rem)' }}
               >
-                {t('about.p2')}
+                {aboutP2}
               </p>
             </motion.div>
 

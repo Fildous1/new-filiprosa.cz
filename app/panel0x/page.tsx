@@ -14,7 +14,7 @@ import {
   type SessionInfo,
 } from '@/lib/auth'
 
-const sections = [
+const contentSections = [
   {
     href: '/panel0x/gallery',
     label: 'Gallery',
@@ -33,6 +33,9 @@ const sections = [
     description: 'Manage magazine issues',
     detail: 'Add/edit issues, upload PDFs and thumbnails',
   },
+]
+
+const miscSections = [
   {
     href: '/panel0x/gear',
     label: 'Gear',
@@ -44,6 +47,18 @@ const sections = [
     label: 'Services',
     description: 'Manage services section images',
     detail: 'Upload background photos for service cards',
+  },
+  {
+    href: '/panel0x/contact-section',
+    label: 'Contact Section',
+    description: 'Edit the about/contact section',
+    detail: 'Profile photo, bio text (CS + EN)',
+  },
+  {
+    href: '/panel0x/landing',
+    label: 'Landing',
+    description: 'Edit the hero section',
+    detail: 'Background image, headline text (CS + EN)',
   },
 ]
 
@@ -167,7 +182,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-dvh bg-dark text-offwhite font-body px-6 py-12">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-3xl mx-auto">
 
         {/* Header */}
         <div className="flex items-start justify-between mb-12">
@@ -236,29 +251,52 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Section links */}
-        <div className="flex flex-col gap-3">
-          {sections.map((s) => (
+        {/* Content sections */}
+        <p className="text-[0.62rem] tracking-[0.16em] uppercase text-muted/40 mb-3">Content</p>
+        <div className="grid grid-cols-2 gap-2 mb-8">
+          {contentSections.map((s) => (
             <Link
               key={s.href}
               href={s.href}
-              className="group flex items-center justify-between px-5 py-4 bg-charcoal border border-white/[0.05] rounded-[3px] hover:border-white/[0.13] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 active:scale-[0.99] transition-colors duration-200"
+              className="group flex flex-col justify-between px-5 py-4 bg-charcoal border border-white/[0.05] rounded-[3px] hover:border-white/[0.13] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 active:scale-[0.99] transition-colors duration-200"
             >
               <div>
                 <p className="text-[0.95rem] font-medium text-offwhite group-hover:text-lime transition-colors duration-200">{s.label}</p>
                 <p className="text-[0.78rem] text-muted mt-0.5">{s.description}</p>
                 <p className="text-[0.7rem] text-muted/40 mt-1">{s.detail}</p>
               </div>
-              <span className="text-muted/40 group-hover:text-lime/50 transition-colors duration-200 ml-6 text-lg leading-none">&rarr;</span>
+              <span className="text-muted/40 group-hover:text-lime/50 transition-colors duration-200 mt-3 text-lg leading-none">&rarr;</span>
             </Link>
           ))}
+        </div>
 
-          {/* Admin-only sections */}
-          {adminUser && (
-            <>
+        {/* Miscellaneous sections */}
+        <p className="text-[0.62rem] tracking-[0.16em] uppercase text-muted/40 mb-3">Miscellaneous</p>
+        <div className="grid grid-cols-2 gap-2 mb-8">
+          {miscSections.map((s) => (
+            <Link
+              key={s.href}
+              href={s.href}
+              className="group flex flex-col justify-between px-5 py-4 bg-charcoal border border-white/[0.05] rounded-[3px] hover:border-white/[0.13] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 active:scale-[0.99] transition-colors duration-200"
+            >
+              <div>
+                <p className="text-[0.95rem] font-medium text-offwhite group-hover:text-lime transition-colors duration-200">{s.label}</p>
+                <p className="text-[0.78rem] text-muted mt-0.5">{s.description}</p>
+                <p className="text-[0.7rem] text-muted/40 mt-1">{s.detail}</p>
+              </div>
+              <span className="text-muted/40 group-hover:text-lime/50 transition-colors duration-200 mt-3 text-lg leading-none">&rarr;</span>
+            </Link>
+          ))}
+        </div>
+
+        {/* Admin-only sections */}
+        {adminUser && (
+          <>
+            <p className="text-[0.62rem] tracking-[0.16em] uppercase text-muted/40 mb-3">Admin</p>
+            <div className="grid grid-cols-2 gap-2">
               <Link
                 href="/panel0x/users"
-                className="group flex items-center justify-between px-5 py-4 bg-charcoal border border-white/[0.05] rounded-[3px] hover:border-white/[0.13] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 active:scale-[0.99] transition-colors duration-200"
+                className="group flex flex-col justify-between px-5 py-4 bg-charcoal border border-white/[0.05] rounded-[3px] hover:border-white/[0.13] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 active:scale-[0.99] transition-colors duration-200"
               >
                 <div>
                   <p className="text-[0.95rem] font-medium text-offwhite group-hover:text-lime transition-colors duration-200 flex items-center gap-2">
@@ -268,11 +306,11 @@ export default function AdminDashboard() {
                   <p className="text-[0.78rem] text-muted mt-0.5">Manage users and permissions</p>
                   <p className="text-[0.7rem] text-muted/40 mt-1">Add/remove users, set access rights</p>
                 </div>
-                <span className="text-muted/40 group-hover:text-lime/50 transition-colors duration-200 ml-6 text-lg leading-none">&rarr;</span>
+                <span className="text-muted/40 group-hover:text-lime/50 transition-colors duration-200 mt-3 text-lg leading-none">&rarr;</span>
               </Link>
               <Link
                 href="/panel0x/debug"
-                className="group flex items-center justify-between px-5 py-4 bg-charcoal border border-orange-500/10 rounded-[3px] hover:border-orange-500/25 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange-400/30 active:scale-[0.99] transition-colors duration-200"
+                className="group flex flex-col justify-between px-5 py-4 bg-charcoal border border-orange-500/10 rounded-[3px] hover:border-orange-500/25 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange-400/30 active:scale-[0.99] transition-colors duration-200"
               >
                 <div>
                   <p className="text-[0.95rem] font-medium text-offwhite group-hover:text-orange-400 transition-colors duration-200 flex items-center gap-2">
@@ -282,11 +320,11 @@ export default function AdminDashboard() {
                   <p className="text-[0.78rem] text-muted mt-0.5">Diagnostics and debug tools</p>
                   <p className="text-[0.7rem] text-muted/40 mt-1">CDN tests, auth storage, environment info</p>
                 </div>
-                <span className="text-muted/40 group-hover:text-orange-400/50 transition-colors duration-200 ml-6 text-lg leading-none">&rarr;</span>
+                <span className="text-muted/40 group-hover:text-orange-400/50 transition-colors duration-200 mt-3 text-lg leading-none">&rarr;</span>
               </Link>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
 
         {/* Links */}
         <div className="mt-10 flex gap-3">

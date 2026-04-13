@@ -86,7 +86,22 @@ export interface RosnikManifest {
 }
 
 /** Fetch a manifest JSON from the CDN. */
-export async function fetchManifest<T>(type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'services' | 'users'): Promise<T> {
+export interface SiteManifest {
+  profileImage?: string
+  landingImage?: string
+  aboutP1Cs?: string
+  aboutP1En?: string
+  aboutP2Cs?: string
+  aboutP2En?: string
+  heroLine1Cs?: string
+  heroLine1En?: string
+  heroLine2Cs?: string
+  heroLine2En?: string
+  heroDescCs?: string
+  heroDescEn?: string
+}
+
+export async function fetchManifest<T>(type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'services' | 'users' | 'site'): Promise<T> {
   const res = await fetch(`${CDN_URL}${type}.json`, { cache: 'no-store' })
   if (!res.ok) throw new Error(`Failed to fetch ${type} manifest: ${res.status}`)
   return res.json()
@@ -134,6 +149,18 @@ export async function fetchServices(): Promise<ServicesManifest> {
 
 export function servicesImageUrl(filename: string): string {
   return `${CDN_URL}services/${filename}`
+}
+
+export async function fetchSite(): Promise<SiteManifest> {
+  try {
+    return await fetchManifest<SiteManifest>('site')
+  } catch {
+    return {}
+  }
+}
+
+export function siteImageUrl(filename: string): string {
+  return `${CDN_URL}site/${filename}`
 }
 
 /* ------------------------------------------------------------------ */
@@ -194,8 +221,8 @@ export async function uploadFiles(
 
 /** Save a manifest to the CDN. Automatically adds `updatedAt` timestamp. */
 export async function saveManifest(
-  type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'services',
-  data: GalleryManifest | MuseumManifest | RosnikManifest | GearManifest | ServicesManifest,
+  type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'services' | 'site',
+  data: GalleryManifest | MuseumManifest | RosnikManifest | GearManifest | ServicesManifest | SiteManifest,
 ): Promise<void> {
   // Stamp with current time for cache-busting
   const stamped = { ...data, updatedAt: Date.now() }

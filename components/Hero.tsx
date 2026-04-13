@@ -1,7 +1,9 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
+import { fetchSite, siteImageUrl, type SiteManifest } from '@/lib/cdn-api'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -17,13 +19,23 @@ const fadeUp = {
 }
 
 export default function Hero() {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
+  const [site, setSite] = useState<SiteManifest | null>(null)
+
+  useEffect(() => {
+    fetchSite().then(setSite).catch(() => {})
+  }, [])
+
+  const bgImage = site?.landingImage ? siteImageUrl(site.landingImage) : '/images/dance.jpg'
+  const titleLine1 = (locale === 'cs' ? site?.heroLine1Cs : site?.heroLine1En) || t('hero.title.line1')
+  const titleLine2 = (locale === 'cs' ? site?.heroLine2Cs : site?.heroLine2En) || t('hero.title.line2')
+  const heroDesc = (locale === 'cs' ? site?.heroDescCs : site?.heroDescEn) || t('hero.description')
 
   return (
     <header className="relative min-h-dvh flex flex-col overflow-hidden pt-16">
       {/* Background Image — fills entire hero, no filters */}
       <img
-        src="/images/dance.jpg"
+        src={bgImage}
         alt=""
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
@@ -59,9 +71,9 @@ export default function Hero() {
               className="text-offwhite leading-[1.08] tracking-[-0.03em] mb-6"
               style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.5rem)' }}
             >
-              <em className="font-display font-bold italic">{t('hero.title.line1')}</em>
+              <em className="font-display font-bold italic">{titleLine1}</em>
               <br />
-              <span className="font-display font-bold">{t('hero.title.line2')}</span>
+              <span className="font-display font-bold">{titleLine2}</span>
             </motion.h1>
 
             <motion.p
@@ -72,7 +84,7 @@ export default function Hero() {
               className="font-body text-offwhite/60 max-w-[30rem] mb-12"
               style={{ fontSize: 'clamp(0.95rem, 1.8vw, 1.125rem)' }}
             >
-              {t('hero.description')}
+              {heroDesc}
             </motion.p>
 
             <motion.div

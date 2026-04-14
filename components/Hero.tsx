@@ -68,17 +68,14 @@ export default function Hero() {
             <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
               <defs>
                 <filter id="hero-text-fx" x="-8%" y="-25%" width="116%" height="150%">
-                  {/* Roughen edges with subtle displacement */}
-                  <feTurbulence type="fractalNoise" baseFrequency="0.58 0.72" numOctaves="2" seed="9" result="noise" />
-                  <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" result="textured" />
-                  {/* Build glow: blur textured, recolour to lime, merge under */}
-                  <feGaussianBlur in="textured" stdDeviation="9" result="glow-blur" />
+                  {/* Glow: blur source, recolour to lime, merge under sharp original */}
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="glow-blur" />
                   <feColorMatrix in="glow-blur" type="matrix"
                     values="0 0 0 0 0.23  0 0 0 0 0.77  0 0 0 0 0.26  0 0 0 0.3 0"
                     result="glow-col" />
                   <feMerge>
                     <feMergeNode in="glow-col" />
-                    <feMergeNode in="textured" />
+                    <feMergeNode in="SourceGraphic" />
                   </feMerge>
                 </filter>
               </defs>
@@ -110,7 +107,7 @@ export default function Hero() {
 
               {/* Sans-serif line */}
               <span
-                className="font-body font-normal block text-offwhite/80 mt-1"
+                className="font-body font-semibold block text-offwhite/80 mt-1"
                 style={{ letterSpacing: '-0.025em' }}
               >
                 {titleLine2}<span style={{ color: '#e0b05e' }}>.</span>

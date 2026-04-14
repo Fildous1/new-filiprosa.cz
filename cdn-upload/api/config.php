@@ -1,13 +1,10 @@
 <?php
 /**
  * CDN API Configuration
- *
- * IMPORTANT: Change the ADMIN_TOKEN before deploying!
- * This token must match what the admin panel sends in the Authorization header.
  */
 
-// Admin authentication token — change this to a secure random string
-define('ADMIN_TOKEN', 'darkroom2026');
+// Admin authentication token
+define('ADMIN_TOKEN', 'DvCQPJ8xXnPmu4S');
 
 // Base directory for CDN content (one level up from /api/)
 define('CDN_ROOT', dirname(__DIR__) . '/');
@@ -15,11 +12,11 @@ define('CDN_ROOT', dirname(__DIR__) . '/');
 // Allowed file types for upload
 define('ALLOWED_EXTENSIONS', ['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif', 'svg', 'pdf']);
 
-// Maximum upload size (20 MB)
-define('MAX_UPLOAD_SIZE', 20 * 1024 * 1024);
+// Maximum upload size (50 MB)
+define('MAX_UPLOAD_SIZE', 50 * 1024 * 1024);
 
 // Allowed manifest types
-define('ALLOWED_MANIFEST_TYPES', ['gallery', 'museum', 'rosnik', 'gear']);
+define('ALLOWED_MANIFEST_TYPES', ['gallery', 'museum', 'rosnik', 'gear', 'services', 'site']);
 
 /**
  * Verify the Authorization header against the admin token.
@@ -29,7 +26,6 @@ function requireAuth(): void {
     $headers = getallheaders();
     $token = '';
 
-    // Try all possible sources for the Bearer token
     $candidates = [
         $headers['Authorization'] ?? '',
         $headers['authorization'] ?? '',
@@ -44,7 +40,6 @@ function requireAuth(): void {
         }
     }
 
-    // Fallback: X-Api-Key sends raw token (no "Bearer " prefix)
     if (!$token) {
         $token = $headers['X-Api-Key']
               ?? $headers['x-api-key']
@@ -74,7 +69,6 @@ function apiHeaders(): void {
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Api-Key');
 
-    // Handle preflight
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
         http_response_code(200);
         exit;
@@ -94,23 +88,18 @@ function requirePost(): void {
 
 /**
  * Sanitize a file path to prevent directory traversal.
- * Returns the sanitized path or false if invalid.
  */
 function sanitizePath(string $path): string|false {
-    // Remove leading slashes
     $path = ltrim($path, '/');
 
-    // Resolve and check for directory traversal
     $resolved = realpath(CDN_ROOT . dirname($path));
     if ($resolved === false) {
-        // Directory doesn't exist yet — check the path doesn't contain traversal
         if (preg_match('/\.\./', $path)) {
             return false;
         }
         return $path;
     }
 
-    // Ensure resolved path is within CDN_ROOT
     $cdnRoot = realpath(CDN_ROOT);
     if (strpos($resolved, $cdnRoot) !== 0) {
         return false;

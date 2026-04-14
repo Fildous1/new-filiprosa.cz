@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>CDN — filiprosa.cz</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0c0a08;
+            color: #d4cfc7;
+            font-family: 'DM Sans', 'Inter', -apple-system, sans-serif;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .wrap {
+            max-width: 960px;
+            width: 100%;
+        }
+
+        /* ── Top bar ── */
+        .topbar {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid #2a2520;
+        }
+
+        .topbar h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.75rem;
+            color: #f0ece4;
+            letter-spacing: -0.03em;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #b5ca2c18;
+            color: #b5ca2c;
+            font-size: 0.62rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.2rem 0.65rem;
+            border-radius: 3px;
+            border: 1px solid #b5ca2c30;
+        }
+
+        .topbar-sub {
+            margin-left: auto;
+            color: #6a6458;
+            font-size: 0.78rem;
+        }
+
+        /* ── Two-column grid ── */
+        .grid-main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .grid-main { grid-template-columns: 1fr; }
+        }
+
+        /* ── Card ── */
+        .card {
+            background: #161310;
+            border: 1px solid #2a2520;
+            border-radius: 8px;
+            padding: 1.4rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card.accent::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #b5ca2c, #d4e84a, #b5ca2c);
+        }
+
+        .card.span2 { grid-column: span 2; }
+        @media (max-width: 640px) { .card.span2 { grid-column: span 1; } }
+
+        /* ── Section headings ── */
+        .section-label {
+            font-size: 0.62rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #6a6458;
+            margin-bottom: 0.75rem;
+        }
+
+        /* ── Endpoints list ── */
+        .endpoints { list-style: none; }
+
+        .endpoints li {
+            font-size: 0.78rem;
+            color: #b8b0a4;
+            padding: 0.22rem 0;
+            font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .endpoints li .method { color: #b5ca2c; font-weight: 600; flex-shrink: 0; }
+        .endpoints li .path   { color: #d4cfc7; }
+        .endpoints li .desc   { color: #5a554e; }
+
+        /* ── Content types grid ── */
+        .types-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.55rem;
+        }
+
+        .type-item {
+            background: #1a1714;
+            border: 1px solid #252118;
+            border-radius: 5px;
+            padding: 0.55rem 0.8rem;
+        }
+
+        .type-item .t-label {
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #6a6458;
+            margin-bottom: 0.1rem;
+        }
+
+        .type-item .t-value {
+            font-size: 0.78rem;
+            color: #c8c2b8;
+        }
+
+        /* ── Stats grid ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.55rem;
+        }
+
+        .stat {
+            background: #1a1714;
+            border: 1px solid #252118;
+            border-radius: 5px;
+            padding: 0.55rem 0.8rem;
+        }
+
+        .stat .s-label {
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #6a6458;
+            margin-bottom: 0.1rem;
+        }
+
+        .stat .s-value {
+            font-size: 0.8rem;
+            color: #c8c2b8;
+            font-family: 'SFMono-Regular', 'Consolas', monospace;
+        }
+
+        /* ── Architecture description ── */
+        .arch-text {
+            font-size: 0.82rem;
+            color: #8a8478;
+            line-height: 1.7;
+        }
+
+        /* ── Warning ── */
+        .warning {
+            background: #181210;
+            border: 1px solid #3a251a;
+            border-radius: 5px;
+            padding: 0.7rem 1rem;
+            font-size: 0.78rem;
+            color: #c4956a;
+        }
+
+        .warning code {
+            color: #e0a870;
+            background: #2a1a12;
+            padding: 0.1rem 0.35rem;
+            border-radius: 3px;
+            font-size: 0.72rem;
+            font-family: 'SFMono-Regular', 'Consolas', monospace;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid #2a2520;
+        }
+
+        .footer a {
+            color: #b5ca2c;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: opacity 0.2s;
+        }
+
+        .footer a:hover { opacity: 0.75; }
+        .footer .copy   { color: #5a554e; font-size: 0.7rem; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+
+        <!-- Top bar -->
+        <div class="topbar">
+            <h1>cdn.filiprosa.cz</h1>
+            <span class="badge">CDN</span>
+            <span class="topbar-sub">filiprosa.cz asset server</span>
+        </div>
+
+        <!-- Main grid -->
+        <div class="grid-main">
+
+            <!-- Public endpoints -->
+            <div class="card">
+                <p class="section-label">Public endpoints</p>
+                <ul class="endpoints">
+                    <li><span class="method">GET</span><span class="path">/{type}.json</span><span class="desc">— manifest</span></li>
+                    <li><span class="method">GET</span><span class="path">/gallery/{album}/{file}</span><span class="desc">— photo</span></li>
+                    <li><span class="method">GET</span><span class="path">/gallery/{album}/thumbs/{file}</span><span class="desc">— thumbnail</span></li>
+                    <li><span class="method">GET</span><span class="path">/museum/{id}/{file}</span><span class="desc">— camera image</span></li>
+                    <li><span class="method">GET</span><span class="path">/rosnik/{file}</span><span class="desc">— magazine PDF</span></li>
+                    <li><span class="method">GET</span><span class="path">/gear/{file}</span><span class="desc">— gear photo</span></li>
+                    <li><span class="method">GET</span><span class="path">/services/{file}</span><span class="desc">— service image</span></li>
+                    <li><span class="method">GET</span><span class="path">/site/{file}</span><span class="desc">— site asset</span></li>
+                </ul>
+            </div>
+
+            <!-- Admin API -->
+            <div class="card">
+                <p class="section-label">Admin API <span style="color:#c4956a;font-size:0.58rem;font-weight:400;letter-spacing:0.04em">(Bearer auth)</span></p>
+                <ul class="endpoints">
+                    <li><span class="method">POST</span><span class="path">/api/upload</span><span class="desc">— upload file(s)</span></li>
+                    <li><span class="method">POST</span><span class="path">/api/manifest</span><span class="desc">— save manifest JSON</span></li>
+                    <li><span class="method">POST</span><span class="path">/api/delete</span><span class="desc">— delete a file</span></li>
+                    <li><span class="method">POST</span><span class="path">/api/save-users</span><span class="desc">— save users manifest</span></li>
+                    <li><span class="method">POST</span><span class="path">/api/debug</span><span class="desc">— server diagnostics</span></li>
+                </ul>
+                <div style="margin-top:1rem">
+                    <div class="warning">
+                        Admin endpoints require <code>Authorization: Bearer &lt;token&gt;</code>. Unauthorized requests are rejected with 401/403.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content types -->
+            <div class="card">
+                <p class="section-label">Content types</p>
+                <div class="types-grid">
+                    <div class="type-item"><div class="t-label">Gallery</div><div class="t-value">Photo albums</div></div>
+                    <div class="type-item"><div class="t-label">Museum</div><div class="t-value">Camera collection</div></div>
+                    <div class="type-item"><div class="t-label">Rosník</div><div class="t-value">Magazine PDFs</div></div>
+                    <div class="type-item"><div class="t-label">Gear</div><div class="t-value">Equipment photos</div></div>
+                    <div class="type-item"><div class="t-label">Services</div><div class="t-value">Service card images</div></div>
+                    <div class="type-item"><div class="t-label">Site</div><div class="t-value">Profile &amp; hero images</div></div>
+                </div>
+            </div>
+
+            <!-- Tech details + architecture -->
+            <div class="card">
+                <p class="section-label">Technical details</p>
+                <div class="stats-grid" style="margin-bottom:1rem">
+                    <div class="stat"><div class="s-label">Hosting</div><div class="s-value">WEDOS</div></div>
+                    <div class="stat"><div class="s-label">Backend</div><div class="s-value">PHP + Apache</div></div>
+                    <div class="stat"><div class="s-label">Max upload</div><div class="s-value">50 MB / file</div></div>
+                    <div class="stat"><div class="s-label">Image cache</div><div class="s-value">1 year</div></div>
+                    <div class="stat"><div class="s-label">Allowed types</div><div class="s-value">jpg png webp avif gif svg pdf</div></div>
+                    <div class="stat"><div class="s-label">CORS origins</div><div class="s-value">filiprosa.cz + localhost</div></div>
+                </div>
+                <p class="arch-text">Flat-file server. Manifests (JSON) describe collections; binary assets (images, PDFs) are served directly. Content is managed via the admin panel at filiprosa.cz/panel0x.</p>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <a href="https://filiprosa.cz">filiprosa.cz</a>
+            <span class="copy">&copy; Filip Rosa</span>
+        </div>
+
+    </div>
+</body>
+</html>

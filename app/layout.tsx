@@ -12,10 +12,23 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Filip Rosa - Fotografie s du\u0161\u00ed',
+    default: 'Filip Rosa – Analogová fotografie, Vyškov',
     template: '%s | Filip Rosa',
   },
-  description: 'Portr\u00e9tov\u00e9 focen\u00ed, produktov\u00e1 fotografie, vyvol\u00e1v\u00e1n\u00ed film\u016f a\u00a0darkroom tisky. Filip Rosa - \u0159emesln\u00e1 fotografie s\u00a0du\u0161\u00ed.',
+  description:
+    'Mladý fotograf z Vyškova specializující se na analogovou fotografii. Portrétní focení, vyvolávání filmů, darkroom tisky a skenování pro celou jižní Moravu.',
+  keywords: [
+    'fotograf Vyškov',
+    'analogová fotografie',
+    'vyvolávání filmů',
+    'darkroom tisky',
+    'portrétní fotograf',
+    'produktová fotografie',
+    'jižní Morava',
+    'Jihomoravský kraj',
+    'film photography',
+    'Filip Rosa',
+  ],
   metadataBase: new URL(SITE_URL),
   icons: {
     icon: '/favicon.svg',
@@ -26,22 +39,24 @@ export const metadata: Metadata = {
     alternateLocale: 'en_US',
     url: SITE_URL,
     siteName: 'Filip Rosa',
-    title: 'Filip Rosa - Fotografie s du\u0161\u00ed',
-    description: 'Portr\u00e9ty, produktov\u00e1 fotografie, vyvol\u00e1v\u00e1n\u00ed film\u016f a\u00a0darkroom tisky. Ka\u017ed\u00fd sn\u00edmek vypr\u00e1v\u00ed p\u0159\u00edb\u011bh.',
+    title: 'Filip Rosa – Analogová fotografie, Vyškov',
+    description:
+      'Portrétní focení, produktová fotografie, vyvolávání filmů a darkroom tisky. Fotograf z Vyškova pro celou jižní Moravu.',
     images: [
       {
-        url: '/images/profile.jpg',
+        url: `${SITE_URL}/images/profile.jpg`,
         width: 1200,
         height: 630,
-        alt: 'Filip Rosa - fotograf',
+        alt: 'Filip Rosa – fotograf, Vyškov',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Filip Rosa - Fotografie s du\u0161\u00ed',
-    description: 'Portr\u00e9ty, produktov\u00e1 fotografie, vyvol\u00e1v\u00e1n\u00ed film\u016f a\u00a0darkroom tisky.',
-    images: ['/images/profile.jpg'],
+    title: 'Filip Rosa – Analogová fotografie, Vyškov',
+    description:
+      'Portrétní focení, vyvolávání filmů a darkroom tisky. Fotograf z Vyškova pro celou jižní Moravu.',
+    images: [`${SITE_URL}/images/profile.jpg`],
   },
   robots: {
     index: true,
@@ -49,6 +64,10 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: SITE_URL,
+    languages: {
+      'cs-CZ': SITE_URL,
+      'en-US': `${SITE_URL}?lang=en`,
+    },
   },
 }
 
@@ -78,14 +97,48 @@ export default function RootLayout({
               url: SITE_URL,
               image: `${SITE_URL}/images/profile.jpg`,
               jobTitle: 'Fotograf',
-              description: 'Portr\u00e9tov\u00e9 focen\u00ed, produktov\u00e1 fotografie, vyvol\u00e1v\u00e1n\u00ed film\u016f a darkroom tisky.',
+              description:
+                'Mladý fotograf z Vyškova specializující se na analogovou fotografii – portréty, produkty, vyvolávání filmů a darkroom tisky pro celou jižní Moravu.',
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: 'Vyškov',
+                addressRegion: 'Jihomoravský kraj',
+                addressCountry: 'CZ',
+              },
+              areaServed: {
+                '@type': 'AdministrativeArea',
+                name: 'Jihomoravský kraj',
+              },
               sameAs: [],
               knowsAbout: [
+                'Analogová fotografie',
+                'Portrétní fotografie',
+                'Produktová fotografie',
+                'Vyvolávání filmů',
+                'Darkroom tisky',
+                'Skenování negativů',
                 'Portrait photography',
-                'Product photography',
                 'Film development',
                 'Darkroom printing',
                 'Analog photography',
+              ],
+              offers: [
+                {
+                  '@type': 'Offer',
+                  name: 'Portrétní a produktová fotografie',
+                  description: 'Focení pro jednotlivce, firmy a události v digitálním i analogovém stylu.',
+                  areaServed: 'Jihomoravský kraj',
+                },
+                {
+                  '@type': 'Offer',
+                  name: 'Vyvolávání černobílých filmů',
+                  description: 'Individuální vyvolávání černobílých negativů.',
+                },
+                {
+                  '@type': 'Offer',
+                  name: 'Darkroom tisky',
+                  description: 'Ručně vyrobené zvětšeniny z negativů v temné komoře.',
+                },
               ],
             }),
           }}

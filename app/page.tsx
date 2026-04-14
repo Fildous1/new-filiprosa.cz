@@ -1,4 +1,5 @@
 import Navigation from '@/components/Navigation'
+import HashScroll from '@/components/HashScroll'
 import Hero from '@/components/Hero'
 import Services from '@/components/Services'
 import FeaturedPhotos from '@/components/FeaturedPhotos'
@@ -11,6 +12,7 @@ import BottomBlur from '@/components/BottomBlur'
 export default function Home() {
   return (
     <>
+      <HashScroll />
       <BottomBlur />
       <Navigation />
       <Hero />

@@ -1,0 +1,126 @@
+filiprosa.cz — Site Description for Language Models
+=====================================================
+Last updated: 2026-04-14
+
+IDENTITY
+--------
+Filip Rosa is a young, aspiring photographer based in Vyškov, a town in the
+South Moravian Region (Jihomoravský kraj) of the Czech Republic. He focuses
+primarily on analog (film) photography and provides photographic services
+across South Moravia. He works with both digital and analog formats, but
+analog craft — from shooting on film to darkroom printing — is the core of
+his identity.
+
+
+SERVICES (what Filip offers)
+-----------------------------
+1. Zachycení vzpomínek / Capturing memories
+   Portrait, product, and event photography. Available in both digital and
+   analog aesthetics. Keywords: portréty, produktová fotografie, eventová
+   fotografie.
+
+2. Vyvolávání / Film development
+   Individual black-and-white film development. Quality, affordable,
+   personalised service. Keywords: vyvolávání filmů, černobílé filmy.
+
+3. Fyzické fotografie / Darkroom prints
+   Handmade darkroom silver gelatin prints. Physical photographs with a
+   genuine analog character. Keywords: darkroom tisky, zvětšeniny.
+
+4. Skenování / Scanning
+   High-quality scanning of negatives and slides.
+   Keywords: skenování negativů, diapozitivy.
+
+
+SITE STRUCTURE
+--------------
+The website (filiprosa.cz) is a bilingual (Czech / English) portfolio site
+built with Next.js (static export), styled with Tailwind CSS, and animated
+with Framer Motion. Content is served from a CDN at cdn.filiprosa.cz.
+
+Page sections (in order, accessible via anchor links):
+  /           — Homepage with all sections
+  /#sluzby    — Services section (the four service cards above)
+  /#projekty  — Projects overview (links to sub-pages)
+  /#o-mne     — About / contact section (profile photo, two text paragraphs,
+                stats: years of experience, cameras in collection, films developed)
+  /#kontakt   — Contact form (name, e-mail, message)
+
+Subpages:
+  /galerie    — Photo gallery. Albums of Filip's work. Images served from CDN.
+  /muzeum     — Camera museum. Filip's personal analog camera collection.
+                Each camera has brand, model, year, country of origin,
+                acquisition story, and sample images.
+  /rosnik     — Nerovný Rosník. A self-published analog photography magazine
+                (PDF download). Multiple issues.
+  /mafos      — Mafoš project. A film discovery/outreach project connecting
+                people with analog photography.
+  /vybaveni   — Gear / equipment page. Overview of cameras and darkroom
+                equipment Filip uses.
+  meetup.filiprosa.cz — External site for photography meetup events.
+
+
+PROJECTS
+--------
+Nerovný Rosník
+  A magazine about analog photography created by Filip Rosa. Issues are
+  available as free PDF downloads from the site. "Nerovný" roughly translates
+  to "uneven / rough / raw" — reflecting the lo-fi, handmade feel.
+
+Kamera Museum (Muzeum kamer)
+  Filip's growing collection of vintage and analog cameras. The museum section
+  of the site catalogs each camera with detailed metadata (type, sensor format,
+  release year, country, working condition, purchase price, personal notes).
+
+Mafoš
+  A community/outreach project around analog film photography. Aimed at
+  introducing people to film shooting and darkroom work.
+
+Fotomeetup
+  Regular photography meetups organised by Filip. Hosted at
+  meetup.filiprosa.cz.
+
+
+LOCATION & SERVICE AREA
+------------------------
+Home base: Vyškov, South Moravia, Czech Republic
+Primary service area: South Moravia (Jihomoravská oblast)
+The site and services are relevant to people searching for a photographer in
+Vyškov, Brno, and the broader South Moravian Region.
+
+
+TONE & AESTHETIC
+----------------
+- Craft-first. Every photograph is treated as a manual, intentional act.
+- Analog at heart: film grain, darkroom chemistry, physical prints.
+- Minimalist, dark visual aesthetic on the site (dark backgrounds, lime/gold
+  accent colour, Playfair Display serif headings, DM Sans body text).
+- Bilingual: Czech is the primary language; English translation available.
+- Young, approachable voice — not a corporate studio, but an individual
+  craftsperson.
+
+
+TECHNICAL NOTES (for AI tools reading this file)
+-------------------------------------------------
+- Framework: Next.js (App Router, static export)
+- Styling: Tailwind CSS 4
+- Animation: Framer Motion
+- Fonts: Playfair Display (headings), DM Sans (body)
+- i18n: client-side, Czech + English, stored in lib/i18n.tsx
+- CDN: cdn.filiprosa.cz — flat-file PHP server on WEDOS shared hosting
+- Admin panel: /panel0x — password-protected, manages CDN content
+- No database; all content stored as JSON manifests on CDN
+- Images: served from CDN, resized client-side before upload
+  (full: 1920px, thumbnail: 720px, JPEG 85–88% quality)
+- Contact form posts to CDN API (/api/contact), which sends email
+- Sitemap: /sitemap.xml
+- Robots: /robots.txt
+
+
+CONTACT
+-------
+Website: https://filiprosa.cz
+CDN:     https://cdn.filiprosa.cz
+Email:   info@filiprosa.cz
+Phone:   +420602942833
+Insta:   @fildous1

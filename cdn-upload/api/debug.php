@@ -1,24 +1,19 @@
 <?php
 /**
- * Debug endpoint — dumps everything PHP receives.
- * DELETE THIS FILE after debugging!
+ * Debug endpoint — dumps headers and server state.
+ * Requires auth. Only accessible from admin panel.
  *
- * GET or POST /api/debug
+ * POST /api/debug
  */
 
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Api-Key');
+require_once __DIR__ . '/config.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
+apiHeaders();
+requireAuth();
+requirePost();
 
 $allHeaders = getallheaders();
 
-// Filter $_SERVER to just HTTP_* and relevant keys
 $serverVars = [];
 foreach ($_SERVER as $key => $value) {
     if (
@@ -30,9 +25,28 @@ foreach ($_SERVER as $key => $value) {
     }
 }
 
+// Scan CDN root directories
+$dirs = [];
+$cdnRoot = CDN_ROOT;
+if (is_dir($cdnRoot)) {
+    foreach (scandir($cdnRoot) as $entry) {
+        if ($entry === '.' || $entry === '..') continue;
+        $fullPath = $cdnRoot . $entry;
+        if (is_dir($fullPath)) {
+            $fileCount = count(array_filter(scandir($fullPath), fn($f) => $f !== '.' && $f !== '..'));
+            $dirs[$entry] = $fileCount . ' entries';
+        } else {
+            $dirs[$entry] = round(filesize($fullPath) / 1024, 1) . ' KB';
+        }
+    }
+}
+
 echo json_encode([
-    'getallheaders' => $allHeaders,
-    'server_vars' => $serverVars,
-    'php_sapi' => php_sapi_name(),
+    'auth'        => 'ok',
     'php_version' => PHP_VERSION,
-], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    'php_sapi'    => php_sapi_name(),
+    'cdn_root'    => $cdnRoot,
+    'cdn_contents'=> $dirs,
+    'headers'     => $allHeaders,
+    'server_vars' => $serverVars,
+], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

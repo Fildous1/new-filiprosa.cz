@@ -63,17 +63,58 @@ export default function Hero() {
       <div className="relative z-10 flex-1 flex items-center">
         <div className="max-w-[1200px] mx-auto px-6 lg:px-10 w-full">
           <div className="max-w-[36rem]">
+
+            {/* ── SVG filter: fractal-noise displacement (rustic texture) + lime glow ── */}
+            <svg aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>
+              <defs>
+                <filter id="hero-text-fx" x="-8%" y="-25%" width="116%" height="150%">
+                  {/* Roughen edges with subtle displacement */}
+                  <feTurbulence type="fractalNoise" baseFrequency="0.58 0.72" numOctaves="2" seed="9" result="noise" />
+                  <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" result="textured" />
+                  {/* Build glow: blur textured, recolour to lime, merge under */}
+                  <feGaussianBlur in="textured" stdDeviation="9" result="glow-blur" />
+                  <feColorMatrix in="glow-blur" type="matrix"
+                    values="0 0 0 0 0.23  0 0 0 0 0.77  0 0 0 0 0.26  0 0 0 0.3 0"
+                    result="glow-col" />
+                  <feMerge>
+                    <feMergeNode in="glow-col" />
+                    <feMergeNode in="textured" />
+                  </feMerge>
+                </filter>
+              </defs>
+            </svg>
+
             <motion.h1
               custom={0}
               variants={fadeUp}
               initial="hidden"
               animate="visible"
-              className="text-offwhite leading-[1.08] tracking-[-0.03em] mb-6"
+              className="leading-[1.08] tracking-[-0.03em] mb-6"
               style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.5rem)' }}
             >
-              <em className="font-display font-bold italic">{titleLine1}</em>
-              <br />
-              <span className="font-display font-bold">{titleLine2}</span>
+              {/* Serif italic line — gradient fill + rustic texture + glow */}
+              <em
+                className="font-display block"
+                style={{
+                  fontStyle: 'italic',
+                  fontWeight: 400,
+                  background: 'linear-gradient(150deg, #f5f0e8 5%, #c8a060 52%, #3bc442 95%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                  filter: 'url(#hero-text-fx)',
+                }}
+              >
+                {titleLine1}
+              </em>
+
+              {/* Sans-serif line */}
+              <span
+                className="font-body font-normal block text-offwhite/80 mt-1"
+                style={{ letterSpacing: '-0.025em' }}
+              >
+                {titleLine2}<span style={{ color: '#e0b05e' }}>.</span>
+              </span>
             </motion.h1>
 
             <motion.p

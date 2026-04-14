@@ -211,7 +211,7 @@ export default function GalleryAdmin() {
               ...a,
               images: a.images.map((img, i) =>
                 i === editingImage._index
-                  ? { filename: editingImage.filename, caption: editingImage.caption, featured: editingImage.featured, analog: editingImage.analog, year: editingImage.year }
+                  ? { filename: editingImage.filename, caption: editingImage.caption, tags: editingImage.tags, featured: editingImage.featured, analog: editingImage.analog, year: editingImage.year }
                   : img
               ),
             }
@@ -869,6 +869,15 @@ export default function GalleryAdmin() {
                     placeholder="e.g. 2024"
                     value={editingImage.year ?? ''}
                     onChange={e => setEditingImage(p => p ? { ...p, year: e.target.value ? parseInt(e.target.value) : undefined } : null)}
+                    className="w-full px-3 py-2 bg-dark border border-white/[0.08] rounded-[2px] text-[0.8rem] text-offwhite placeholder:text-muted/30 focus:outline-none focus:border-lime/40"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[0.68rem] text-muted/50 uppercase tracking-wide mb-1">Tags <span className="normal-case tracking-normal opacity-40">(comma-separated, for SEO)</span></label>
+                  <input
+                    placeholder="e.g. portrait, black and white, studio"
+                    value={editingImage.tags?.join(', ') ?? ''}
+                    onChange={e => setEditingImage(p => p ? { ...p, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) } : null)}
                     className="w-full px-3 py-2 bg-dark border border-white/[0.08] rounded-[2px] text-[0.8rem] text-offwhite placeholder:text-muted/30 focus:outline-none focus:border-lime/40"
                   />
                 </div>

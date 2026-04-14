@@ -33,11 +33,16 @@ export default function FeaturedPhotos() {
         for (const album of data.albums) {
           for (const img of album.images) {
             if (img.featured) {
+              const caption = img.caption[locale as 'cs' | 'en']
+              const albumTitle = album.title[locale as 'cs' | 'en']
+              const alt = caption
+                || (img.tags?.length ? `${img.tags.join(', ')} — ${albumTitle}` : '')
+                || `${img.filename.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ')} — ${albumTitle}`
               featured.push({
                 src: galleryImageUrl(album.slug, img.filename, v),
                 thumbSrc: galleryThumbUrl(album.slug, img.filename, v),
-                alt: img.caption[locale as 'cs' | 'en'] || img.filename,
-                albumTitle: album.title[locale as 'cs' | 'en'],
+                alt,
+                albumTitle,
                 albumSlug: album.slug,
                 filename: img.filename,
               })

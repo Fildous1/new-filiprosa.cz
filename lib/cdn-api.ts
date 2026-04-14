@@ -28,6 +28,7 @@ function authHeaders(): HeadersInit {
 export interface GalleryImage {
   filename: string
   caption: { cs: string; en: string }
+  tags?: string[]
   featured?: boolean
   analog?: boolean
   year?: number

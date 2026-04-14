@@ -12,7 +12,9 @@ interface DisplayImage {
   url: string       // full-size for lightbox
   thumbUrl: string   // thumbnail for grid
   albumSlug: string
+  albumTitle: string
   filename: string
+  alt: string
   data: GalleryImage
 }
 
@@ -82,17 +84,27 @@ export default function GaleriePage() {
 
   const displayImages: DisplayImage[] = useShuffle(
     displayAlbums.flatMap(a =>
-      a.images.map(img => ({
-        url: galleryImageUrl(a.slug, img.filename, cacheVersion),
-        thumbUrl: galleryThumbUrl(a.slug, img.filename, cacheVersion),
-        albumSlug: a.slug,
-        filename: img.filename,
-        data: img,
-      }))
+      a.images.map(img => {
+        const caption = img.caption[locale as Locale]
+        const albumTitle = a.title[locale as Locale]
+        const alt = caption
+          || (img.tags?.length ? `${img.tags.join(', ')} — ${albumTitle}` : '')
+          || `${img.filename.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ')} — ${albumTitle}`
+        return {
+          url: galleryImageUrl(a.slug, img.filename, cacheVersion),
+          thumbUrl: galleryThumbUrl(a.slug, img.filename, cacheVersion),
+          albumSlug: a.slug,
+          albumTitle,
+          filename: img.filename,
+          alt,
+          data: img,
+        }
+      })
     )
   )
 
   const allImageUrls = displayImages.map(d => d.url)
+  const allImageAlts = displayImages.map(d => d.alt)
 
   const buildUrl = useCallback((album: string | null, photo?: string) => {
     const params = new URLSearchParams()
@@ -242,6 +254,7 @@ export default function GaleriePage() {
                     imgErrors={imgErrors}
                     setImgErrors={setImgErrors}
                     onOpen={() => openLightbox(i)}
+                    alt={item.alt}
                   />
                 ))}
               </div>
@@ -254,6 +267,7 @@ export default function GaleriePage() {
 
       <Lightbox
         images={allImageUrls}
+        alts={allImageAlts}
         currentIndex={lightboxIndex}
         isOpen={lightboxOpen}
         onClose={closeLightbox}
@@ -272,12 +286,13 @@ export default function GaleriePage() {
   )
 }
 
-function GalleryPhoto({ item, index, imgErrors, setImgErrors, onOpen }: {
+function GalleryPhoto({ item, index, imgErrors, setImgErrors, onOpen, alt }: {
   item: DisplayImage
   index: number
   imgErrors: Record<string, boolean>
   setImgErrors: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
   onOpen: () => void
+  alt: string
 }) {
   const [loaded, setLoaded] = useState(false)
 
@@ -301,7 +316,7 @@ function GalleryPhoto({ item, index, imgErrors, setImgErrors, onOpen }: {
             )}
             <img
               src={imgErrors[item.thumbUrl] ? item.url : item.thumbUrl}
-              alt=""
+              alt={alt}
               className={`w-full h-auto block transition-opacity duration-500 ease-out ${loaded ? 'opacity-100' : 'opacity-0 absolute inset-0'}`}
               loading="lazy"
               onLoad={() => setLoaded(true)}

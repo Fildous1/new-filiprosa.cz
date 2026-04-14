@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 interface LightboxProps {
   images: string[]
+  alts?: string[]
   currentIndex: number
   isOpen: boolean
   onClose: () => void
@@ -17,7 +18,7 @@ const MAX_ZOOM = 5
 const ZOOM_STEP = 0.5
 const DRAG_THRESHOLD = 5 // px — movement below this counts as a click, not a drag
 
-export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev, onNext }: LightboxProps) {
+export default function Lightbox({ images, alts, currentIndex, isOpen, onClose, onPrev, onNext }: LightboxProps) {
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
@@ -445,7 +446,7 @@ export default function Lightbox({ images, currentIndex, isOpen, onClose, onPrev
               ref={imgRef}
               key={images[currentIndex]}
               src={images[currentIndex]}
-              alt=""
+              alt={alts?.[currentIndex] || ''}
               className="max-h-[85vh] max-w-[90vw] object-contain pointer-events-none"
               style={{
                 transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`,

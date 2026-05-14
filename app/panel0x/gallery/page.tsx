@@ -19,6 +19,8 @@ import { hasPermission } from '@/lib/auth'
 
 type EditingImage = GalleryImage & { _albumSlug: string; _index: number }
 
+const SITE_URL = 'https://filiprosa.cz'
+
 
 export default function GalleryAdmin() {
   const canUpload = hasPermission('gallery', 'upload')
@@ -419,6 +421,15 @@ export default function GalleryAdmin() {
     await handleSave(updated)
   }
 
+  async function copyLink(url: string, label: string) {
+    try {
+      await navigator.clipboard.writeText(url)
+      toast(`${label} link copied`)
+    } catch {
+      toast('Copy failed — check clipboard permissions', 'error')
+    }
+  }
+
   async function handleToggleFeaturedSelected() {
     if (!manifest || !activeAlbum || selected.size === 0) return
     // If all selected are already featured, turn off; otherwise turn on
@@ -616,6 +627,13 @@ export default function GalleryAdmin() {
               <p className="text-[0.72rem] text-muted mt-0.5">{activeAlbum.description.en}</p>
             </div>
             <div className="flex gap-2">
+              <button
+                onClick={() => copyLink(`${SITE_URL}/galerie/?album=${encodeURIComponent(activeAlbum.slug)}`, 'Album')}
+                className="px-3 py-1.5 text-[0.72rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-lime hover:border-lime/20 transition-colors duration-200"
+                title="Copy public album URL"
+              >
+                Copy link
+              </button>
               {canEdit && (
                 <button
                   onClick={() => startEditAlbum(activeAlbum)}
@@ -757,6 +775,13 @@ export default function GalleryAdmin() {
                         Edit
                       </button>
                     )}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); copyLink(galleryImageUrl(activeAlbum.slug, img.filename), 'Photo') }}
+                      className="px-1.5 py-0.5 text-[0.5rem] font-medium text-offwhite/80 bg-dark/80 rounded-[2px] hover:bg-dark hover:text-lime"
+                      title="Copy CDN URL"
+                    >
+                      Link
+                    </button>
                     {canDelete && (
                       <button
                         onClick={(e) => { e.stopPropagation(); handleDeleteImage(activeAlbum.slug, i) }}
@@ -815,7 +840,16 @@ export default function GalleryAdmin() {
               </button>
               <div className="bg-charcoal border border-white/[0.08] rounded-[3px] p-6 w-full">
                 <h3 className="text-[0.9rem] font-medium text-offwhite mb-4">Edit Photo</h3>
-              <p className="text-[0.72rem] text-muted/60 font-mono mb-4">{editingImage.filename}</p>
+              <div className="flex items-center gap-2 mb-4">
+                <p className="text-[0.72rem] text-muted/60 font-mono truncate">{editingImage.filename}</p>
+                <button
+                  onClick={() => copyLink(galleryImageUrl(editingImage._albumSlug, editingImage.filename), 'Photo')}
+                  className="px-2 py-0.5 text-[0.65rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-lime hover:border-lime/20 transition-colors duration-200 flex-shrink-0"
+                  title="Copy CDN URL"
+                >
+                  Copy link
+                </button>
+              </div>
 
               <div className="space-y-3">
                 <div>

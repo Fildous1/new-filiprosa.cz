@@ -60,6 +60,15 @@ export default function RosnikAdmin() {
     setTimeout(() => setSuccess(null), 3000)
   }
 
+  async function copyLink(url: string, label: string) {
+    try {
+      await navigator.clipboard.writeText(url)
+      flash(`${label} link copied`)
+    } catch {
+      setError('Copy failed — check clipboard permissions')
+    }
+  }
+
   function startAdd() {
     const nextId = manifest ? Math.max(0, ...manifest.issues.map(i => i.id)) + 1 : 1
     setEditing({ ...EMPTY_ISSUE, id: nextId } as MagazineIssue)
@@ -436,6 +445,15 @@ export default function RosnikAdmin() {
                     >
                       Open PDF
                     </a>
+                  )}
+                  {issue.pdf && (
+                    <button
+                      onClick={() => copyLink(rosnikAssetUrl(issue.pdf), 'PDF')}
+                      className="px-3 py-1 text-[0.68rem] font-medium text-muted border border-white/[0.07] rounded-[2px] hover:text-lime hover:border-lime/20 transition-colors duration-200"
+                      title="Copy PDF URL"
+                    >
+                      Copy link
+                    </button>
                   )}
                 </div>
               </div>

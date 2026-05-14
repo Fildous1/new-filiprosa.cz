@@ -23,6 +23,8 @@ function sanitizeFilename(name: string): string {
   return noDots.slice(0, 200) || 'file'
 }
 
+const SITE_URL = 'https://filiprosa.cz'
+
 const EMPTY_CAMERA: Omit<Camera, 'id'> = {
   brand: '',
   model: '',
@@ -217,6 +219,15 @@ export default function MuseumAdmin() {
       setEditing(prev => prev ? { ...prev, [field]: (prev[field] ?? []).filter((f: string) => f !== filename) } : null)
     }
     await handleSave(updated)
+  }
+
+  async function copyLink(url: string, label: string) {
+    try {
+      await navigator.clipboard.writeText(url)
+      toast(`${label} link copied`)
+    } catch {
+      toast('Copy failed — check clipboard permissions', 'error')
+    }
   }
 
   async function handleSave(updated: MuseumManifest) {
@@ -421,6 +432,13 @@ export default function MuseumAdmin() {
                               className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-200"
                               loading="lazy"
                             />
+                            <button
+                              onClick={() => copyLink(museumImageUrl(editing.id, filename), 'Photo')}
+                              className="absolute top-0.5 left-0.5 px-1 py-px text-[0.55rem] font-medium text-offwhite/80 bg-dark/80 rounded-[2px] hover:text-lime opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                              title="Copy CDN URL"
+                            >
+                              Link
+                            </button>
                             {canDelete && (
                               <button
                                 onClick={() => handleDeletePhoto(editing.id, filename, 'gallery')}
@@ -463,6 +481,13 @@ export default function MuseumAdmin() {
                               className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-200"
                               loading="lazy"
                             />
+                            <button
+                              onClick={() => copyLink(museumImageUrl(editing.id, filename), 'Photo')}
+                              className="absolute top-0.5 left-0.5 px-1 py-px text-[0.55rem] font-medium text-offwhite/80 bg-dark/80 rounded-[2px] hover:text-lime opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                              title="Copy CDN URL"
+                            >
+                              Link
+                            </button>
                             {canDelete && (
                               <button
                                 onClick={() => handleDeletePhoto(editing.id, filename, 'sample')}
@@ -577,6 +602,13 @@ export default function MuseumAdmin() {
                     </span>
                   </td>
                   <td className="px-3 py-2.5 text-right whitespace-nowrap">
+                    <button
+                      onClick={() => copyLink(`${SITE_URL}/muzeum/?id=${cam.id}`, 'Camera')}
+                      className="px-2 py-0.5 text-[0.68rem] text-muted hover:text-lime transition-colors duration-200 mr-2"
+                      title="Copy public camera URL"
+                    >
+                      Link
+                    </button>
                     {canEdit && (
                       <button
                         onClick={() => startEdit(cam)}

@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { motion, useInView } from 'framer-motion'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import Lightbox from '@/components/Lightbox'
 import { useI18n, type Locale } from '@/lib/i18n'
 import { fetchGallery, galleryImageUrl, galleryThumbUrl, type GalleryAlbum, type GalleryImage } from '@/lib/cdn-api'
+
+type SortMode = 'random' | 'newest' | 'oldest' | 'name'
 
 interface DisplayImage {
   url: string       // full-size for lightbox
@@ -53,7 +55,12 @@ export default function GaleriePage() {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({})
+  const [sortMode, setSortMode] = useState<SortMode>('random')
+  const [sortOpen, setSortOpen] = useState(false)
+  const [downloading, setDownloading] = useState(false)
+  const [dlProgress, setDlProgress] = useState('')
   const headerRef = useRef<HTMLDivElement>(null)
+  const sortRef = useRef<HTMLDivElement>(null)
   const headerInView = useInView(headerRef, { once: true, margin: '0px 0px -30px 0px' })
 
   // Read album from URL on mount
@@ -76,14 +83,17 @@ export default function GaleriePage() {
       })
   }, [])
 
-  const albumsWithImages = albums.filter(a => a.images.length > 0)
-  const visibleAlbums = albumsWithImages.filter(a => !a.hidden)
-  const displayAlbums = activeAlbum
-    ? albumsWithImages.filter(a => a.slug === activeAlbum)
-    : visibleAlbums
+  const albumsWithImages = useMemo(() => albums.filter(a => a.images.length > 0), [albums])
+  const visibleAlbums = useMemo(() => albumsWithImages.filter(a => !a.hidden), [albumsWithImages])
+  const displayAlbums = useMemo(
+    () => activeAlbum
+      ? albumsWithImages.filter(a => a.slug === activeAlbum)
+      : visibleAlbums,
+    [activeAlbum, albumsWithImages, visibleAlbums],
+  )
 
-  const displayImages: DisplayImage[] = useShuffle(
-    displayAlbums.flatMap(a =>
+  const baseImages: DisplayImage[] = useMemo(
+    () => displayAlbums.flatMap(a =>
       a.images.map(img => {
         const caption = img.caption[locale as Locale]
         const albumTitle = a.title[locale as Locale]
@@ -100,8 +110,24 @@ export default function GaleriePage() {
           data: img,
         }
       })
-    )
+    ),
+    [displayAlbums, locale, cacheVersion],
   )
+
+  const shuffledImages = useShuffle(baseImages)
+
+  const displayImages: DisplayImage[] = useMemo(() => {
+    if (sortMode === 'random') return shuffledImages
+    const arr = [...baseImages]
+    if (sortMode === 'name') {
+      arr.sort((a, b) => a.filename.localeCompare(b.filename))
+    } else if (sortMode === 'oldest') {
+      arr.sort((a, b) => (a.data.year ?? Infinity) - (b.data.year ?? Infinity) || a.filename.localeCompare(b.filename))
+    } else if (sortMode === 'newest') {
+      arr.sort((a, b) => (b.data.year ?? -Infinity) - (a.data.year ?? -Infinity) || a.filename.localeCompare(b.filename))
+    }
+    return arr
+  }, [sortMode, baseImages, shuffledImages])
 
   const allImageUrls = displayImages.map(d => d.url)
   const allImageAlts = displayImages.map(d => d.alt)
@@ -151,6 +177,64 @@ export default function GaleriePage() {
     }
   }, [loading, displayImages])
 
+  // Close the sort dropdown on outside click
+  useEffect(() => {
+    if (!sortOpen) return
+    function handleClick(e: MouseEvent) {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setSortOpen(false)
+      }
+    }
+    document.addEventListener('click', handleClick)
+    return () => document.removeEventListener('click', handleClick)
+  }, [sortOpen])
+
+  const sortOptions: { value: SortMode; label: string }[] = [
+    { value: 'oldest', label: t('gallery.sort.oldest') },
+    { value: 'newest', label: t('gallery.sort.newest') },
+    { value: 'name', label: t('gallery.sort.name') },
+    { value: 'random', label: t('gallery.sort.random') },
+  ]
+
+  // Download the currently displayed photos as a ZIP of full-quality images
+  async function handleDownloadAlbum() {
+    if (downloading || displayImages.length === 0) return
+    setDownloading(true)
+    setDlProgress(`0/${displayImages.length}`)
+    try {
+      const JSZip = (await import('jszip')).default
+      const zip = new JSZip()
+      let done = 0
+      for (const item of displayImages) {
+        try {
+          const res = await fetch(item.url)
+          const blob = await res.blob()
+          // Flat when viewing a single album, foldered when viewing all
+          const path = activeAlbum ? item.filename : `${item.albumSlug}/${item.filename}`
+          zip.file(path, blob)
+        } catch {
+          /* skip unreachable file, continue with the rest */
+        }
+        done++
+        setDlProgress(`${done}/${displayImages.length}`)
+      }
+      const zipBlob = await zip.generateAsync({ type: 'blob' })
+      const dlUrl = URL.createObjectURL(zipBlob)
+      const a = document.createElement('a')
+      a.href = dlUrl
+      a.download = `${activeAlbum ?? 'galerie'}.zip`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(dlUrl)
+    } catch {
+      setError(locale === 'cs' ? 'Stahování se nezdařilo.' : 'Download failed.')
+    } finally {
+      setDownloading(false)
+      setDlProgress('')
+    }
+  }
+
   return (
     <>
       <Navigation />
@@ -165,15 +249,64 @@ export default function GaleriePage() {
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="mb-8"
           >
-            <a
-              href="/"
-              className="inline-flex items-center gap-2 text-[0.8rem] text-muted hover:text-lime transition-colors duration-300 mb-8"
-            >
-              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-              </svg>
-              {t('gallery.back')}
-            </a>
+            <div className="flex items-center gap-5 mb-8 flex-wrap">
+              <a
+                href="/"
+                className="inline-flex items-center gap-2 text-[0.8rem] text-muted hover:text-lime transition-colors duration-300"
+              >
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+                {t('gallery.back')}
+              </a>
+
+              {!loading && !error && (
+                <>
+                  {/* Sort rollup */}
+                  <div className="relative flex items-center ml-auto" ref={sortRef}>
+                    <button
+                      onClick={() => setSortOpen(o => !o)}
+                      className="inline-flex items-center gap-1.5 text-[0.8rem] text-muted hover:text-lime transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime"
+                    >
+                      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
+                      </svg>
+                      {t('gallery.sort')}
+                      <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" className={`transition-transform duration-200 ${sortOpen ? 'rotate-180' : ''}`}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                      </svg>
+                    </button>
+                    {sortOpen && (
+                      <div className="absolute left-0 top-full mt-2 z-40 min-w-[11rem] bg-charcoal border border-white/[0.08] rounded-[2px] py-1 shadow-lg shadow-black/40">
+                        {sortOptions.map(opt => (
+                          <button
+                            key={opt.value}
+                            onClick={() => { setSortMode(opt.value); setSortOpen(false) }}
+                            className={`block w-full text-left px-3 py-1.5 text-[0.78rem] transition-colors duration-200 ${
+                              sortMode === opt.value ? 'text-lime' : 'text-offwhite/50 hover:text-lime'
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Download album */}
+                  <button
+                    onClick={handleDownloadAlbum}
+                    disabled={downloading || displayImages.length === 0}
+                    className="inline-flex items-center gap-1.5 text-[0.8rem] text-muted hover:text-lime transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime disabled:opacity-40 disabled:hover:text-muted"
+                  >
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12M12 16.5V3" />
+                    </svg>
+                    {downloading ? `${t('gallery.downloading')}… ${dlProgress}` : t('gallery.downloadAlbum')}
+                  </button>
+                </>
+              )}
+            </div>
             <h1
               className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mb-4"
               style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}

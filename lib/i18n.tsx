@@ -191,6 +191,13 @@ const translations: Record<Locale, Record<string, string>> = {
     'gallery.back': 'Zpět',
     'gallery.download': 'Stáhnout',
     'gallery.all': 'Vše',
+    'gallery.sort': 'Seřadit',
+    'gallery.sort.oldest': 'Od nejstarších',
+    'gallery.sort.newest': 'Od nejnovějších',
+    'gallery.sort.name': 'Dle názvu',
+    'gallery.sort.random': 'Náhodně',
+    'gallery.downloadAlbum': 'Stáhnout album',
+    'gallery.downloading': 'Stahuji',
 
     // Magazine
     'magazine.heading': 'Nerovný Rosník',
@@ -372,6 +379,13 @@ const translations: Record<Locale, Record<string, string>> = {
     'gallery.back': 'Back',
     'gallery.download': 'Download',
     'gallery.all': 'All',
+    'gallery.sort': 'Sort',
+    'gallery.sort.oldest': 'Oldest first',
+    'gallery.sort.newest': 'Newest first',
+    'gallery.sort.name': 'By name',
+    'gallery.sort.random': 'Random',
+    'gallery.downloadAlbum': 'Download album',
+    'gallery.downloading': 'Downloading',
 
     // Magazine
     'magazine.heading': 'Nerovn\u00FD Rosn\u00EDk',

@@ -142,17 +142,19 @@ export default function GalleryAdmin() {
       const existingCount = album?.images.length ?? 0
 
       // Resize images (1920px full + 720px thumb) and upload both versions
-      const { filenames } = await uploadGalleryImagesWithResize(
+      const { filenames, years } = await uploadGalleryImagesWithResize(
         files,
         activeSlug,
         existingCount,
         (loaded, total) => setUploadProgress({ loaded, total }),
       )
 
-      const newImages: GalleryImage[] = filenames.map(f => ({
+      // Pre-fill the year from each photo's EXIF capture date when available
+      const newImages: GalleryImage[] = filenames.map((f, i) => ({
         filename: f,
         caption: { cs: '', en: '' },
         analog: false,
+        ...(years[i] !== undefined ? { year: years[i] } : {}),
       }))
 
       const updated: GalleryManifest = {

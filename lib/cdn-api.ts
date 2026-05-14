@@ -10,6 +10,7 @@
  */
 
 import { CDN_URL } from './cdn'
+import { extractExifSegment, injectExifSegment, getCaptureYear } from './exif'
 
 const API_BASE = `${CDN_URL}api`
 
@@ -323,6 +324,10 @@ export async function uploadFilesWithProgress(
  * Resize an image file so the longer edge is at most `maxEdge` px.
  * If the image is already smaller, returns the original file unchanged.
  * Output is always JPEG at the given quality (0-1).
+ *
+ * The canvas re-encode strips all metadata, so the original JPEG's EXIF
+ * segment is lifted out beforehand and spliced back into the resized file —
+ * no EXIF metadata is lost.
  */
 export function resizeImage(
   file: File,
@@ -336,7 +341,7 @@ export function resizeImage(
       URL.revokeObjectURL(url)
       const { width, height } = img
 
-      // Don't enlarge
+      // Don't enlarge — original is returned untouched, EXIF included
       if (width <= maxEdge && height <= maxEdge) {
         resolve(file)
         return
@@ -355,12 +360,20 @@ export function resizeImage(
       ctx.drawImage(img, 0, 0, newW, newH)
 
       canvas.toBlob(
-        (blob) => {
+        async (blob) => {
           if (!blob) { reject(new Error('Failed to resize image')); return }
           // Keep original extension for naming, but content is JPEG
           const ext = file.name.split('.').pop()?.toLowerCase()
           const name = ext === 'jpg' || ext === 'jpeg' ? file.name : file.name.replace(/\.[^.]+$/, '.jpg')
-          resolve(new File([blob], name, { type: 'image/jpeg' }))
+          // Re-attach the original EXIF segment (canvas dropped it)
+          let finalBlob: Blob = blob
+          try {
+            const exif = await extractExifSegment(file)
+            if (exif) finalBlob = await injectExifSegment(blob, exif)
+          } catch {
+            // If EXIF handling fails, fall back to the resized image without it
+          }
+          resolve(new File([finalBlob], name, { type: 'image/jpeg' }))
         },
         'image/jpeg',
         quality,
@@ -371,16 +384,22 @@ export function resizeImage(
   })
 }
 
-/** Resize and upload both full-size (1920px) and thumbnail (720px) versions. */
+/**
+ * Resize and upload both full-size (1920px) and thumbnail (720px) versions.
+ * Both keep the original EXIF metadata. Also reads the capture year from
+ * each photo's EXIF \u2014 `years[i]` corresponds to `filenames[i]` (undefined
+ * when the photo has no usable EXIF date).
+ */
 export async function uploadGalleryImagesWithResize(
   files: File[],
   albumSlug: string,
   existingCount: number,
   onProgress: (loaded: number, total: number) => void,
-): Promise<{ filenames: string[] }> {
+): Promise<{ filenames: string[]; years: (number | undefined)[] }> {
   const stripAccents = (str: string) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   const clean = stripAccents(albumSlug).replace(/[^a-z0-9]/g, '')
   const filenames: string[] = []
+  const years: (number | undefined)[] = []
 
   // Process and upload sequentially for reliability
   const totalSteps = files.length * 2 // full + thumb per file
@@ -391,6 +410,9 @@ export async function uploadGalleryImagesWithResize(
     const idx = existingCount + i + 1
     const baseName = `${clean}${String(idx).padStart(3, '0')}.jpg`
     filenames.push(baseName)
+
+    // Read the capture year from the original EXIF before any processing
+    years.push(await getCaptureYear(file))
 
     // Resize to full-size (1920px longer edge)
     const fullSize = await resizeImage(file, 1920, 0.88)
@@ -416,7 +438,7 @@ export async function uploadGalleryImagesWithResize(
     onProgress(completedSteps, totalSteps)
   }
 
-  return { filenames }
+  return { filenames, years }
 }
 
 /** Exported version of batch upload for use by resize function. */

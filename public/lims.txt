@@ -121,6 +121,6 @@ CONTACT
 -------
 Website: https://filiprosa.cz
 CDN:     https://cdn.filiprosa.cz
-Email:   info@filiprosa.cz
+Email:   foto@filiprosa.cz
 Phone:   +420602942833
 Insta:   @fildous1

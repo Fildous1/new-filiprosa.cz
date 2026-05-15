@@ -49,6 +49,12 @@ const miscSections = [
     detail: 'Upload background photos for service cards',
   },
   {
+    href: '/panel0x/pricelist',
+    label: 'Pricelist',
+    description: 'Edit pricelist content and images',
+    detail: 'Photo cards (image + texts), tile sections, travel note',
+  },
+  {
     href: '/panel0x/contact-section',
     label: 'Contact Section',
     description: 'Edit the about/contact section',

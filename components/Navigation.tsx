@@ -17,17 +17,16 @@ export default function Navigation() {
   const { locale, setLocale, t } = useI18n()
 
   const links = [
-    { label: t('nav.services'), href: '/#sluzby' },
+    { label: t('nav.pricelist'), href: '/cenik' },
     { label: t('nav.gallery'), href: '/galerie' },
     { label: t('nav.projects'), href: '/#projekty', dropdown: 'projects' as const },
     { label: t('nav.about'), href: '/#o-mne', dropdown: 'about' as const },
   ]
 
   const projectLinks = [
+    { label: t('projects.mafos.title'), href: '/mafos' },
     { label: t('projects.museum.title'), href: '/muzeum' },
     { label: t('projects.magazine.title'), href: '/rosnik' },
-    { label: t('projects.mafos.title'), href: '/mafos' },
-    { label: t('projects.meetup.title'), href: 'https://meetup.filiprosa.cz', external: true },
   ]
 
   const aboutLinks = [

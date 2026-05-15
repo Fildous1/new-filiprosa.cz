@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
 import { CDN_URL } from '@/lib/cdn'
@@ -9,22 +9,32 @@ export default function Contact() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '0px 0px -30px 0px' })
   const { locale, t } = useI18n()
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' })
+  const [formData, setFormData] = useState({ name: '', email: '', service: '', message: '' })
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [lastSubmit, setLastSubmit] = useState(0)
 
+  const serviceOptions = [
+    { value: 'portrait', label: t('contact.service.portrait') },
+    { value: 'event', label: t('contact.service.event') },
+    { value: 'product', label: t('contact.service.product') },
+    { value: 'development', label: t('contact.service.development') },
+    { value: 'scanning', label: t('contact.service.scanning') },
+    { value: 'printing', label: t('contact.service.printing') },
+    { value: 'other', label: t('contact.service.other') },
+  ]
+
   async function handleCopyEmail() {
     try {
-      await navigator.clipboard.writeText('info@filiprosa.cz')
+      await navigator.clipboard.writeText('foto@filiprosa.cz')
       setCopied(true)
       setTimeout(() => setCopied(false), 2500)
     } catch {
       // Fallback for older browsers
       const textarea = document.createElement('textarea')
-      textarea.value = 'info@filiprosa.cz'
+      textarea.value = 'foto@filiprosa.cz'
       textarea.style.position = 'fixed'
       textarea.style.opacity = '0'
       document.body.appendChild(textarea)
@@ -44,11 +54,7 @@ export default function Contact() {
     // Rate limit: minimum 30 seconds between submissions
     const now = Date.now()
     if (now - lastSubmit < 30000) {
-      setFormError(
-        locale === 'cs'
-          ? 'Počkejte prosím chvíli před dalším odesláním.'
-          : 'Please wait a moment before sending again.'
-      )
+      setFormError(t('contact.form.wait'))
       setSending(false)
       return
     }
@@ -56,14 +62,11 @@ export default function Contact() {
     // Input length validation
     const name = formData.name.trim()
     const email = formData.email.trim()
+    const service = formData.service
     const message = formData.message.trim()
 
     if (name.length > 100 || email.length > 254 || message.length > 5000) {
-      setFormError(
-        locale === 'cs'
-          ? 'Vstupní pole jsou příliš dlouhá.'
-          : 'Input fields are too long.'
-      )
+      setFormError(t('contact.form.tooLong'))
       setSending(false)
       return
     }
@@ -80,26 +83,26 @@ export default function Contact() {
         body: JSON.stringify({
           name,
           email,
+          service,
           message,
           locale,
         }),
       })
 
       if (!res.ok) {
-        const text = await res.text()
-        throw new Error(text || `Error ${res.status}`)
+        if (res.status === 429) {
+          setFormError(t('contact.form.rateLimit'))
+          return
+        }
+        throw new Error(`Error ${res.status}`)
       }
 
       setSent(true)
       setLastSubmit(Date.now())
-      setFormData({ name: '', email: '', message: '' })
+      setFormData({ name: '', email: '', service: '', message: '' })
       setTimeout(() => setSent(false), 5000)
-    } catch (err) {
-      setFormError(
-        locale === 'cs'
-          ? 'Zprávu se nepodařilo odeslat. Zkuste to prosím znovu nebo napište přímo na info@filiprosa.cz.'
-          : 'Failed to send message. Please try again or email info@filiprosa.cz directly.'
-      )
+    } catch {
+      setFormError(t('contact.form.fail'))
     } finally {
       setSending(false)
     }
@@ -152,7 +155,7 @@ export default function Contact() {
                 <span className="text-[0.9rem]">
                   {copied
                     ? (locale === 'cs' ? 'Zkopírováno!' : 'Copied!')
-                    : 'info@filiprosa.cz'
+                    : 'foto@filiprosa.cz'
                   }
                 </span>
                 {!copied && (
@@ -184,7 +187,7 @@ export default function Contact() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-[0.68rem] text-muted uppercase tracking-[0.08em] mb-1.5">
-                  {locale === 'cs' ? 'Jméno' : 'Name'}
+                  {t('contact.form.name')}
                 </label>
                 <input
                   type="text"
@@ -193,12 +196,12 @@ export default function Contact() {
                   value={formData.name}
                   onChange={e => setFormData(p => ({ ...p, name: e.target.value }))}
                   className="w-full px-4 py-3 bg-charcoal border border-white/[0.06] rounded-[2px] text-[0.88rem] text-offwhite placeholder:text-muted/25 focus:outline-none focus:border-lime/30 transition-colors duration-200"
-                  placeholder={locale === 'cs' ? 'Vaše jméno' : 'Your name'}
+                  placeholder={t('contact.form.name.placeholder')}
                 />
               </div>
               <div>
                 <label className="block text-[0.68rem] text-muted uppercase tracking-[0.08em] mb-1.5">
-                  E-mail
+                  {t('contact.form.email')}
                 </label>
                 <input
                   type="email"
@@ -207,12 +210,23 @@ export default function Contact() {
                   value={formData.email}
                   onChange={e => setFormData(p => ({ ...p, email: e.target.value }))}
                   className="w-full px-4 py-3 bg-charcoal border border-white/[0.06] rounded-[2px] text-[0.88rem] text-offwhite placeholder:text-muted/25 focus:outline-none focus:border-lime/30 transition-colors duration-200"
-                  placeholder={locale === 'cs' ? 'vas@email.cz' : 'your@email.com'}
+                  placeholder={t('contact.form.email.placeholder')}
                 />
               </div>
               <div>
                 <label className="block text-[0.68rem] text-muted uppercase tracking-[0.08em] mb-1.5">
-                  {locale === 'cs' ? 'Zpráva' : 'Message'}
+                  {t('contact.form.service')}
+                </label>
+                <ServiceDropdown
+                  value={formData.service}
+                  options={serviceOptions}
+                  placeholder={t('contact.form.service.placeholder')}
+                  onChange={v => setFormData(p => ({ ...p, service: v }))}
+                />
+              </div>
+              <div>
+                <label className="block text-[0.68rem] text-muted uppercase tracking-[0.08em] mb-1.5">
+                  {t('contact.form.message')}
                 </label>
                 <textarea
                   required
@@ -221,7 +235,7 @@ export default function Contact() {
                   value={formData.message}
                   onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
                   className="w-full px-4 py-3 bg-charcoal border border-white/[0.06] rounded-[2px] text-[0.88rem] text-offwhite placeholder:text-muted/25 focus:outline-none focus:border-lime/30 transition-colors duration-200 resize-y"
-                  placeholder={locale === 'cs' ? 'Vaše zpráva...' : 'Your message...'}
+                  placeholder={t('contact.form.message.placeholder')}
                 />
               </div>
 
@@ -231,7 +245,7 @@ export default function Contact() {
 
               {sent && (
                 <p className="text-[0.8rem] text-lime/80">
-                  {locale === 'cs' ? 'Zpráva odeslána! Ozvu se co nejdříve.' : 'Message sent! I\'ll get back to you soon.'}
+                  {t('contact.form.success')}
                 </p>
               )}
 
@@ -241,10 +255,10 @@ export default function Contact() {
                 className="px-8 py-3 text-[0.85rem] font-semibold tracking-[0.03em] bg-lime text-dark rounded-[2px] hover:translate-y-[-2px] hover:shadow-[0_8px_32px_rgba(var(--lime-rgb),0.2),0_2px_8px_rgba(var(--lime-rgb),0.15)] active:translate-y-0 transition-transform duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-3 disabled:opacity-50"
               >
                 {sending
-                  ? (locale === 'cs' ? 'Odesílám...' : 'Sending...')
+                  ? t('contact.form.sending')
                   : sent
-                  ? (locale === 'cs' ? 'Odesláno!' : 'Sent!')
-                  : (locale === 'cs' ? 'Odeslat zprávu' : 'Send message')
+                  ? t('contact.form.sent')
+                  : t('contact.form.submit')
                 }
               </button>
             </form>
@@ -252,5 +266,139 @@ export default function Contact() {
         </div>
       </div>
     </section>
+  )
+}
+
+interface ServiceOption { value: string; label: string }
+
+function ServiceDropdown({
+  value,
+  options,
+  placeholder,
+  onChange,
+}: {
+  value: string
+  options: ServiceOption[]
+  placeholder: string
+  onChange: (v: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [highlight, setHighlight] = useState<number>(-1)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
+
+  const selectedIndex = options.findIndex(o => o.value === value)
+  const selectedLabel = selectedIndex >= 0 ? options[selectedIndex].label : ''
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return
+    function handle(e: MouseEvent) {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handle)
+    return () => document.removeEventListener('mousedown', handle)
+  }, [open])
+
+  // When opening, seed highlight to selected (or 0)
+  useEffect(() => {
+    if (open) setHighlight(selectedIndex >= 0 ? selectedIndex : 0)
+  }, [open, selectedIndex])
+
+  function commit(idx: number) {
+    if (idx < 0 || idx >= options.length) return
+    onChange(options[idx].value)
+    setOpen(false)
+  }
+
+  function handleKey(e: React.KeyboardEvent) {
+    if (!open) {
+      if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        setOpen(true)
+      }
+      return
+    }
+    if (e.key === 'Escape') { e.preventDefault(); setOpen(false); return }
+    if (e.key === 'ArrowDown') { e.preventDefault(); setHighlight(h => Math.min(options.length - 1, h + 1)); return }
+    if (e.key === 'ArrowUp') { e.preventDefault(); setHighlight(h => Math.max(0, h - 1)); return }
+    if (e.key === 'Home') { e.preventDefault(); setHighlight(0); return }
+    if (e.key === 'End') { e.preventDefault(); setHighlight(options.length - 1); return }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); commit(highlight); return }
+  }
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        onKeyDown={handleKey}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className={`
+          w-full px-4 py-3 text-left text-[0.88rem] rounded-[2px]
+          bg-charcoal border transition-colors duration-200
+          focus:outline-none focus-visible:outline-none
+          flex items-center justify-between gap-3
+          ${open
+            ? 'border-lime/50 ring-1 ring-lime/20 shadow-[0_0_0_3px_rgba(var(--lime-rgb),0.06)]'
+            : value
+              ? 'border-lime/25 hover:border-lime/40'
+              : 'border-white/[0.06] hover:border-white/[0.15]'}
+        `}
+      >
+        <span className={value ? 'text-offwhite' : 'text-muted/40'}>
+          {value ? selectedLabel : placeholder}
+        </span>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className={`flex-shrink-0 transition-all duration-200 ${open ? 'text-lime rotate-180' : value ? 'text-lime/60' : 'text-muted/50'}`}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
+      </button>
+
+      {open && (
+        <ul
+          ref={listRef}
+          role="listbox"
+          className="absolute z-30 left-0 right-0 mt-1.5 max-h-[260px] overflow-auto bg-charcoal border border-lime/25 rounded-[2px] shadow-[0_12px_40px_rgba(0,0,0,0.45),0_0_0_1px_rgba(var(--lime-rgb),0.05)] py-1"
+        >
+          {options.map((opt, i) => {
+            const isSelected = opt.value === value
+            const isHighlighted = i === highlight
+            return (
+              <li
+                key={opt.value}
+                role="option"
+                aria-selected={isSelected}
+                onMouseEnter={() => setHighlight(i)}
+                onMouseDown={(e) => { e.preventDefault(); commit(i) }}
+                className={`
+                  px-4 py-2 text-[0.85rem] cursor-pointer flex items-center justify-between gap-3
+                  transition-colors duration-100
+                  ${isHighlighted ? 'bg-lime/[0.08] text-offwhite' : 'text-offwhite/80'}
+                  ${isSelected ? 'text-lime' : ''}
+                `}
+              >
+                <span>{opt.label}</span>
+                {isSelected && (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-lime flex-shrink-0">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                  </svg>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      )}
+    </div>
   )
 }

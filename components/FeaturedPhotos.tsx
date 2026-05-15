@@ -15,11 +15,17 @@ interface FeaturedItem {
   filename: string
 }
 
+interface FeaturedGroup {
+  slug: string
+  title: string
+  items: FeaturedItem[]
+}
+
 export default function FeaturedPhotos() {
   const { locale, t } = useI18n()
   const headerRef = useRef<HTMLDivElement>(null)
   const headerInView = useInView(headerRef, { once: true, margin: '0px 0px -60px 0px' })
-  const [items, setItems] = useState<FeaturedItem[]>([])
+  const [groups, setGroups] = useState<FeaturedGroup[]>([])
   const [loaded, setLoaded] = useState(false)
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({})
   const [lightboxOpen, setLightboxOpen] = useState(false)
@@ -29,32 +35,36 @@ export default function FeaturedPhotos() {
     fetchGallery()
       .then(data => {
         const v = data.updatedAt
-        const featured: FeaturedItem[] = []
+        // Preserve manifest album order; one group per album with featured photos
+        const result: FeaturedGroup[] = []
         for (const album of data.albums) {
+          if (album.hidden) continue
+          const items: FeaturedItem[] = []
           for (const img of album.images) {
-            if (img.featured) {
-              const caption = img.caption[locale as 'cs' | 'en']
-              const albumTitle = album.title[locale as 'cs' | 'en']
-              const alt = caption
-                || (img.tags?.length ? `${img.tags.join(', ')} — ${albumTitle}` : '')
-                || `${img.filename.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ')} — ${albumTitle}`
-              featured.push({
-                src: galleryImageUrl(album.slug, img.filename, v),
-                thumbSrc: galleryThumbUrl(album.slug, img.filename, v),
-                alt,
-                albumTitle,
-                albumSlug: album.slug,
-                filename: img.filename,
-              })
-            }
+            if (!img.featured) continue
+            const caption = img.caption[locale as 'cs' | 'en']
+            const albumTitle = album.title[locale as 'cs' | 'en']
+            const alt = caption
+              || (img.tags?.length ? `${img.tags.join(', ')} — ${albumTitle}` : '')
+              || `${img.filename.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ')} — ${albumTitle}`
+            items.push({
+              src: galleryImageUrl(album.slug, img.filename, v),
+              thumbSrc: galleryThumbUrl(album.slug, img.filename, v),
+              alt,
+              albumTitle,
+              albumSlug: album.slug,
+              filename: img.filename,
+            })
           }
+          if (items.length === 0) continue
+          // Shuffle within a single album so visitors don't see the same order every time
+          for (let i = items.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [items[i], items[j]] = [items[j], items[i]]
+          }
+          result.push({ slug: album.slug, title: album.title[locale as 'cs' | 'en'], items })
         }
-        // Shuffle for random order each visit
-        for (let i = featured.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [featured[i], featured[j]] = [featured[j], featured[i]]
-        }
-        setItems(featured)
+        setGroups(result)
         setLoaded(true)
       })
       .catch(() => {
@@ -71,9 +81,11 @@ export default function FeaturedPhotos() {
     setLightboxOpen(false)
   }, [])
 
-  const allImageUrls = items.map(item => item.src)
+  // Flat list across groups for the lightbox (it cycles through everything globally)
+  const flatItems = groups.flatMap(g => g.items)
+  const allImageUrls = flatItems.map(item => item.src)
 
-  if (loaded && items.length === 0) return null
+  if (loaded && groups.length === 0) return null
 
   return (
     <section id="prace" className="relative" style={{ padding: 'clamp(5rem, 10vw, 8rem) 0' }}>
@@ -115,14 +127,37 @@ export default function FeaturedPhotos() {
             <div className="w-8 h-8 border-2 border-lime/20 border-t-lime/60 rounded-full animate-spin" />
           </div>
         ) : (
-          <div className="columns-2 sm:columns-3 lg:columns-4 gap-3">
-            {items.map((item, i) => (
-              <FeaturedItem key={item.src} item={item} index={i} hasError={!!imgErrors[item.src]} onError={() => setImgErrors(p => ({ ...p, [item.src]: true }))} onClick={() => openLightbox(i)} />
-            ))}
+          <div className="space-y-16 md:space-y-20">
+            {groups.map((group, gi) => {
+              // Global lightbox index = number of items in previous groups + position in this group
+              const offset = groups.slice(0, gi).reduce((n, g) => n + g.items.length, 0)
+              return (
+                <div key={group.slug}>
+                  <h3
+                    className="font-display font-semibold text-offwhite/85 tracking-[-0.02em] mb-6 md:mb-8"
+                    style={{ fontSize: 'clamp(1.2rem, 2.2vw, 1.6rem)' }}
+                  >
+                    {group.title}
+                  </h3>
+                  <div className="columns-2 sm:columns-3 lg:columns-4 gap-3">
+                    {group.items.map((item, i) => (
+                      <FeaturedItem
+                        key={item.src}
+                        item={item}
+                        index={i}
+                        hasError={!!imgErrors[item.src]}
+                        onError={() => setImgErrors(p => ({ ...p, [item.src]: true }))}
+                        onClick={() => openLightbox(offset + i)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
           </div>
         )}
 
-        {loaded && items.length > 0 && (
+        {loaded && flatItems.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={headerInView ? { opacity: 1, y: 0 } : {}}

@@ -21,3 +21,6 @@ screenshots/
 .vscode/
 .idea/
 .claude/
+
+# For AI
+cdn-upload/

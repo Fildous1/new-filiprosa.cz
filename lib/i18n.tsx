@@ -234,6 +234,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'pricelist.section.extras': 'Doplňkové služby',
     'pricelist.travel': 'Brno a Vyškov zdarma, jinde 12 Kč/km.',
     'pricelist.cta': 'Mám zájem',
+    'pricelist.samples': 'Ukázky',
 
     'pricelist.portrait.name': 'Portrétní',
     'pricelist.portrait.note': '15 unikátních fotek',
@@ -314,7 +315,7 @@ const translations: Record<Locale, Record<string, string>> = {
   en: {
     // Navigation
     'nav.services': 'Services',
-    'nav.pricelist': 'Prices',
+    'nav.pricelist': 'Price list',
     'nav.about': 'About',
     'nav.contact': 'Contact',
     'nav.gallery': 'Gallery',
@@ -337,12 +338,12 @@ const translations: Record<Locale, Record<string, string>> = {
     'services.capture.title': 'Capturing memories',
     'services.capture.subtitle': 'Photography',
     'services.capture.desc': 'Portrait, product and event photography. I\u00A0offer the accessibility and practicality of digital, as well as the look and soul of analog.',
-    'services.processing.title': 'Working with chemistry',
-    'services.processing.subtitle': 'Development',
+    'services.processing.title': 'Developing film',
+    'services.processing.subtitle': 'Chemistry',
     'services.processing.desc': 'Quality, individual black and white film development. Custom and affordable.',
     'services.prints.title': 'Physical photographs',
-    'services.prints.subtitle': 'Photo prints',
-    'services.prints.desc': 'Unique enlargements from negatives in the darkroom. 10x15, 18x24 or other sizes.',
+    'services.prints.subtitle': 'Analog or digital',
+    'services.prints.desc': 'Unique enlargements from negatives or digital prints. 10x15, 18x24 and other sizes.',
     'services.digital.title': 'Digitization',
     'services.digital.subtitle': 'Scanning',
     'services.digital.desc': 'High-resolution DSLR film scanning. Unbeatable price-to-performance ratio.',
@@ -351,7 +352,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Work
     'work.num': '02',
-    'work.heading': 'Photo samples',
+    'work.heading': 'My work',
     'work.description': 'A selection of my photographs that I have taken over the past few years.',
 
     // Projects
@@ -435,11 +436,11 @@ const translations: Record<Locale, Record<string, string>> = {
     'about.heading': 'Filip Rosa',
     'about.p1': 'I first got interested in photography when my mom found the first SLR I ever held in my hands \u2014 a Canon EOS 650 \u2014 in a closet. I was captivated immediately, bought a color film and shot 36 photos I would be ashamed to show today. But since then I started dedicating myself to everything related to photography. History, analog, stories and technique.',
     'about.p2': 'Today I spend most of my free time on photography and it is my great hobby. I would like to improve my photography and start pursuing it professionally. That is why I appreciate every experience, both positive and negative.',
-    'about.stat1.value': 'Since 2022',
-    'about.stat1.label': 'behind the lens',
+    'about.stat1.value': '4 years',
+    'about.stat1.label': 'of photography',
     'about.stat2.value': 'Dozens',
     'about.stat2.label': 'of events photographed',
-    'about.stat3.value': 'Thousands',
+    'about.stat3.value': 'Hundreds',
     'about.stat3.label': 'of hours in Lightroom',
 
     // Contact
@@ -497,6 +498,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'pricelist.section.extras': 'Extras',
     'pricelist.travel': 'Brno and Vyškov free, elsewhere 12 CZK/km.',
     'pricelist.cta': 'Get in touch',
+    'pricelist.samples': 'Samples',
 
     'pricelist.portrait.name': 'Portrait',
     'pricelist.portrait.note': '15 unique photos',
@@ -539,7 +541,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Magazine
     'magazine.heading': 'Nerovn\u00FD Rosn\u00EDk',
-    'magazine.description': 'Nerovn\u00FD Rosn\u00EDk is a magazine I created that contains various essays, articles and\u00A0surveys related to my interests. Originally it was just a\u00A0Czech class assignment, but after the feedback I\u00A0received I decided to publish more issues.',
+    'magazine.description': 'Nerovn\u00FD Rosn\u00EDk is a magazine I created that contains various essays, articles and\u00A0surveys related to my interests. Originally it was just a\u00A0Czech class assignment, but after the feedback I\u00A0received I decided to publish more issues. Crossword answer: AVANTGARDA',
     'magazine.download': 'Download PDF',
     'magazine.view': 'View',
     'magazine.back': 'Back',

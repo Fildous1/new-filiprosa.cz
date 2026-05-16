@@ -15,10 +15,10 @@ export default function Footer() {
 
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:gap-8">
             {[
-              { label: t('nav.services'), href: '/#sluzby' },
+              { label: t('nav.pricelist'), href: '/cenik' },
               { label: t('nav.gallery'), href: '/galerie' },
+              { label: t('nav.projects'), href: '/#projekty' },
               { label: t('nav.about'), href: '/#o-mne' },
-              { label: t('nav.contact'), href: '/#kontakt' },
             ].map(({ label, href }) => (
               <a
                 key={label}

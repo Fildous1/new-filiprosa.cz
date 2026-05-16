@@ -10,6 +10,13 @@ import { fetchPricelist, pricelistImageUrl, type PricelistManifest, type Priceli
 
 const ease = [0.16, 1, 0.3, 1] as const
 
+// Gallery album slug shown by the "Ukázky" button on each photography card.
+const PHOTO_GALLERY_SLUG: Record<string, string> = {
+  portrait: 'portraits',
+  event: 'event',
+  product: 'product',
+}
+
 // Fallback content — used when no CDN manifest is present.
 function fallbackManifest(t: (k: string) => string): PricelistManifest {
   // Note: keys are read once for each locale via the rendered t() — this fallback
@@ -80,35 +87,20 @@ export default function CenikPage() {
             initial={{ opacity: 0, y: 32 }}
             animate={headerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.9, ease }}
-            className="mb-12"
+            className="mb-10"
           >
             <a
               href="/"
-              className="inline-flex items-center gap-2 text-[0.8rem] text-muted hover:text-lime transition-colors duration-300 mb-8"
+              className="inline-flex items-center gap-2 text-[0.8rem] text-muted hover:text-lime transition-colors duration-300"
             >
               <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
               </svg>
               {t('pricelist.back')}
             </a>
-            <h1
-              className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mb-5"
-              style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}
-            >
-              {t('pricelist.heading')}
-            </h1>
-            <p
-              className="font-body text-muted max-w-[36rem]"
-              style={{ fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)' }}
-            >
-              {t('pricelist.description')}
-            </p>
           </motion.div>
 
           {/* Photography — 3 large cards, equal height, side by side */}
-          <h2 className="font-display font-bold text-offwhite/85 tracking-[-0.02em] text-[1.2rem] mb-5">
-            {t('pricelist.section.photography')}
-          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 items-stretch">
             {manifest.photography.map((item, i) => (
               <PhotoCard key={item.key} item={item} index={i} loaded={loaded} t={t} locale={locale as Locale} />
@@ -132,7 +124,9 @@ export default function CenikPage() {
         </div>
       </main>
 
-      <Contact />
+      <div className="film-strip" />
+
+      <Contact hideSectionNum />
 
       <Footer />
     </>
@@ -201,9 +195,20 @@ function PhotoCard({
             </p>
           )}
           {description && (
-            <p className="font-body text-muted text-[0.82rem] leading-[1.65] mt-auto pt-2">
+            <p className="font-body text-muted text-[0.82rem] leading-[1.65] pt-2">
               {description}
             </p>
+          )}
+          {PHOTO_GALLERY_SLUG[item.key] && (
+            <a
+              href={`/galerie?album=${PHOTO_GALLERY_SLUG[item.key]}`}
+              className="mt-auto pt-5 inline-flex items-center gap-2 text-[0.78rem] font-semibold tracking-[0.03em] text-lime/70 hover:text-lime transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-3 self-start"
+            >
+              {t('pricelist.samples')}
+              <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </a>
           )}
         </div>
       </div>

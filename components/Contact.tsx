@@ -5,7 +5,7 @@ import { motion, useInView } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
 import { CDN_URL } from '@/lib/cdn'
 
-export default function Contact() {
+export default function Contact({ hideSectionNum = false }: { hideSectionNum?: boolean } = {}) {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '0px 0px -30px 0px' })
   const { locale, t } = useI18n()
@@ -126,7 +126,7 @@ export default function Contact() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           >
-            <span className="section-num">{t('contact.num')}</span>
+            {!hideSectionNum && <span className="section-num">{t('contact.num')}</span>}
             <h2
               className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mt-6 mb-5"
               style={{ fontSize: 'clamp(1.8rem, 4.5vw, 3.2rem)' }}

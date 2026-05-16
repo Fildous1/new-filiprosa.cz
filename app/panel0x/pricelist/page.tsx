@@ -116,6 +116,16 @@ export default function PricelistAdmin() {
     })
   }
 
+  function moveRow(section: 'technical' | 'extras', idx: number, delta: -1 | 1) {
+    setManifest(m => {
+      const items = [...m[section].items]
+      const target = idx + delta
+      if (target < 0 || target >= items.length) return m
+      ;[items[idx], items[target]] = [items[target], items[idx]]
+      return { ...m, [section]: { ...m[section], items } }
+    })
+  }
+
   function updateTravel(lang: 'cs' | 'en', value: string) {
     setManifest(m => ({ ...m, travel: { ...m.travel, [lang]: value } }))
   }
@@ -295,12 +305,36 @@ export default function PricelistAdmin() {
                   <div key={idx} className="bg-dark/40 border border-white/[0.04] rounded-[2px] p-3">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[0.65rem] text-muted/50 uppercase tracking-wide">Item {idx + 1}</span>
-                      <button
-                        onClick={() => removeRow(sectionKey, idx)}
-                        className="text-[0.7rem] text-red-400/60 hover:text-red-400 transition-colors"
-                      >
-                        Remove
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => moveRow(sectionKey, idx, -1)}
+                          disabled={idx === 0}
+                          aria-label="Move up"
+                          title="Move up"
+                          className="w-6 h-6 flex items-center justify-center text-muted/60 hover:text-lime disabled:opacity-25 disabled:hover:text-muted/60 disabled:cursor-not-allowed transition-colors"
+                        >
+                          <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => moveRow(sectionKey, idx, 1)}
+                          disabled={idx === manifest[sectionKey].items.length - 1}
+                          aria-label="Move down"
+                          title="Move down"
+                          className="w-6 h-6 flex items-center justify-center text-muted/60 hover:text-lime disabled:opacity-25 disabled:hover:text-muted/60 disabled:cursor-not-allowed transition-colors"
+                        >
+                          <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => removeRow(sectionKey, idx)}
+                          className="ml-2 text-[0.7rem] text-red-400/60 hover:text-red-400 transition-colors"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <BilingualInput label="Name" lang="cs" value={row.name.cs} onChange={v => updateRow(sectionKey, idx, 'name', 'cs', v)} />

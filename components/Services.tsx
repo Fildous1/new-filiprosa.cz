@@ -189,14 +189,14 @@ export default function Services() {
           />
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-12 text-center">
           <a
             href="/cenik"
-            className="inline-flex items-center gap-2 px-5 py-2 text-[0.8rem] font-semibold tracking-[0.03em] bg-lime text-dark rounded-[2px] hover:translate-y-[-2px] hover:shadow-[0_8px_32px_rgba(var(--lime-rgb),0.2),0_2px_8px_rgba(var(--lime-rgb),0.15)] active:translate-y-0 transition-transform duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-3"
+            className="inline-flex items-center gap-2 text-[0.85rem] font-semibold tracking-[0.03em] text-lime/70 hover:text-lime transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-3"
           >
             {t('services.pricelist')}
-            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>
           </a>
         </div>

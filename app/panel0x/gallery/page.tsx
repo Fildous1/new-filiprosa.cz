@@ -139,13 +139,16 @@ export default function GalleryAdmin() {
 
     try {
       const album = manifest.albums.find(a => a.slug === activeSlug)
-      const existingCount = album?.images.length ?? 0
+      const existingFilenames = album?.images.map(i => i.filename) ?? []
 
-      // Resize images (1920px full + 720px thumb) and upload both versions
+      // Resize images (1920px full + 720px thumb) and upload both versions.
+      // Pass the existing filenames so new indices are picked above the highest
+      // existing one — using count alone would collide with kept photos when
+      // there are gaps from mid-album deletes.
       const { filenames, years } = await uploadGalleryImagesWithResize(
         files,
         activeSlug,
-        existingCount,
+        existingFilenames,
         (loaded, total) => setUploadProgress({ loaded, total }),
       )
 
@@ -194,6 +197,11 @@ export default function GalleryAdmin() {
       await deleteFile(`gallery/${albumSlug}/${img.filename}`)
     } catch {
       // File might not exist on CDN, continue with manifest update
+    }
+    try {
+      await deleteFile(`gallery/${albumSlug}/thumbs/${img.filename}`)
+    } catch {
+      // Thumbnail might not exist; ignore
     }
 
     const updated: GalleryManifest = {
@@ -259,11 +267,14 @@ export default function GalleryAdmin() {
     if (!manifest || !activeAlbum || selected.size === 0) return
     const indices = Array.from(selected).sort((a, b) => b - a)
 
-    // Delete files from CDN
+    // Delete files (full size + thumbnail) from CDN
     for (const idx of indices) {
       const img = activeAlbum.images[idx]
       try {
         await deleteFile(`gallery/${activeSlug}/${img.filename}`)
+      } catch { /* continue */ }
+      try {
+        await deleteFile(`gallery/${activeSlug}/thumbs/${img.filename}`)
       } catch { /* continue */ }
     }
 

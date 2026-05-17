@@ -428,26 +428,53 @@ export function resizeImage(
  * Both keep the original EXIF metadata. Also reads the capture year from
  * each photo's EXIF \u2014 `years[i]` corresponds to `filenames[i]` (undefined
  * when the photo has no usable EXIF date).
+ *
+ * Pass `existingFilenames` (the album's current filenames) so the next index
+ * is picked above the highest existing one. Using a plain count is unsafe:
+ * gaps from mid-album deletes (e.g. count=3 but max=005) would let new files
+ * collide with \u2014 and overwrite \u2014 kept photos.
  */
 export async function uploadGalleryImagesWithResize(
   files: File[],
   albumSlug: string,
-  existingCount: number,
+  existingFilenames: readonly string[],
   onProgress: (loaded: number, total: number) => void,
 ): Promise<{ filenames: string[]; years: (number | undefined)[] }> {
   const stripAccents = (str: string) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   const clean = stripAccents(albumSlug).replace(/[^a-z0-9]/g, '')
+
+  // Find the highest numeric suffix among existing filenames matching the
+  // `<clean><digits>` pattern. Filenames that don't match still count toward
+  // the collision set below.
+  const indexRe = new RegExp(`^${clean}(\\d+)`, 'i')
+  const usedNames = new Set<string>(existingFilenames)
+  let maxIdx = 0
+  for (const name of existingFilenames) {
+    const m = name.match(indexRe)
+    if (m) {
+      const n = parseInt(m[1], 10)
+      if (!Number.isNaN(n) && n > maxIdx) maxIdx = n
+    }
+  }
+
   const filenames: string[] = []
   const years: (number | undefined)[] = []
 
   // Process and upload sequentially for reliability
   const totalSteps = files.length * 2 // full + thumb per file
   let completedSteps = 0
+  let nextIdx = maxIdx + 1
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
-    const idx = existingCount + i + 1
-    const baseName = `${clean}${String(idx).padStart(3, '0')}.jpg`
+    // Pick the next index above the highest used one, skipping any that would
+    // still somehow collide (defensive).
+    let baseName: string
+    do {
+      baseName = `${clean}${String(nextIdx).padStart(3, '0')}.jpg`
+      nextIdx++
+    } while (usedNames.has(baseName))
+    usedNames.add(baseName)
     filenames.push(baseName)
 
     // Read the capture year from the original EXIF before any processing

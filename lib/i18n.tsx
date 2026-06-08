@@ -60,7 +60,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'nav.cta': 'Mám zájem',
 
     // Hero
-    'hero.title.line1': 'Ruční práce',
+    'hero.title.line1': 'Řemeslo',
     'hero.title.line2': 'v\u00A0každé fotografii',
     'hero.description': 'Focení, vyvolávání, skenování, tisknutí a mnohem více dělám s pečlivostí a zájmem.',
     'hero.cta.services': 'Prohlédnout fotky',

@@ -150,9 +150,9 @@ export default function Services() {
           </p>
         </motion.div>
 
-        {/* Bento grid — asymmetric layout */}
+        {/* Bento grid — order matches pricelist: Focení → Skenování → Vyvolávání → Tisk */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Card 1: Capture — tall, spans 2 rows on large */}
+          {/* Card 1: Capture (Focení) — tall, spans 2 rows on large */}
           <BentoCard
             title={t('services.capture.title')}
             subtitle={t('services.capture.subtitle')}
@@ -161,30 +161,30 @@ export default function Services() {
             delay={0.08}
             className="lg:row-span-2"
           />
-          {/* Card 2: Processing */}
-          <BentoCard
-            title={t('services.processing.title')}
-            subtitle={t('services.processing.subtitle')}
-            description={t('services.processing.desc')}
-            imgPlaceholder={cdnImages.images.processing ? servicesImageUrl(cdnImages.images.processing) : '/images/services/processing.jpg'}
-            delay={0.16}
-          />
-          {/* Card 3: Prints — darkroom red on hover */}
-          <BentoCard
-            title={t('services.prints.title')}
-            subtitle={t('services.prints.subtitle')}
-            description={t('services.prints.desc')}
-            imgPlaceholder={cdnImages.images.prints ? servicesImageUrl(cdnImages.images.prints) : '/images/services/prints.jpg'}
-            delay={0.24}
-            darkroom
-          />
-          {/* Card 4: Digitalization — spans 2 columns on large */}
+          {/* Card 2: Digital (Skenování) */}
           <BentoCard
             title={t('services.digital.title')}
             subtitle={t('services.digital.subtitle')}
             description={t('services.digital.desc')}
             imgPlaceholder={cdnImages.images.digital ? servicesImageUrl(cdnImages.images.digital) : '/images/services/digital.jpg'}
+            delay={0.16}
+          />
+          {/* Card 3: Processing (Vyvolávání) */}
+          <BentoCard
+            title={t('services.processing.title')}
+            subtitle={t('services.processing.subtitle')}
+            description={t('services.processing.desc')}
+            imgPlaceholder={cdnImages.images.processing ? servicesImageUrl(cdnImages.images.processing) : '/images/services/processing.jpg'}
+            delay={0.24}
+          />
+          {/* Card 4: Prints (Tisk) — spans 2 columns on large, darkroom red on hover */}
+          <BentoCard
+            title={t('services.prints.title')}
+            subtitle={t('services.prints.subtitle')}
+            description={t('services.prints.desc')}
+            imgPlaceholder={cdnImages.images.prints ? servicesImageUrl(cdnImages.images.prints) : '/images/services/prints.jpg'}
             delay={0.32}
+            darkroom
             className="sm:col-span-2"
           />
         </div>

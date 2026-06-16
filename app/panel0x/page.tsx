@@ -33,6 +33,18 @@ const contentSections = [
     description: 'Manage magazine issues',
     detail: 'Add/edit issues, upload PDFs and thumbnails',
   },
+  {
+    href: '/panel0x/graphics',
+    label: 'Graphics',
+    description: 'Manage downloadable graphics',
+    detail: 'Wallpapers, backgrounds, preview images',
+  },
+  {
+    href: '/panel0x/faq',
+    label: 'FAQ',
+    description: 'Manage frequently asked questions',
+    detail: 'Edit questions and answers (CS + EN)',
+  },
 ]
 
 const miscSections = [

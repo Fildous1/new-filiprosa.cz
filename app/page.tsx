@@ -5,6 +5,7 @@ import Services from '@/components/Services'
 import FeaturedPhotos from '@/components/FeaturedPhotos'
 import Projects from '@/components/Projects'
 import About from '@/components/About'
+import Faq from '@/components/Faq'
 import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
 import BottomBlur from '@/components/BottomBlur'
@@ -24,6 +25,7 @@ export default function Home() {
       <Projects />
       <div className="film-strip" />
       <About />
+      <Faq />
       <div className="film-strip" />
       <Contact />
       <Footer />

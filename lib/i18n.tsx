@@ -107,6 +107,9 @@ const translations: Record<Locale, Record<string, string>> = {
     'projects.mafos.title': 'Mafoš',
     'projects.mafos.desc': 'DSLR skener svitkových a 35mm filmů, který lze vytisknout na 3D tiskárně.',
     'projects.mafos.cta': 'Zobrazit projekt',
+    'projects.graphics.title': 'Grafika ke stažení',
+    'projects.graphics.desc': 'Tapety, podklady a další grafické soubory zdarma ke stažení.',
+    'projects.graphics.cta': 'Procházet soubory',
     'projects.gear.title': 'Vybavení',
 
     // Mafos page
@@ -171,7 +174,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'about.num': '04',
     'about.heading': 'Filip Rosa',
     'about.p1': 'Poprvé jsem se o focení začal zajímat, když moje maminka našla ve skříni první zrcadlovku, kterou jsem kdy držel v ruce - Canon EOS 650. Uchvátila mě hned jsem si koupil barevný film, na který jsem nafotil 36 fotek, které bych se dnes styděl ukázat. Ale od té doby jsem se začal věnovat všemu spojenému s fotografií. Historii, analogu, příběhům i technice.',
-    'about.p2': 'Dnes se focením zabývám většinu svého volného času a je to moji velkou vášní. Rád bych se ve focení zdokonalil a rozšířil sovje portofolio o profesionální práci. Proto jsem rád za každou zkušenost, a to jak pozitivní, tak i negativní.',
+    'about.p2': 'Dnes se focením zabývám většinu svého volného času a je to moji velkou vášní. Rád bych se ve focení zdokonalil a rozšířil svoje portfolio o profesionální práci. Proto jsem rád za každou zkušenost, a to jak pozitivní, tak i negativní.',
     'about.stat1.value': '4 roky',
     'about.stat1.label': 'focení',
     'about.stat2.value': 'Desítky',
@@ -179,8 +182,14 @@ const translations: Record<Locale, Record<string, string>> = {
     'about.stat3.value': 'Stovky',
     'about.stat3.label': 'hodin v Lightroomu',
 
+    // FAQ
+    'faq.num': '05',
+    'faq.heading': 'Časté dotazy',
+    'faq.description': 'Odpovědi na nejčastější dotazy ohledně mých služeb.',
+    'faq.empty': 'Brzy přidám časté dotazy.',
+
     // Contact
-    'contact.num': '05',
+    'contact.num': '06',
     'contact.heading.line1': 'Pojďme společně',
     'contact.heading.line2': 'tvořit',
     'contact.description': 'Máte zájem o\u00A0focení, vyvolávání filmů, darkroom výtisky, nebo potřebujete s nečím poradit? Napište mi, rád vám odpovím.',
@@ -208,8 +217,15 @@ const translations: Record<Locale, Record<string, string>> = {
     'contact.service.printing': 'Tisk',
     'contact.service.other': 'Jiné',
 
+    'contact.phone': 'Telefon',
+
     // Footer
     'footer.copyright': '\u00A9 2026 Filip Rosa',
+    'footer.business.name': 'Filip Rosa',
+    'footer.business.ico': 'I\u010CO: [DOPLNIT]',
+    'footer.business.address': '[DOPLNIT ULICE], [PS\u010C] [M\u011ASTO]',
+    'footer.business.phone': '+420 602 942 833',
+    'footer.business.email': 'foto@filiprosa.cz',
 
     // Gallery
     'gallery.heading': 'Galerie',
@@ -274,6 +290,13 @@ const translations: Record<Locale, Record<string, string>> = {
     'pricelist.cloud.name': 'Nahrání na cloud',
     'pricelist.cloud.note': '',
     'pricelist.cloud.price': 'zdarma',
+
+    // Graphics download
+    'graphics.heading': 'Grafika ke stažení',
+    'graphics.description': 'Vyber si tapetu, podklad nebo jinou grafiku, kterou jsem vytvořil, a stáhni si ji zdarma.',
+    'graphics.back': 'Zpět',
+    'graphics.download': 'Stáhnout',
+    'graphics.empty': 'Zatím tu nic není. Brzy přidám nové soubory.',
 
     // Magazine
     'magazine.heading': 'Nerovný Rosník',
@@ -371,6 +394,9 @@ const translations: Record<Locale, Record<string, string>> = {
     'projects.mafos.title': 'Mafoš',
     'projects.mafos.desc': 'DSLR scanner for medium format and 35mm film, 3D printable.',
     'projects.mafos.cta': 'View project',
+    'projects.graphics.title': 'Free graphics',
+    'projects.graphics.desc': 'Wallpapers, backgrounds and other graphic files available to download for free.',
+    'projects.graphics.cta': 'Browse files',
     'projects.gear.title': 'Gear',
 
     // Mafos page
@@ -443,8 +469,14 @@ const translations: Record<Locale, Record<string, string>> = {
     'about.stat3.value': 'Hundreds',
     'about.stat3.label': 'of hours in Lightroom',
 
+    // FAQ
+    'faq.num': '05',
+    'faq.heading': 'FAQ',
+    'faq.description': 'Answers to the most common questions about my services.',
+    'faq.empty': 'FAQ entries coming soon.',
+
     // Contact
-    'contact.num': '05',
+    'contact.num': '06',
     'contact.heading.line1': 'Let\'s create',
     'contact.heading.line2': 'together',
     'contact.description': 'Interested in a\u00A0shoot, film development, darkroom prints, or need advice on something? Write to me, I\'ll be happy to respond.',
@@ -472,8 +504,15 @@ const translations: Record<Locale, Record<string, string>> = {
     'contact.service.printing': 'Printing',
     'contact.service.other': 'Other',
 
+    'contact.phone': 'Phone',
+
     // Footer
     'footer.copyright': '\u00A9 2026 Filip Rosa',
+    'footer.business.name': 'Filip Rosa',
+    'footer.business.ico': 'Reg. No.: [TO FILL]',
+    'footer.business.address': '[STREET], [POSTCODE] [CITY]',
+    'footer.business.phone': '+420 602 942 833',
+    'footer.business.email': 'foto@filiprosa.cz',
 
     // Gallery
     'gallery.heading': 'Gallery',
@@ -538,6 +577,13 @@ const translations: Record<Locale, Record<string, string>> = {
     'pricelist.cloud.name': 'Cloud upload',
     'pricelist.cloud.note': '',
     'pricelist.cloud.price': 'free',
+
+    // Graphics download
+    'graphics.heading': 'Free graphics',
+    'graphics.description': 'Pick a wallpaper, background or other graphic I created and download it for free.',
+    'graphics.back': 'Back',
+    'graphics.download': 'Download',
+    'graphics.empty': 'Nothing here yet. New files coming soon.',
 
     // Magazine
     'magazine.heading': 'Nerovn\u00FD Rosn\u00EDk',

@@ -242,21 +242,12 @@ export default function MafosPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
               <div>
                 <h1
-                  className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mb-5"
+                  className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mb-8"
                   style={{ fontSize: 'clamp(2.2rem, 5vw, 3.5rem)' }}
                 >
                   Mafoš
                 </h1>
-                <p
-                  className="font-body text-muted mb-8"
-                  style={{ fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)' }}
-                >
-                  {t('mafos.subtitle')}
-                </p>
 
-                <h2 className="font-display font-bold text-offwhite text-[1.2rem] tracking-[-0.02em] mb-3">
-                  {t('mafos.about.heading')}
-                </h2>
                 <p className="font-body text-muted text-[0.95rem] leading-[1.75] mb-4">
                   {t('mafos.about.p1')}
                 </p>
@@ -281,8 +272,8 @@ export default function MafosPage() {
               </div>
               <div className="relative aspect-[4/3] bg-charcoal border border-white/[0.05] rounded-[2px] overflow-hidden">
                 <Image
-                  src="/images/mafos/film.jpg"
-                  alt={locale === 'cs' ? 'Staré negativy' : 'Old negatives'}
+                  src="/images/mafos/product/front.png"
+                  alt={locale === 'cs' ? 'Mafoš zepředu' : 'Mafoš front view'}
                   fill
                   priority
                   sizes="(max-width: 768px) 100vw, 600px"

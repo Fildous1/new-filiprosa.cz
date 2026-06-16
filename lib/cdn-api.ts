@@ -103,7 +103,7 @@ export interface SiteManifest {
   heroDescEn?: string
 }
 
-export async function fetchManifest<T>(type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'services' | 'users' | 'site' | 'pricelist'): Promise<T> {
+export async function fetchManifest<T>(type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'services' | 'users' | 'site' | 'pricelist' | 'graphics' | 'faq'): Promise<T> {
   const res = await fetch(`${CDN_URL}${type}.json`, { cache: 'no-store' })
   if (!res.ok) throw new Error(`Failed to fetch ${type} manifest: ${res.status}`)
   return res.json()
@@ -192,6 +192,49 @@ export function pricelistImageUrl(filename: string): string {
   return `${CDN_URL}pricelist/${filename}`
 }
 
+export interface GraphicsItem {
+  id: string
+  title: { cs: string; en: string }
+  format: string // e.g. "PNG", "PDF", "ZIP"
+  description: { cs: string; en: string }
+  file?: string  // filename of downloadable asset in graphics/
+  image?: string // preview image filename in graphics/
+}
+
+export interface GraphicsManifest {
+  items: GraphicsItem[]
+}
+
+export async function fetchGraphics(): Promise<GraphicsManifest> {
+  try {
+    return await fetchManifest<GraphicsManifest>('graphics')
+  } catch {
+    return { items: [] }
+  }
+}
+
+export function graphicsAssetUrl(filename: string): string {
+  return `${CDN_URL}graphics/${filename}`
+}
+
+export interface FaqItem {
+  id: string
+  question: { cs: string; en: string }
+  answer: { cs: string; en: string }
+}
+
+export interface FaqManifest {
+  items: FaqItem[]
+}
+
+export async function fetchFaq(): Promise<FaqManifest> {
+  try {
+    return await fetchManifest<FaqManifest>('faq')
+  } catch {
+    return { items: [] }
+  }
+}
+
 export async function fetchSite(): Promise<SiteManifest> {
   try {
     return await fetchManifest<SiteManifest>('site')
@@ -262,8 +305,8 @@ export async function uploadFiles(
 
 /** Save a manifest to the CDN. Automatically adds `updatedAt` timestamp. */
 export async function saveManifest(
-  type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'services' | 'site' | 'pricelist',
-  data: GalleryManifest | MuseumManifest | RosnikManifest | GearManifest | ServicesManifest | SiteManifest | PricelistManifest,
+  type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'services' | 'site' | 'pricelist' | 'graphics' | 'faq',
+  data: GalleryManifest | MuseumManifest | RosnikManifest | GearManifest | ServicesManifest | SiteManifest | PricelistManifest | GraphicsManifest | FaqManifest,
 ): Promise<void> {
   // Stamp with current time for cache-busting
   const stamped = { ...data, updatedAt: Date.now() }

@@ -42,6 +42,22 @@ export default function Footer() {
             </svg>
           </a>
         </div>
+
+        <div className="mt-6 pt-6 border-t border-white/[0.04] flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-[0.7rem] text-offwhite/25 font-body">
+          <span>{t('footer.business.name')}</span>
+          <span className="w-px h-3 bg-white/10" aria-hidden />
+          <span>{t('footer.business.ico')}</span>
+          <span className="w-px h-3 bg-white/10" aria-hidden />
+          <span>{t('footer.business.address')}</span>
+          <span className="w-px h-3 bg-white/10" aria-hidden />
+          <a href={`tel:${t('footer.business.phone').replace(/\s+/g, '')}`} className="hover:text-lime transition-colors duration-300">
+            {t('footer.business.phone')}
+          </a>
+          <span className="w-px h-3 bg-white/10" aria-hidden />
+          <a href={`mailto:${t('footer.business.email')}`} className="hover:text-lime transition-colors duration-300">
+            {t('footer.business.email')}
+          </a>
+        </div>
       </div>
     </footer>
   )

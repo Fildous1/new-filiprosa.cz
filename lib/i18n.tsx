@@ -52,6 +52,7 @@ const translations: Record<Locale, Record<string, string>> = {
     // Navigation
     'nav.services': 'Služby',
     'nav.pricelist': 'Ceník',
+    'nav.qna': 'Časté dotazy',
     'nav.about': 'O\u00A0mně',
     'nav.contact': 'Kontakt',
     'nav.gallery': 'Galerie',
@@ -182,14 +183,14 @@ const translations: Record<Locale, Record<string, string>> = {
     'about.stat3.value': 'Stovky',
     'about.stat3.label': 'hodin v Lightroomu',
 
-    // FAQ
-    'faq.num': '05',
+    // FAQ (standalone /qna page)
     'faq.heading': 'Časté dotazy',
     'faq.description': 'Odpovědi na nejčastější dotazy ohledně mých služeb.',
     'faq.empty': 'Brzy přidám časté dotazy.',
+    'qna.back': 'Zpět',
 
     // Contact
-    'contact.num': '06',
+    'contact.num': '05',
     'contact.heading.line1': 'Pojďme společně',
     'contact.heading.line2': 'tvořit',
     'contact.description': 'Máte zájem o\u00A0focení, vyvolávání filmů, darkroom výtisky, nebo potřebujete s nečím poradit? Napište mi, rád vám odpovím.',
@@ -339,6 +340,7 @@ const translations: Record<Locale, Record<string, string>> = {
     // Navigation
     'nav.services': 'Services',
     'nav.pricelist': 'Price list',
+    'nav.qna': 'FAQ',
     'nav.about': 'About',
     'nav.contact': 'Contact',
     'nav.gallery': 'Gallery',
@@ -469,14 +471,14 @@ const translations: Record<Locale, Record<string, string>> = {
     'about.stat3.value': 'Hundreds',
     'about.stat3.label': 'of hours in Lightroom',
 
-    // FAQ
-    'faq.num': '05',
+    // FAQ (standalone /qna page)
     'faq.heading': 'FAQ',
     'faq.description': 'Answers to the most common questions about my services.',
     'faq.empty': 'FAQ entries coming soon.',
+    'qna.back': 'Back',
 
     // Contact
-    'contact.num': '06',
+    'contact.num': '05',
     'contact.heading.line1': 'Let\'s create',
     'contact.heading.line2': 'together',
     'contact.description': 'Interested in a\u00A0shoot, film development, darkroom prints, or need advice on something? Write to me, I\'ll be happy to respond.',

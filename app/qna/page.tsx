@@ -2,15 +2,18 @@
 
 import { useRef, useState, useEffect } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
+import Navigation from '@/components/Navigation'
+import Footer from '@/components/Footer'
+import Contact from '@/components/Contact'
 import { useI18n, type Locale } from '@/lib/i18n'
 import { fetchFaq, type FaqItem } from '@/lib/cdn-api'
 
 const ease = [0.16, 1, 0.3, 1] as const
 
-export default function Faq() {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '0px 0px -30px 0px' })
+export default function QnaPage() {
   const { t, locale } = useI18n()
+  const headerRef = useRef<HTMLDivElement>(null)
+  const headerInView = useInView(headerRef, { once: true, margin: '0px 0px -30px 0px' })
   const [items, setItems] = useState<FaqItem[]>([])
   const [loaded, setLoaded] = useState(false)
   const [openId, setOpenId] = useState<string | null>(null)
@@ -21,61 +24,72 @@ export default function Faq() {
       .catch(() => setLoaded(true))
   }, [])
 
-  // Hide entire section if there's nothing to show (avoids an empty box on prod).
-  // Also suppress before-render to avoid a flash; <Faq /> always renders a leading
-  // film-strip so the page rhythm matches the other sections.
-  if (!loaded || items.length === 0) return null
-
   return (
     <>
-    <div className="film-strip" />
-    <section id="faq" className="relative" style={{ padding: 'clamp(5rem, 10vw, 8rem) 0' }}>
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(ellipse 50% 50% at 80% 30%, rgba(var(--lime-rgb),0.03) 0%, transparent 70%),
-            radial-gradient(ellipse 40% 50% at 15% 70%, rgba(var(--darkroom-rgb),0.15) 0%, transparent 60%)
-          `,
-        }}
-      />
+      <Navigation />
 
-      <div className="relative z-1 max-w-[1200px] mx-auto px-6 lg:px-10" ref={ref}>
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, ease }}
-          className="max-w-[36rem] mb-12 md:mb-16"
-        >
-          <span className="section-num">{t('faq.num')}</span>
-          <h2
-            className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mt-6 mb-5"
-            style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
+      <main className="min-h-dvh pt-28 pb-20">
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10">
+          <motion.div
+            ref={headerRef}
+            initial={{ opacity: 0, y: 32 }}
+            animate={headerInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.9, ease }}
+            className="mb-12"
           >
-            {t('faq.heading')}
-          </h2>
-          <p
-            className="font-body text-muted"
-            style={{ fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)' }}
-          >
-            {t('faq.description')}
-          </p>
-        </motion.div>
+            <a
+              href="/"
+              className="inline-flex items-center gap-2 text-[0.8rem] text-muted hover:text-lime transition-colors duration-300 mb-8"
+            >
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+              </svg>
+              {t('qna.back')}
+            </a>
+            <h1
+              className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mb-5"
+              style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}
+            >
+              {t('faq.heading')}
+            </h1>
+            <p
+              className="font-body text-muted max-w-[36rem]"
+              style={{ fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)' }}
+            >
+              {t('faq.description')}
+            </p>
+          </motion.div>
 
-        <div className="max-w-[42rem] mx-auto flex flex-col gap-3">
-          {items.map((item, i) => (
-            <FaqRow
-              key={item.id}
-              item={item}
-              index={i}
-              isOpen={openId === item.id}
-              onToggle={() => setOpenId(prev => prev === item.id ? null : item.id)}
-              locale={locale as Locale}
-            />
-          ))}
+          {!loaded ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="w-8 h-8 border-2 border-lime/20 border-t-lime/60 rounded-full animate-spin" />
+            </div>
+          ) : items.length === 0 ? (
+            <p className="font-body text-muted text-center py-20">
+              {t('faq.empty')}
+            </p>
+          ) : (
+            <div className="max-w-[42rem] mx-auto flex flex-col gap-3">
+              {items.map((item, i) => (
+                <FaqRow
+                  key={item.id}
+                  item={item}
+                  index={i}
+                  isOpen={openId === item.id}
+                  onToggle={() => setOpenId(prev => prev === item.id ? null : item.id)}
+                  locale={locale as Locale}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      </div>
-    </section>
+      </main>
+
+      <div className="film-strip" />
+
+      <Contact hideSectionNum />
+
+      <Footer />
     </>
   )
 }

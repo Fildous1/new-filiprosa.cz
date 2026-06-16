@@ -31,6 +31,7 @@ export interface ProjectEntry {
 /** Main header / footer nav links. */
 export const MAIN_NAV: readonly NavLink[] = [
   { labelKey: 'nav.pricelist', href: '/cenik' },
+  { labelKey: 'nav.qna', href: '/qna' },
   { labelKey: 'nav.gallery', href: '/galerie' },
   { labelKey: 'nav.projects', href: '/#projekty', dropdown: 'projects' },
   { labelKey: 'nav.about', href: '/#o-mne', dropdown: 'about' },

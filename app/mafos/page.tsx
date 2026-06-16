@@ -270,7 +270,7 @@ export default function MafosPage() {
                   </div>
                 </div>
               </div>
-              <div className="relative aspect-[4/3] bg-charcoal border border-white/[0.05] rounded-[2px] overflow-hidden">
+              <div className="relative aspect-[4/3]">
                 <Image
                   src="/images/mafos/product/front.png"
                   alt={locale === 'cs' ? 'Mafoš zepředu' : 'Mafoš front view'}

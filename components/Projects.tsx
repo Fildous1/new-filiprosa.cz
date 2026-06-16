@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
+import { PROJECTS } from '@/lib/site-nav'
 
 export default function Projects() {
   const headerRef = useRef<HTMLDivElement>(null)
@@ -11,54 +12,13 @@ export default function Projects() {
   const cardsInView = useInView(cardsRef, { once: true, margin: '0px 0px -30px 0px' })
   const { t } = useI18n()
 
-  const projects = [
-    {
-      title: t('projects.mafos.title'),
-      description: t('projects.mafos.desc'),
-      cta: t('projects.mafos.cta'),
-      href: '/mafos',
-      icon: (
-        <svg className="w-6 h-6 text-lime" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
-        </svg>
-      ),
-    },
-    {
-      title: t('projects.museum.title'),
-      description: t('projects.museum.desc'),
-      cta: t('projects.museum.cta'),
-      href: '/muzeum',
-      icon: (
-        <svg className="w-6 h-6 text-lime" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
-        </svg>
-      ),
-    },
-    {
-      title: t('projects.magazine.title'),
-      description: t('projects.magazine.desc'),
-      cta: t('projects.magazine.cta'),
-      href: '/rosnik',
-      icon: (
-        <svg className="w-6 h-6 text-lime" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
-        </svg>
-      ),
-    },
-    {
-      title: t('projects.graphics.title'),
-      description: t('projects.graphics.desc'),
-      cta: t('projects.graphics.cta'),
-      href: '/grafika',
-      icon: (
-        <svg className="w-6 h-6 text-lime" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15M9 12l3 3m0 0 3-3m-3 3V2.25" />
-        </svg>
-      ),
-    },
-  ]
+  const projects = PROJECTS.map(p => ({
+    title: t(p.titleKey),
+    description: t(p.descKey),
+    cta: t(p.ctaKey),
+    href: p.href,
+    icon: p.icon,
+  }))
 
   return (
     <section id="projekty" className="relative" style={{ padding: 'clamp(5rem, 10vw, 8rem) 0' }}>

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
+import { MAIN_NAV, PROJECTS, ABOUT_LINKS } from '@/lib/site-nav'
 import Logo from '@/components/Logo'
 
 export default function Navigation() {
@@ -16,23 +17,9 @@ export default function Navigation() {
   const aboutTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const { locale, setLocale, t } = useI18n()
 
-  const links = [
-    { label: t('nav.pricelist'), href: '/cenik' },
-    { label: t('nav.gallery'), href: '/galerie' },
-    { label: t('nav.projects'), href: '/#projekty', dropdown: 'projects' as const },
-    { label: t('nav.about'), href: '/#o-mne', dropdown: 'about' as const },
-  ]
-
-  const projectLinks = [
-    { label: t('projects.mafos.title'), href: '/mafos' },
-    { label: t('projects.museum.title'), href: '/muzeum' },
-    { label: t('projects.magazine.title'), href: '/rosnik' },
-  ]
-
-  const aboutLinks = [
-    { label: t('nav.contact'), href: '/#kontakt' },
-    { label: t('projects.gear.title'), href: '/vybaveni' },
-  ]
+  const links = MAIN_NAV.map(l => ({ label: t(l.labelKey), href: l.href, dropdown: l.dropdown }))
+  const projectLinks = PROJECTS.map(p => ({ label: t(p.titleKey), href: p.href }))
+  const aboutLinks = ABOUT_LINKS.map(l => ({ label: t(l.labelKey), href: l.href }))
 
   function handleEnter(which: 'projects' | 'about') {
     if (which === 'projects') {

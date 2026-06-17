@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
 import { CDN_URL } from '@/lib/cdn'
+import { fetchSite, type ContactNotice } from '@/lib/cdn-api'
 
 export default function Contact({ hideSectionNum = false }: { hideSectionNum?: boolean } = {}) {
   const ref = useRef<HTMLDivElement>(null)
@@ -15,6 +16,15 @@ export default function Contact({ hideSectionNum = false }: { hideSectionNum?: b
   const [formError, setFormError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [lastSubmit, setLastSubmit] = useState(0)
+  const [notice, setNotice] = useState<ContactNotice | null>(null)
+
+  useEffect(() => {
+    fetchSite()
+      .then(site => {
+        if (site.contactNotice) setNotice(site.contactNotice)
+      })
+      .catch(() => {})
+  }, [])
 
   const serviceOptions = [
     { value: 'portrait', label: t('contact.service.portrait') },
@@ -119,6 +129,21 @@ export default function Contact({ hideSectionNum = false }: { hideSectionNum?: b
       />
 
       <div className="relative z-10 max-w-[1200px] mx-auto px-6 lg:px-10" ref={ref}>
+        {notice && notice.enabled && (notice.text[locale] || notice.text.cs) && (
+          <div
+            className="w-full rounded-[2px] px-5 py-3 mb-10 text-center"
+            style={{
+              backgroundColor: `color-mix(in srgb, ${notice.color} 12%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${notice.color} 30%, transparent)`,
+              color: notice.color,
+              fontSize: `${notice.fontSize}px`,
+              fontWeight: notice.bold ? 700 : 400,
+              lineHeight: 1.5,
+            }}
+          >
+            {notice.text[locale] || notice.text.cs}
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20">
           {/* Left — heading + links */}
           <motion.div

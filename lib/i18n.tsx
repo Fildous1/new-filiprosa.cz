@@ -174,7 +174,7 @@ const translations: Record<Locale, Record<string, string>> = {
     // About
     'about.num': '04',
     'about.heading': 'Filip Rosa',
-    'about.p1': 'Poprvé jsem se o focení začal zajímat, když moje maminka našla ve skříni první zrcadlovku, kterou jsem kdy držel v ruce - Canon EOS 650. Uchvátila mě hned jsem si koupil barevný film, na který jsem nafotil 36 fotek, které bych se dnes styděl ukázat. Ale od té doby jsem se začal věnovat všemu spojenému s fotografií. Historii, analogu, příběhům i technice.',
+    'about.p1': 'Poprvé jsem se o focení začal zajímat, když moje maminka našla ve skříni první zrcadlovku, kterou jsem kdy držel v ruce - Canon EOS 650. Uchvátila mě a hned jsem si koupil barevný film, na který jsem nafotil 36 fotek, které bych se dnes styděl ukázat. Ale od té doby jsem se začal věnovat všemu spojenému s fotografií. Historii, analogu, příběhům i technice.',
     'about.p2': 'Dnes se focením zabývám většinu svého volného času a je to moji velkou vášní. Rád bych se ve focení zdokonalil a rozšířil svoje portfolio o profesionální práci. Proto jsem rád za každou zkušenost, a to jak pozitivní, tak i negativní.',
     'about.stat1.value': '4 roky',
     'about.stat1.label': 'focení',

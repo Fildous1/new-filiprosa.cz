@@ -87,6 +87,15 @@ export interface RosnikManifest {
   issues: MagazineIssue[]
 }
 
+/** Banner shown at the top of the Contact section. Editable in admin. */
+export interface ContactNotice {
+  enabled: boolean
+  text: { cs: string; en: string }
+  color: string      // hex, e.g. "#3bc442"
+  fontSize: number   // px
+  bold: boolean
+}
+
 /** Fetch a manifest JSON from the CDN. */
 export interface SiteManifest {
   profileImage?: string
@@ -101,6 +110,7 @@ export interface SiteManifest {
   heroLine2En?: string
   heroDescCs?: string
   heroDescEn?: string
+  contactNotice?: ContactNotice
 }
 
 export async function fetchManifest<T>(type: 'gallery' | 'museum' | 'rosnik' | 'gear' | 'services' | 'users' | 'site' | 'pricelist' | 'graphics' | 'faq'): Promise<T> {

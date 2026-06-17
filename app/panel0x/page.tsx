@@ -39,12 +39,6 @@ const contentSections = [
     description: 'Manage downloadable graphics',
     detail: 'Wallpapers, backgrounds, preview images',
   },
-  {
-    href: '/panel0x/faq',
-    label: 'FAQ',
-    description: 'Manage frequently asked questions',
-    detail: 'Edit questions and answers (CS + EN)',
-  },
 ]
 
 const miscSections = [
@@ -71,6 +65,18 @@ const miscSections = [
     label: 'Contact Section',
     description: 'Edit the about/contact section',
     detail: 'Profile photo, bio text (CS + EN)',
+  },
+  {
+    href: '/panel0x/contact-notice',
+    label: 'Contact Notice',
+    description: 'Banner on top of the contact section',
+    detail: 'Text (CS + EN), color, size, bold, enable/disable',
+  },
+  {
+    href: '/panel0x/faq',
+    label: 'FAQ',
+    description: 'Manage frequently asked questions',
+    detail: 'Edit questions and answers (CS + EN)',
   },
   {
     href: '/panel0x/landing',

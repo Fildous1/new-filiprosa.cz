@@ -227,6 +227,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'footer.business.address': 'Tyršova 34, 682 01 Vyškov',
     'footer.business.phone': '+420 602 942 833',
     'footer.business.email': 'foto@filiprosa.cz',
+    'footer.disclaimer.photos': 'Všechny fotografie na této stránce jsou moje práce.',
+    'footer.disclaimer.made': 'Made by Filip and Claude.',
 
     // Gallery
     'gallery.heading': 'Galerie',
@@ -515,6 +517,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'footer.business.address': 'Tyršova 34, 682 01 Vyškov',
     'footer.business.phone': '+420 602 942 833',
     'footer.business.email': 'foto@filiprosa.cz',
+    'footer.disclaimer.photos': 'All photos on this site are my own work.',
+    'footer.disclaimer.made': 'Made by Filip and Claude.',
 
     // Gallery
     'gallery.heading': 'Gallery',

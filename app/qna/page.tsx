@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
@@ -9,6 +9,34 @@ import { useI18n, type Locale } from '@/lib/i18n'
 import { fetchFaq, type FaqItem } from '@/lib/cdn-api'
 
 const ease = [0.16, 1, 0.3, 1] as const
+
+const LINK_RE = /\[([^\]]+)\]\(([^)]+)\)/g
+
+function renderAnswer(text: string): React.ReactNode[] {
+  const out: React.ReactNode[] = []
+  let last = 0
+  let m: RegExpExecArray | null
+  let key = 0
+  LINK_RE.lastIndex = 0
+  while ((m = LINK_RE.exec(text)) !== null) {
+    if (m.index > last) out.push(text.slice(last, m.index))
+    const [, label, href] = m
+    const external = /^https?:\/\//.test(href)
+    out.push(
+      <a
+        key={`l${key++}`}
+        href={href}
+        {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        className="text-lime hover:text-lime/80 underline decoration-lime/40 underline-offset-[3px] transition-colors duration-200"
+      >
+        {label}
+      </a>
+    )
+    last = m.index + m[0].length
+  }
+  if (last < text.length) out.push(text.slice(last))
+  return out
+}
 
 export default function QnaPage() {
   const { t, locale } = useI18n()
@@ -151,7 +179,7 @@ function FaqRow({
             className="overflow-hidden"
           >
             <p className="px-5 sm:px-6 pb-5 font-body text-muted text-[0.85rem] leading-[1.75] whitespace-pre-line">
-              {answer}
+              {renderAnswer(answer)}
             </p>
           </motion.div>
         )}

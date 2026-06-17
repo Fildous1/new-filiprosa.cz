@@ -133,12 +133,6 @@ export default function FeaturedPhotos() {
               const offset = groups.slice(0, gi).reduce((n, g) => n + g.items.length, 0)
               return (
                 <div key={group.slug}>
-                  <h3
-                    className="font-display font-semibold text-offwhite/85 tracking-[-0.02em] mb-6 md:mb-8"
-                    style={{ fontSize: 'clamp(1.2rem, 2.2vw, 1.6rem)' }}
-                  >
-                    {group.title}
-                  </h3>
                   <div className="columns-2 sm:columns-3 lg:columns-4 gap-3">
                     {group.items.map((item, i) => (
                       <FeaturedItem

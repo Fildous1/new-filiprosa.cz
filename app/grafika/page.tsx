@@ -120,34 +120,33 @@ function GraphicCard({
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, delay: Math.min(index * 0.06, 0.3), ease }}
       className="relative bg-charcoal border border-white/[0.05] rounded-[2px] overflow-hidden"
-      style={{ aspectRatio: '15 / 4' }}
     >
-      {/* Left: image fading to the right */}
+      {/* Left: image fading to the right — fills card height */}
       {item.image && !imgError && (
         <>
           <img
             src={graphicsAssetUrl(item.image)}
             alt={title}
-            className="absolute inset-y-0 left-0 h-full w-[55%] object-cover opacity-50"
+            className="absolute inset-y-0 left-0 h-full w-[35%] sm:w-[30%] object-cover opacity-50"
             loading="lazy"
             onError={() => setImgError(true)}
           />
           <div
-            className="absolute inset-y-0 left-0 w-[60%] pointer-events-none"
+            className="absolute inset-y-0 left-0 w-[35%] sm:w-[30%] pointer-events-none"
             style={{
-              background: 'linear-gradient(to right, transparent 0%, transparent 50%, rgba(var(--charcoal-rgb),0.65) 80%, var(--color-charcoal) 100%)',
+              background: 'linear-gradient(to right, transparent 0%, transparent 60%, rgba(var(--charcoal-rgb),0.65) 85%, var(--color-charcoal) 100%)',
             }}
           />
         </>
       )}
 
-      {/* Content row */}
-      <div className="relative h-full grid grid-cols-[1fr_auto] items-center">
-        {/* Middle: title + format + description */}
-        <div className="pl-[40%] pr-6 sm:pl-[45%] sm:pr-8 lg:pl-[42%] lg:pr-10">
+      {/* Content row — height is driven by this; image stretches to match */}
+      <div className="relative grid grid-cols-[1fr_auto] items-center gap-4 py-5 pr-6 sm:py-6 sm:pr-8 lg:pr-10" style={{ paddingLeft: item.image && !imgError ? undefined : '1.5rem' }}>
+        {/* Middle: title + format + description, starting at right edge of image */}
+        <div className={item.image && !imgError ? 'pl-[35%] sm:pl-[30%]' : ''}>
           <h3
             className="font-display font-bold text-offwhite tracking-[-0.02em] leading-tight"
-            style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.6rem)' }}
+            style={{ fontSize: 'clamp(1.05rem, 2.2vw, 1.5rem)' }}
           >
             {title}
           </h3>
@@ -157,14 +156,14 @@ function GraphicCard({
             </span>
           )}
           {description && (
-            <p className="font-body text-muted text-[0.82rem] leading-[1.6] mt-3 line-clamp-3 max-w-[36rem]">
+            <p className="font-body text-muted text-[0.82rem] leading-[1.6] mt-3 max-w-[36rem]">
               {description}
             </p>
           )}
         </div>
 
         {/* Right: download button */}
-        <div className="pr-6 sm:pr-8 lg:pr-10">
+        <div className="self-center">
           {item.file ? (
             <a
               href={graphicsAssetUrl(item.file)}

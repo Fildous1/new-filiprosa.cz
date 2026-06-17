@@ -55,9 +55,11 @@ Tento dokument popisuje **technickou strukturu webu** — vše, co je potřeba v
 │  (Next.js export)      │ ◀───────│  gallery.json, museum.json│
 │                        │  JSON   │  rosnik.json, gear.json  │
 │  /panel0x (admin)      │         │  services.json, site.json│
-│                        │ ───────▶│  users.json              │
-│                        │ POST    │                          │
-└────────────────────────┘  auth   │  /api/upload             │
+│                        │ ───────▶│  pricelist.json,         │
+│                        │ POST    │  graphics.json, faq.json │
+└────────────────────────┘  auth   │  users.json              │
+                                   │                          │
+                                   │  /api/upload             │
                                    │  /api/manifest           │
                                    │  /api/delete             │
                                    │  /api/save-users         │
@@ -68,6 +70,8 @@ Tento dokument popisuje **technickou strukturu webu** — vše, co je potřeba v
                                    │  /rosnik/*.pdf           │
                                    │  /gear/*.jpg             │
                                    │  /services/*.jpg         │
+                                   │  /pricelist/*.jpg        │
+                                   │  /graphics/*.{jpg,zip,…} │
                                    │  /site/*.jpg             │
                                    └──────────────────────────┘
 ```
@@ -92,6 +96,9 @@ new/
 │   ├── rosnik/                 # Časopis Nerovný Rosník + PDF viewer
 │   ├── mafos/                  # Projekt Mafoš (DSLR skener)
 │   ├── vybaveni/               # Vybavení
+│   ├── cenik/                  # Ceník (3 podsekce + technical + extras + travel)
+│   ├── qna/                    # Časté dotazy (FAQ akordeon, parser [text](url))
+│   ├── grafika/                # Grafika ke stažení (zip/psd/ai/jpg ke stažení)
 │   └── panel0x/                # Admin panel (chráněný)
 │       ├── layout.tsx          # AdminAuth wrapper + ToastProvider + červené glow okraje
 │       ├── page.tsx            # Dashboard
@@ -100,21 +107,24 @@ new/
 │       ├── rosnik/             # Správa časopisu
 │       ├── gear/               # Obrázky v sekci Vybavení
 │       ├── services/           # Pozadí karet služeb
+│       ├── pricelist/          # Položky ceníku (3 foto karty, technical, extras, travel)
+│       ├── graphics/           # CRUD grafik ke stažení (obrázek + soubor + metadata)
+│       ├── faq/                # CRUD otázek a odpovědí (bilingvální)
 │       ├── contact-section/    # Profilovka + bio (homepage About)
 │       ├── landing/            # Pozadí + nadpis hera
 │       ├── users/              # Správa uživatelů (jen admin)
 │       └── debug/              # Diagnostika CDN / uploadu
 │
 ├── components/                 # Sdílené React komponenty
-│   ├── Navigation.tsx          # Top bar + dropdown menu + jazykový přepínač
+│   ├── Navigation.tsx          # Top bar + dropdown menu + jazykový přepínač (čte site-nav)
 │   ├── Hero.tsx                # Hero sekce
-│   ├── Services.tsx            # 4 karty služeb
+│   ├── Services.tsx            # 4 karty služeb (Capture/Digital/Processing/Prints) + CTA na ceník
 │   ├── ServiceCard.tsx
-│   ├── FeaturedPhotos.tsx      # Featured fotky z galerie
-│   ├── Projects.tsx            # Karty projektů (Muzeum, Rosník, Mafoš, Meetup)
+│   ├── FeaturedPhotos.tsx      # Featured fotky z galerie (bez nadpisů alb)
+│   ├── Projects.tsx            # Karty projektů (Mafoš, Muzeum, Rosník, Grafika) — čte PROJECTS z site-nav
 │   ├── About.tsx               # About sekce na homepage
-│   ├── Contact.tsx             # Kontaktní formulář + kopírovací tlačítka
-│   ├── Footer.tsx
+│   ├── Contact.tsx             # Kontaktní formulář + kopírovací tlačítka (hideSectionNum prop)
+│   ├── Footer.tsx              # Kontaktní údaje + nav (čte MAIN_NAV) + IG
 │   ├── Lightbox.tsx            # Lightbox se zoomem (1×–5×), pan, swipe, klávesnice
 │   ├── WorkGallery.tsx         # Mřížka prací
 │   ├── MarqueeStrip.tsx        # Běžící pruh
@@ -132,6 +142,7 @@ new/
 │   ├── cdn-api.ts              # Fetch manifestů + upload + resize + URL buildery
 │   ├── auth.ts                 # Hash hesel (SHA-256 + salt), session, rate limit, users
 │   ├── i18n.tsx                # I18nProvider, useI18n, slovník překladů
+│   ├── site-nav.tsx            # MAIN_NAV + PROJECTS + ABOUT_LINKS — jediný zdroj pravdy navu
 │   ├── gallery-data.ts         # Re-export typů z cdn-api
 │   ├── museum-data.ts          # Re-export typů z cdn-api
 │   └── magazine-data.ts        # Re-export typů z cdn-api
@@ -145,8 +156,11 @@ new/
 │   ├── colors/                 # Reference paleta (txt + png)
 │   ├── gear.txt, services.txt, story.txt   # Pomocné textovky
 │
-├── cdn-upload/                 # !!! Snapshot CDN obsahu — neuploaduje se s webem
-│   └── gallery.json            # Záloha aktuálního stavu (jen pro referenci)
+├── cdn-upload/                 # !!! Snapshot CDN obsahu + seed manifesty — neuploaduje se s webem
+│   ├── api/                    # PHP konfigurace (allowed manifest types, allowed extensions)
+│   ├── gallery.json            # Záloha aktuálního stavu (jen pro referenci)
+│   ├── graphics.json           # Seed manifestu grafik (prázdný)
+│   └── faq.json                # Seed manifestu FAQ (10 otázek CS/EN)
 │
 ├── brand-assets/               # Loga, brand zdroje (neuploaduje se)
 ├── screenshots/                # Výstup playwright screenshot scriptu (.gitignored)
@@ -180,6 +194,9 @@ Next.js App Router → každá složka v `app/` se mapuje na URL. Díky `trailin
 | `/rosnik/` | [app/rosnik/page.tsx](app/rosnik/page.tsx) | Archiv časopisu + PDF viewer |
 | `/mafos/` | [app/mafos/page.tsx](app/mafos/page.tsx) | Statická landing stránka projektu Mafoš |
 | `/vybaveni/` | [app/vybaveni/page.tsx](app/vybaveni/page.tsx) | Sekce s obrázky vybavení |
+| `/cenik/` | [app/cenik/page.tsx](app/cenik/page.tsx) | Ceník — 3 foto karty + technical/extras + travel poznámka |
+| `/qna/` | [app/qna/page.tsx](app/qna/page.tsx) | Časté dotazy (FAQ akordeon, `[text](url)` v odpovědích → odkaz) |
+| `/grafika/` | [app/grafika/page.tsx](app/grafika/page.tsx) | Grafika ke stažení (force-download přes blob) |
 | `/panel0x/` | [app/panel0x/page.tsx](app/panel0x/page.tsx) | Admin panel — dashboard |
 | `/panel0x/<sekce>/` | viz `app/panel0x/*/page.tsx` | Editace jednotlivých sekcí |
 
@@ -202,6 +219,9 @@ cdn.filiprosa.cz/
 ├── gear.json                   # Manifest sekce vybavení (sectionKey → filename)
 ├── services.json               # Manifest sekce služby (cardKey → filename)
 ├── site.json                   # Hero + About texty a obrázky
+├── pricelist.json              # Ceník (3 foto karty + technical + extras + travel)
+├── graphics.json               # Grafiky ke stažení (image, file, format, popis)
+├── faq.json                    # Otázky a odpovědi (bilingvální)
 ├── users.json                  # Hashe hesel uživatelů adpanu (SHA-256 + salt)
 │
 ├── gallery/<album-slug>/       # Fotky alba — full velikost (1920 px)
@@ -222,6 +242,8 @@ cdn.filiprosa.cz/
 │
 ├── gear/                       # Obrázky sekce vybavení
 ├── services/                   # Obrázky karet služeb
+├── pricelist/                  # Obrázky karet ceníku
+├── graphics/                   # Náhledy + downloadable soubory (jpg, png, zip, psd, ai)
 └── site/                       # Profilovka + landing bg + případně další
 ```
 
@@ -236,6 +258,9 @@ Typy jsou definované v [lib/cdn-api.ts](lib/cdn-api.ts#L28-L103):
 - `RosnikManifest` → `{ issues: MagazineIssue[] }`
 - `GearManifest` / `ServicesManifest` → `{ images: Record<sectionKey, filename> }`
 - `SiteManifest` → hero a about texty + jména profilovky a landing bg
+- `PricelistManifest` → `{ photography: PricelistPhotoItem[], technical: PricelistSection, extras: PricelistSection, travel: {cs,en} }`
+- `GraphicsManifest` → `{ items: GraphicsItem[] }` (každá položka: id, title{cs,en}, format, description{cs,en}, file?, image?)
+- `FaqManifest` → `{ items: FaqItem[] }` (každá položka: id, question{cs,en}, answer{cs,en})
 
 ### Cache busting
 
@@ -253,6 +278,8 @@ rosnikAssetUrl(path)
 gearImageUrl(filename)
 servicesImageUrl(filename)
 siteImageUrl(filename)
+pricelistImageUrl(filename)
+graphicsAssetUrl(filename)                            // obrázek i downloadable soubor
 ```
 
 ### Lokální přepínač CDN
@@ -333,14 +360,14 @@ RGB kanály pro `rgba(var(--lime-rgb) / 0.5)` jsou pod `:root`.
 
 | Komponenta | Soubor | Co dělá |
 |---|---|---|
-| `Navigation` | [components/Navigation.tsx](components/Navigation.tsx) | Top bar, dropdown Projects/About, jazykový přepínač CS/EN, mobilní menu |
+| `Navigation` | [components/Navigation.tsx](components/Navigation.tsx) | Top bar, dropdown Projects/About, jazykový přepínač CS/EN, mobilní menu — čte `MAIN_NAV` |
 | `Hero` | [components/Hero.tsx](components/Hero.tsx) | Headline, scroll indikátor, BG s gradientem a teturou |
-| `Services` | [components/Services.tsx](components/Services.tsx) | 4 karty (Focení, Vyvolávání, Tisky, Skenování) |
-| `FeaturedPhotos` | [components/FeaturedPhotos.tsx](components/FeaturedPhotos.tsx) | Featured fotky z `gallery.json` (`featured: true`) |
-| `Projects` | [components/Projects.tsx](components/Projects.tsx) | Karty Muzeum / Rosník / Meetup / Mafoš |
+| `Services` | [components/Services.tsx](components/Services.tsx) | 4 karty (Capture / Digital / Processing / Prints) + CTA tlačítko na ceník |
+| `FeaturedPhotos` | [components/FeaturedPhotos.tsx](components/FeaturedPhotos.tsx) | Featured fotky z `gallery.json` (`featured: true`); bez podnadpisů alb |
+| `Projects` | [components/Projects.tsx](components/Projects.tsx) | Karty Mafoš / Muzeum / Rosník / Grafika — čte `PROJECTS` z `site-nav.tsx` |
 | `About` | [components/About.tsx](components/About.tsx) | Profilovka + 2× odstavec + 3 staty (texty z `site.json`) |
-| `Contact` | [components/Contact.tsx](components/Contact.tsx) | Formulář (POST `/api/contact`), kopírovací btn na e-mail/telefon |
-| `Footer` | [components/Footer.tsx](components/Footer.tsx) | |
+| `Contact` | [components/Contact.tsx](components/Contact.tsx) | Formulář (POST `/api/contact`), kopírovací btn na e-mail/telefon; `hideSectionNum` prop |
+| `Footer` | [components/Footer.tsx](components/Footer.tsx) | Levý sloupec: copyright + IČO + adresa + telefon + e-mail; střed: nav (`MAIN_NAV`); vpravo: IG |
 
 ### Utility komponenty
 
@@ -363,6 +390,9 @@ RGB kanály pro `rgba(var(--lime-rgb) / 0.5)` jsou pod `:root`.
 | **Rosnik** | vydání časopisu (PDF + náhled + popis + datum) | `rosnik.json` |
 | **Gear** | obrázky pro sekce vybavení (`gear/<key>.jpg`) | `gear.json` |
 | **Services** | obrázky pozadí karet služeb | `services.json` |
+| **Pricelist** | 3 foto karty (Portrait/Event/Product), technical sekce, extras sekce, travel poznámka — bilingvální | `pricelist.json` |
+| **Graphics** | grafiky ke stažení — CRUD s nahráním obrázku + souboru, formát, popisy, řazení šipkami | `graphics.json` |
+| **FAQ** | otázky a odpovědi — bilingvální, řazení šipkami; odpovědi podporují `[text](url)` syntaxi | `faq.json` |
 | **Contact section** | profilovka + 2× odstavec About (CS/EN) | `site.json` |
 | **Landing** | landing bg + headline texty | `site.json` |
 | **Users** | správa uživatelů (jen admin) — vytvoření, smazání, oprávnění | `users.json` |
@@ -376,15 +406,18 @@ RGB kanály pro `rgba(var(--lime-rgb) / 0.5)` jsou pod `:root`.
 
 ### Workflow uploadu fotek do galerie
 
-Implementace v [lib/cdn-api.ts](lib/cdn-api.ts#L375-L420) (`uploadGalleryImagesWithResize`):
+Implementace v [lib/cdn-api.ts](lib/cdn-api.ts) (`uploadGalleryImagesWithResize`):
 
 1. Pro každý vstupní soubor:
    - Smaž diakritiku ze slugu alba → `landscape`, `portrety`, …
-   - Vygeneruj jméno: `{cleanSlug}{NNN}.jpg` (3-místné pořadí, navazuje na `existingCount`).
+   - Vygeneruj jméno: `{cleanSlug}{NNN}.jpg` — pořadové číslo se odvozuje z **maxima numerických suffixů** v `existingFilenames`, ne z `existingCount` (důležité po smazání fotek uprostřed alba — jinak by se přepsala existující fotka).
+   - Defensivní `do...while` kontrola kolize s `existingFilenames` před uploadem.
    - Resize na **1920 px** delší hrana, JPEG kvalita 0.88 → POST na `gallery/<slug>/`.
    - Resize na **720 px** delší hrana, JPEG kvalita 0.80 → POST na `gallery/<slug>/thumbs/`.
 2. Po uploadu se zavolá `saveManifest('gallery', ...)`.
 3. Soubory se uploadují **sériově** (po jednom) — kvůli stabilitě na shared hostingu.
+
+> Při mazání fotky maže `handleDeleteImage` / `handleDeleteSelected` v adpan zároveň full i `thumbs/` verzi.
 
 ### Stahování celého alba
 
@@ -447,7 +480,7 @@ X-Api-Key: <token>
 | Endpoint | Metoda | Body | Použití |
 |---|---|---|---|
 | `/api/upload` | POST | `FormData { path, files[] }` | Upload jednoho nebo více souborů do cílové cesty na CDN |
-| `/api/manifest` | POST | `JSON { type, data }` | Uložení manifestu (gallery / museum / rosnik / gear / services / site) |
+| `/api/manifest` | POST | `JSON { type, data }` | Uložení manifestu (gallery / museum / rosnik / gear / services / site / pricelist / graphics / faq) |
 | `/api/save-users` | POST | `JSON UsersManifest` | Uložení `users.json` (separátní endpoint kvůli citlivosti) |
 | `/api/delete` | POST | `JSON { path }` | Smazání souboru z CDN |
 | `/api/contact` | POST | `JSON { name, email, message, locale }` | Odeslání kontaktního emailu (auth NENÍ potřeba) |
@@ -564,7 +597,7 @@ Když přidáváš nový důležitý text (copy, marketing, popisy služeb), nec
 1. Vytvoř složku `app/<slug>/` se souborem `page.tsx`.
 2. Pokud má mít navigaci/footer, přidej ji ručně (root layout neobaluje obsah `<Navigation>` automaticky).
 3. Přidej překlady do [lib/i18n.tsx](lib/i18n.tsx).
-4. Přidej odkaz do navigace v [components/Navigation.tsx](components/Navigation.tsx) (`links` nebo `projectLinks`).
+4. Přidej odkaz do navigace v [lib/site-nav.tsx](lib/site-nav.tsx) (`MAIN_NAV` nebo `PROJECTS` / `ABOUT_LINKS`) — propaguje se automaticky do headeru, footeru i Projects sekce.
 5. Přidej routu do [public/sitemap.xml](public/sitemap.xml).
 
 ### Přidat nové album (z kódu, bez adpan)
@@ -622,6 +655,9 @@ node serve.mjs        # poslouchá na http://localhost:3000
 - **Server-side rendering vs `window`** — komponenty, které čtou `localStorage`/`window`, musí mít `'use client'` a čtení obalit `if (typeof window !== 'undefined')` nebo přesunout do `useEffect`.
 - **Migration login** s heslem `darkroom2026` funguje **jen pokud je `users.json` prázdný**. Jakmile existuje první admin, normální flow přes username + password.
 - **`cdn-upload/gallery.json`** je jen historický snapshot — netřeba ho aktualizovat. Skutečný `gallery.json` žije na CDN.
+- **`cdn-upload/{faq,graphics}.json`** jsou seedy pro inicializaci CDN manifestů (kdyby se omylem smazaly nebo se nasazoval staging). Po prvním uploadu už pravdu drží CDN, ne tahle kopie.
+- **Force-download na `/grafika/`** — tlačítko `Stáhnout` načte soubor `fetch`em jako blob a vyvolá `<a download>` přes object URL; bez toho by se obrázky otevřely v prohlížeči. Vyžaduje, aby CDN servírovala soubory s povoleným CORS (`Access-Control-Allow-Origin`). Když fetch selže, je fallback na přímý odkaz.
+- **FAQ odpovědi** podporují jednoduchou syntaxi `[text](url)` — interní cesty (`/vybaveni`) jako normální odkaz, `http(s)://` v novém tabu. Implementováno v [app/qna/page.tsx](app/qna/page.tsx) (`renderAnswer`).
 
 ---
 

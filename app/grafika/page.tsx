@@ -37,25 +37,13 @@ export default function GrafikaPage() {
           >
             <a
               href="/"
-              className="inline-flex items-center gap-2 text-[0.8rem] text-muted hover:text-lime transition-colors duration-300 mb-8"
+              className="inline-flex items-center gap-2 text-[0.8rem] text-muted hover:text-lime transition-colors duration-300"
             >
               <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
               </svg>
               {t('graphics.back')}
             </a>
-            <h1
-              className="font-display font-bold text-offwhite tracking-[-0.03em] leading-[1.1] mb-5"
-              style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}
-            >
-              {t('graphics.heading')}
-            </h1>
-            <p
-              className="font-body text-muted max-w-[36rem]"
-              style={{ fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)' }}
-            >
-              {t('graphics.description')}
-            </p>
           </motion.div>
 
           {!loaded ? (
@@ -95,9 +83,35 @@ function GraphicCard({
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '0px 0px -40px 0px' })
   const [imgError, setImgError] = useState(false)
+  const [downloading, setDownloading] = useState(false)
 
   const title = item.title[locale] || item.title.cs
   const description = item.description[locale] || item.description.cs
+
+  const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!item.file) return
+    e.preventDefault()
+    if (downloading) return
+    setDownloading(true)
+    const url = graphicsAssetUrl(item.file)
+    try {
+      const res = await fetch(url, { cache: 'no-store' })
+      if (!res.ok) throw new Error(String(res.status))
+      const blob = await res.blob()
+      const objectUrl = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = objectUrl
+      a.download = item.file.split('/').pop() || 'download'
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 1000)
+    } catch {
+      window.location.href = url
+    } finally {
+      setDownloading(false)
+    }
+  }
 
   return (
     <motion.div
@@ -106,7 +120,7 @@ function GraphicCard({
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, delay: Math.min(index * 0.06, 0.3), ease }}
       className="relative bg-charcoal border border-white/[0.05] rounded-[2px] overflow-hidden"
-      style={{ aspectRatio: '5 / 2' }}
+      style={{ aspectRatio: '15 / 4' }}
     >
       {/* Left: image fading to the right */}
       {item.image && !imgError && (
@@ -114,7 +128,7 @@ function GraphicCard({
           <img
             src={graphicsAssetUrl(item.image)}
             alt={title}
-            className="absolute inset-y-0 left-0 h-full w-[55%] object-cover"
+            className="absolute inset-y-0 left-0 h-full w-[55%] object-cover opacity-50"
             loading="lazy"
             onError={() => setImgError(true)}
           />
@@ -154,11 +168,12 @@ function GraphicCard({
           {item.file ? (
             <a
               href={graphicsAssetUrl(item.file)}
-              download
+              onClick={handleDownload}
+              aria-busy={downloading}
               className="inline-flex items-center gap-2 px-5 py-2.5 text-[0.8rem] font-semibold tracking-[0.03em] bg-lime text-dark rounded-[2px] hover:translate-y-[-2px] hover:shadow-[0_8px_32px_rgba(var(--lime-rgb),0.2),0_2px_8px_rgba(var(--lime-rgb),0.15)] active:translate-y-0 transition-transform duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-3"
             >
               <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
               </svg>
               {t('graphics.download')}
             </a>

@@ -511,8 +511,8 @@ const translations: Record<Locale, Record<string, string>> = {
     // Footer
     'footer.copyright': '\u00A9 2026 Filip Rosa',
     'footer.business.name': 'Filip Rosa',
-    'footer.business.ico': 'Reg. No.: [TO FILL]',
-    'footer.business.address': '[STREET], [POSTCODE] [CITY]',
+    'footer.business.ico': 'Reg. No.: 87102536',
+    'footer.business.address': 'Tyršova 34, 682 01 Vyškov',
     'footer.business.phone': '+420 602 942 833',
     'footer.business.email': 'foto@filiprosa.cz',
 

@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
 import { fetchSite, siteImageUrl, type SiteManifest } from '@/lib/cdn-api'
+import ResponsiveImage from '@/components/ResponsiveImage'
 
 export default function About() {
   const photoRef = useRef<HTMLDivElement>(null)
@@ -19,7 +20,8 @@ export default function About() {
     fetchSite().then(setSite).catch(() => {})
   }, [])
 
-  const profileImageSrc = site?.profileImage ? siteImageUrl(site.profileImage) : '/images/profile.jpg'
+  // Custom profile image (set in admin) overrides the optimized default below.
+  const customProfile = site?.profileImage ? siteImageUrl(site.profileImage) : null
   const aboutP1 = (locale === 'cs' ? site?.aboutP1Cs : site?.aboutP1En) || t('about.p1')
   const aboutP2 = (locale === 'cs' ? site?.aboutP2Cs : site?.aboutP2En) || t('about.p2')
 
@@ -47,11 +49,24 @@ export default function About() {
           >
             <div className="relative">
               <div className="relative aspect-[3/4] bg-charcoal border border-white/[0.05] rounded-[2px] overflow-hidden">
-                <img
-                  src={profileImageSrc}
-                  alt="Filip Rosa"
-                  className="w-full h-full object-cover"
-                />
+                {customProfile ? (
+                  <img
+                    src={customProfile}
+                    alt="Filip Rosa"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <ResponsiveImage
+                    name="profile"
+                    widths={[480, 720, 960, 1280]}
+                    fallbackWidth={960}
+                    alt="Filip Rosa"
+                    sizes="(min-width: 1024px) 480px, 90vw"
+                    width={1000}
+                    height={1000}
+                    className="w-full h-full object-cover"
+                  />
+                )}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useI18n } from '@/lib/i18n'
 import { fetchSite, siteImageUrl, type SiteManifest } from '@/lib/cdn-api'
+import ResponsiveImage from '@/components/ResponsiveImage'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -26,19 +27,36 @@ export default function Hero() {
     fetchSite().then(setSite).catch(() => {})
   }, [])
 
-  const bgImage = site?.landingImage ? siteImageUrl(site.landingImage) : '/images/dance.jpg'
+  // Custom landing image (set in admin) overrides the optimized default below.
+  const customBg = site?.landingImage ? siteImageUrl(site.landingImage) : null
   const titleLine1 = (locale === 'cs' ? site?.heroLine1Cs : site?.heroLine1En) || t('hero.title.line1')
   const titleLine2 = (locale === 'cs' ? site?.heroLine2Cs : site?.heroLine2En) || t('hero.title.line2')
   const heroDesc = (locale === 'cs' ? site?.heroDescCs : site?.heroDescEn) || t('hero.description')
 
   return (
     <header className="relative min-h-dvh flex flex-col overflow-hidden pt-16">
-      {/* Background Image — fills entire hero, no filters */}
-      <img
-        src={bgImage}
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover z-0"
-      />
+      {/* Background Image — fills entire hero, no filters. This is the LCP
+          element, so the default ships as a preloaded, responsive AVIF/WebP. */}
+      {customBg ? (
+        <img
+          src={customBg}
+          alt=""
+          fetchPriority="high"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        />
+      ) : (
+        <ResponsiveImage
+          name="hero"
+          widths={[640, 960, 1280, 1920, 2560]}
+          fallbackWidth={1920}
+          alt=""
+          sizes="100vw"
+          width={1600}
+          height={900}
+          priority
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        />
+      )}
 
       {/* Dark overlay so text remains readable — stronger on mobile */}
       <div

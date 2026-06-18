@@ -11,7 +11,7 @@ export default function Footer() {
       <div className="max-w-[1200px] mx-auto px-6 lg:px-10 flex flex-col gap-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-6">
           {/* Left column: copyright + business details, stacked */}
-          <address className="not-italic flex flex-col gap-1 text-[0.75rem] text-offwhite/25 font-body">
+          <address className="not-italic flex flex-col gap-1 text-[0.75rem] text-offwhite/60 font-body">
             <span>{t('footer.copyright')}</span>
             <span>{t('footer.business.ico')}</span>
             <span>{t('footer.business.address')}</span>
@@ -29,7 +29,7 @@ export default function Footer() {
               <a
                 key={labelKey}
                 href={href}
-                className="font-body text-[0.75rem] text-offwhite/30 hover:text-lime transition-colors duration-300"
+                className="font-body text-[0.75rem] text-offwhite/60 hover:text-lime transition-colors duration-300"
               >
                 {t(labelKey)}
               </a>
@@ -41,7 +41,7 @@ export default function Footer() {
             href="https://instagram.com/fildous1"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-offwhite/25 hover:text-lime transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime self-center"
+            className="text-offwhite/60 hover:text-lime transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-lime self-center"
             aria-label="Instagram"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -50,7 +50,7 @@ export default function Footer() {
           </a>
         </div>
 
-        <div className="text-center text-[0.65rem] text-offwhite/20 font-body leading-relaxed">
+        <div className="text-center text-[0.65rem] text-offwhite/55 font-body leading-relaxed">
           <p>{t('footer.disclaimer.photos')}</p>
           <p>{t('footer.disclaimer.made')}</p>
         </div>

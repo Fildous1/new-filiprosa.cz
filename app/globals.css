@@ -18,8 +18,10 @@
   --color-darkroom: #2b1e08;
   --color-accent: #e0b05e;
 
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
+  /* Font families are provided by next/font (self-hosted) via these CSS
+     variables, set on <html> in app/layout.tsx. */
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-body: var(--font-dm-sans), system-ui, sans-serif;
 }
 
 /* ── RGB channels for alpha variants in inline styles ── */

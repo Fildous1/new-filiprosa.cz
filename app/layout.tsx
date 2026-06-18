@@ -1,13 +1,31 @@
 import type { Metadata, Viewport } from 'next'
+import Script from 'next/script'
+import { Playfair_Display, DM_Sans } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/Providers'
 
 const SITE_URL = 'https://filiprosa.cz'
 
+// Self-hosted via next/font: removes the render-blocking request to
+// fonts.googleapis.com and applies font-display: swap automatically.
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin', 'latin-ext'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-playfair',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin', 'latin-ext'],
+  style: ['normal', 'italic'],
+  display: 'swap',
+  variable: '--font-dm-sans',
+})
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
+  // No maximum-scale / user-scalable=no — pinch-zoom must stay available (a11y).
 }
 
 export const metadata: Metadata = {
@@ -77,20 +95,22 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="cs" suppressHydrationWarning className="scroll-pt-24">
+    <html
+      lang="cs"
+      suppressHydrationWarning
+      className={`scroll-pt-24 ${playfairDisplay.variable} ${dmSans.variable}`}
+    >
       <head>
-        {/* Google Analytics */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-9HDBSK2C68" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-9HDBSK2C68');`,
-          }}
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Preload the LCP hero image so the browser fetches it immediately,
+            matching the <picture> AVIF source in components/Hero.tsx. */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
-          rel="stylesheet"
+          rel="preload"
+          as="image"
+          type="image/avif"
+          href="/images/opt/hero-1280.avif"
+          imageSrcSet="/images/opt/hero-640.avif 640w, /images/opt/hero-960.avif 960w, /images/opt/hero-1280.avif 1280w, /images/opt/hero-1920.avif 1920w, /images/opt/hero-2560.avif 2560w"
+          imageSizes="100vw"
+          fetchPriority="high"
         />
       </head>
       <body>
@@ -153,6 +173,16 @@ export default function RootLayout({
         <Providers>
           {children}
         </Providers>
+
+        {/* Google Analytics — deferred to browser idle so it no longer competes
+            with the initial render (it was ~900 ms of main-thread work). */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-9HDBSK2C68"
+          strategy="lazyOnload"
+        />
+        <Script id="ga-init" strategy="lazyOnload">
+          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-9HDBSK2C68');`}
+        </Script>
       </body>
     </html>
   )

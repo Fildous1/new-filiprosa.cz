@@ -58,28 +58,23 @@ export default function Hero() {
         />
       )}
 
-      {/* Dark overlay so text remains readable — stronger on mobile */}
+      {/* Horizontal gradient only — fades from dark (behind the text) to
+          transparent toward the right, keeping the text readable. */}
       <div
         className="absolute inset-0 z-0 hidden md:block"
         style={{
-          background: `
-            linear-gradient(to right, rgba(var(--dark-rgb),0.92) 0%, rgba(var(--dark-rgb),0.8) 25%, rgba(var(--dark-rgb),0.45) 50%, rgba(var(--dark-rgb),0.15) 75%, transparent 100%),
-            linear-gradient(to bottom, rgba(var(--dark-rgb),0.5) 0%, transparent 30%, transparent 65%, rgba(var(--dark-rgb),0.95) 100%)
-          `,
+          background: `linear-gradient(to right, rgba(var(--dark-rgb),0.92) 0%, rgba(var(--dark-rgb),0.75) 30%, rgba(var(--dark-rgb),0.35) 60%, transparent 100%)`,
         }}
       />
+      {/* On mobile there's no room for the horizontal fade — use a flat ~70% darkening */}
       <div
         className="absolute inset-0 z-0 md:hidden"
-        style={{
-          background: `
-            linear-gradient(to bottom, rgba(var(--dark-rgb),0.7) 0%, rgba(var(--dark-rgb),0.5) 40%, rgba(var(--dark-rgb),0.6) 70%, rgba(var(--dark-rgb),0.95) 100%)
-          `,
-        }}
+        style={{ background: `rgba(var(--dark-rgb),0.7)` }}
       />
 
       {/* Hero Content — Left aligned */}
       <div className="relative z-10 flex-1 flex items-center">
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 w-full">
+        <div className="w-full px-6 md:px-[10%]">
           <div className="max-w-[36rem]">
 
             {/* ── SVG filter: fractal-noise displacement (rustic texture) + lime glow ── */}

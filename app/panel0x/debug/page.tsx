@@ -85,7 +85,7 @@ export default function DebugAdmin() {
   }
 
   async function cmdManifests() {
-    const manifests = ['gallery', 'museum', 'rosnik', 'gear', 'services', 'site', 'users']
+    const manifests = ['gallery', 'museum', 'rosnik', 'gear', 'services', 'site', 'pricelist', 'graphics', 'faq', 'users']
     const lines: string[] = []
     for (const m of manifests) {
       try {
@@ -119,6 +119,31 @@ export default function DebugAdmin() {
       body: JSON.stringify({ _test: true }),
     })
     return `save-users endpoint: HTTP ${res.status}\n\n${await res.text()}`
+  }
+
+  async function cmdContact() {
+    // /api/contact does not require auth — this just verifies the endpoint reachability.
+    const res = await fetch(`${cdnUrl()}api/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ _probe: true }),
+    })
+    return `contact endpoint: HTTP ${res.status}\n\n${await res.text()}`
+  }
+
+  async function cmdAssets() {
+    // Spot-check that newly added asset folders exist (any 200/403 means folder exists; 404 = missing).
+    const folders = ['gallery', 'museum', 'rosnik', 'gear', 'services', 'site', 'pricelist', 'graphics']
+    const lines: string[] = []
+    for (const f of folders) {
+      try {
+        const res = await fetch(`${cdnUrl()}${f}/`, { method: 'HEAD' })
+        lines.push(`/${f}/: HTTP ${res.status}`)
+      } catch (err) {
+        lines.push(`/${f}/: Error — ${err instanceof Error ? err.message : String(err)}`)
+      }
+    }
+    return lines.join('\n')
   }
 
   async function cmdPing() {
@@ -246,6 +271,20 @@ export default function DebugAdmin() {
               className="px-3 py-1 text-[0.72rem] font-medium text-orange-400 border border-orange-500/30 rounded-[2px] hover:bg-orange-500/10 disabled:opacity-40 transition-colors duration-200"
             >
               Test Save-Users Auth
+            </button>
+            <button
+              onClick={() => run('contact', cmdContact)}
+              disabled={loading}
+              className="px-3 py-1 text-[0.72rem] font-medium text-orange-400 border border-orange-500/30 rounded-[2px] hover:bg-orange-500/10 disabled:opacity-40 transition-colors duration-200"
+            >
+              Test Contact Endpoint
+            </button>
+            <button
+              onClick={() => run('assets', cmdAssets)}
+              disabled={loading}
+              className="px-3 py-1 text-[0.72rem] font-medium text-orange-400 border border-orange-500/30 rounded-[2px] hover:bg-orange-500/10 disabled:opacity-40 transition-colors duration-200"
+            >
+              Check Asset Folders
             </button>
           </div>
           {loading && <p className="text-[0.72rem] text-muted/50 mb-2">Running…</p>}

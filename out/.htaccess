@@ -29,6 +29,16 @@ ErrorDocument 404 /404.html
     # _next/static assets are content-hashed — cache forever
     ExpiresByType text/css "access plus 1 year"
     ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+
+    # Images — long cache (report flagged the default 7-day TTL). These names are
+    # stable; if you replace an image, rename it or add a ?v= query to bust.
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/avif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
 
     # HTML pages — no cache
     ExpiresByType text/html "access plus 0 seconds"
@@ -37,6 +47,9 @@ ErrorDocument 404 /404.html
 <IfModule mod_headers.c>
     <FilesMatch "\.(js|css|woff2?)$">
         Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+    <FilesMatch "\.(jpg|jpeg|png|webp|avif|svg|ico)$">
+        Header set Cache-Control "public, max-age=31536000"
     </FilesMatch>
     <FilesMatch "\.html$">
         Header set Cache-Control "no-cache, no-store, must-revalidate"
@@ -77,4 +90,21 @@ Options -Indexes
 
     # HSTS — enforce HTTPS for 1 year
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+    # Cross-origin isolation. COOP is safe here (no cross-origin window.open).
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+
+    # ----------------------------------------------------------------
+    # Content-Security-Policy (review + TEST on staging before enabling).
+    # 'unsafe-inline' is required for styles (framer-motion writes inline
+    # styles) and for the inline GA/JSON-LD scripts; tighten later with
+    # hashes if desired. Enable by uncommenting:
+    #
+    # Header always set Content-Security-Policy "default-src 'self'; \
+    #   script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; \
+    #   style-src 'self' 'unsafe-inline'; \
+    #   img-src 'self' data: https://cdn.filiprosa.cz https://www.google-analytics.com https://www.googletagmanager.com https://placehold.co; \
+    #   font-src 'self'; \
+    #   connect-src 'self' https://cdn.filiprosa.cz https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com; \
+    #   frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
 </IfModule>
